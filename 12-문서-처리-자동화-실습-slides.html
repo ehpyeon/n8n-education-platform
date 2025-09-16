@@ -1,0 +1,1073 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>문서 처리 자동화 - 24시간 서류 정리 시스템</title>
+    <style>
+        /* Global Reset and Base Styles */
+        *, *::before, *::after { box-sizing: border-box; }
+        html, body { max-width: 100%; overflow-x: hidden; margin: 0; padding: 0; }
+        :root { scrollbar-gutter: stable both-edges; }
+        
+        img, video, svg, canvas, iframe, table { max-width: 100%; height: auto; }
+        pre, code, .code-block { max-width: 100%; overflow: auto; }
+        
+        .content-grid { min-width: 0; }
+        .content-grid > * { min-width: 0; overflow-wrap: anywhere; }
+        
+        .basic-font, .card-title, .header-1, .header-2, .header-3 { overflow-wrap: anywhere; word-break: break-word; }
+
+        /* Typography */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #2D3748;
+            background: #FFFFFF;
+        }
+
+        .basic-font {
+            font-size: 13pt;
+            color: #2D3748;
+            line-height: 1.3;
+            margin-bottom: 8px;
+        }
+
+        .header-3 {
+            font-size: 15pt;
+            font-weight: 600;
+            color: #1B365D;
+            margin-bottom: 6px;
+            line-height: 1.3;
+            text-align: left;
+        }
+
+        .header-2 {
+            font-size: 18pt;
+            font-weight: 600;
+            color: #1B365D;
+            margin-bottom: 9px;
+            line-height: 1.3;
+        }
+
+        .header-1 {
+            font-size: 21pt;
+            font-weight: 700;
+            color: #1B365D;
+            margin-bottom: 12px;
+            line-height: 1.2;
+        }
+
+        .message {
+            font-size: 15pt;
+            font-weight: 500;
+            color: rgb(115, 113, 113);
+            margin-bottom: 6px;
+            line-height: 1.3;
+            text-align: left;
+        }
+
+        /* Navigation */
+        .nav-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 70px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid #E2E8F0;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 5vw;
+            box-shadow: 0 2px 10px rgba(27, 54, 93, 0.1);
+        }
+
+        .nav-logo {
+            height: 40px;
+            font-size: 24px;
+            font-weight: 700;
+            color: #1B365D;
+        }
+
+        .nav-progress {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 14px;
+            color: #636E72;
+        }
+
+        .nav-progress .current-topic {
+            font-weight: 600;
+            color: #1B365D;
+            max-width: 300px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .nav-progress .slide-counter {
+            background: #F8F9FA;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            color: #636E72;
+        }
+
+        /* Progress Bar */
+        .scroll-progress {
+            position: fixed;
+            top: 70px;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: #F8F9FA;
+            z-index: 999;
+        }
+
+        .scroll-progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #1B365D 0%, rgb(135, 0, 232) 100%);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        /* Layout */
+        .slide-container {
+            width: 100%;
+            background: #FFFFFF;
+            padding-top: 100px;
+        }
+
+        .slide {
+            min-height: calc(100vh - 100px);
+            width: 100%;
+            padding: 32px 5vw 48px 5vw;
+            display: flex;
+            flex-direction: column;
+            text-align: left;
+            scroll-margin-top: 100px;
+            box-sizing: border-box;
+        }
+
+        .slide + .slide {
+            border-top: 2px solid #F8F9FA;
+        }
+
+        /* Content Layout */
+        .content-grid {
+            display: grid;
+            gap: 8px;
+            margin: 12px 0;
+        }
+
+        .content-grid-2 {
+            grid-template-columns: 1fr 1fr;
+        }
+
+        .content-grid-3 {
+            grid-template-columns: repeat(3, 1fr);
+        }
+
+        /* Cards */
+        .content-card {
+            background: #FFFFFF;
+            border: 1px solid rgb(235, 226, 240);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 8px;
+            box-shadow: 0 2px 8px rgba(27, 54, 93, 0.05);
+            transition: all 0.2s ease;
+            margin-top: 0px;
+        }
+
+        .content-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(27, 54, 93, 0.1);
+        }
+
+        .card-title {
+            font-size: 15pt;
+            font-weight: 600;
+            color: #1B365D;
+            margin-bottom: 12px;
+            margin-top: 6px;
+            text-align: left;
+        }
+
+        /* Callouts */
+        .callout-center {
+            background: #ffffff;
+            border: 1px solid rgba(27, 54, 93, 0.12);
+            border-radius: 14px;
+            padding: 20px 24px;
+            margin: 24px auto;
+            width: fit-content;
+            box-shadow: 0 4px 16px rgba(27, 54, 93, 0.08), 0 1px 3px rgba(27, 54, 93, 0.06);
+            text-align: left;
+        }
+
+        .callout {
+            padding: 16px;
+            margin: 8px auto;
+            background: rgba(178, 73, 234, 0.04);
+            border: 0px;
+            text-align: left;
+            width: 100%;
+            border-radius: 8px;
+            font-size: 13pt;
+            line-height: 1.7;
+        }
+
+        /* Lists */
+        .step-list {
+            list-style: none;
+            counter-reset: step-counter;
+            margin: 12px 0;
+            padding-left: 0;
+        }
+
+        .step-list > li {
+            counter-increment: step-counter;
+            margin-bottom: 10px;
+            padding-left: 36px;
+            position: relative;
+            line-height: 1.2;
+            font-size: 12pt;
+        }
+
+        .step-list > li::before {
+            content: counter(step-counter);
+            position: absolute;
+            left: 0;
+            top: 0;
+            background: rgba(114, 29, 171, 0.7);
+            color: white;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12pt;
+            font-weight: 600;
+        }
+
+        .checklist {
+            list-style: none;
+            margin: 12px 0;
+            padding-left: 0;
+        }
+
+        .checklist li {
+            padding: 4px 0 4px 26px;
+            position: relative;
+            margin-bottom: 0px;
+            line-height: 1.2;
+            font-size: 12pt;
+        }
+
+        .checklist li::before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: rgba(114, 29, 171, 0.7);
+            font-weight: bold;
+            font-size: 12pt;
+        }
+
+        /* Tables */
+        .content-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 12px 0;
+            background: #FFFFFF;
+            border: 1px solid #E2E8F0;
+            border-radius: 8px;
+            overflow: hidden;
+            font-size: 12pt;
+        }
+
+        .content-table th {
+            background: #F8F9FA;
+            padding: 8px 8px;
+            font-size: 13pt;
+            font-weight: 600;
+            color: #1B365D;
+            text-align: left;
+            border-bottom: 2px solid #E2E8F0;
+        }
+
+        .content-table td {
+            padding: 8px 8px;
+            color: #2D3748;
+            border-bottom: 1.5px solid #F8F9FA;
+            text-align: left;
+            vertical-align: top;
+        }
+
+        .content-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .content-table tr:hover {
+            background: rgba(178, 73, 234, 0.05);
+        }
+
+        /* Code Blocks */
+        .code-block {
+            background: #F8F9FA;
+            border: 1px solid #E2E8F0;
+            border-radius: 8px;
+            padding: 8px 12px;
+            margin: 8px 0;
+            font-family: 'Monaco', 'Menlo', 'Consolas', monospace;
+            font-size: 10pt;
+            color: #2D3748;
+            line-height: 1.4;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            overflow-x: auto;
+            overflow-y: auto;
+            max-height: none;
+        }
+
+        /* Center alignment for intro slide */
+        .slide.intro {
+            text-align: center;
+            justify-content: center;
+        }
+
+        .slide.intro .header-1,
+        .slide.intro .header-2 {
+            text-align: center;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .content-grid-2,
+            .content-grid-3 {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+            
+            .slide {
+                padding: 16px 3vw 32px 3vw;
+                min-height: calc(100vh - 80px);
+            }
+            
+            .nav-bar {
+                height: 60px;
+                padding: 0 3vw;
+            }
+            
+            .slide-container {
+                padding-top: 80px;
+            }
+            
+            .header-1 { font-size: 22pt; }
+            .header-2 { font-size: 17pt; }
+            .header-3 { font-size: 15pt; }
+            .basic-font { font-size: 13pt; }
+            
+            .content-card {
+                padding: 16px;
+                margin-bottom: 4px;
+            }
+        }
+
+        /* Smooth scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* 코드 블록 전용 스타일 - 향상된 라인 브레이크 지원 */
+        .code-block {
+            background: #F8F9FA;
+            border: 1px solid #E2E8F0;
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin: 12px 0;
+            font-family: 'Monaco', 'Menlo', 'Consolas', 'Courier New', monospace;
+            font-size: 11pt;
+            color: #2D3748;
+            line-height: 1.5;
+            /* 향상된 라인 브레이크 기능 */
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            word-break: break-all;
+            overflow-x: auto;
+        }
+
+        /* 인라인 코드 스타일 */
+        .inline-code {
+            background: #F8F9FA;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Monaco', 'Menlo', 'Consolas', 'Courier New', monospace;
+            font-size: 0.9em;
+            color: #1B365D;
+            border: 1px solid #E2E8F0;
+        }
+
+        /* Mermaid 다이어그램 스타일 */
+        .mermaid-container {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 16px;
+            margin: 12px 0;
+        }
+        
+        .mermaid-container .mermaid {
+            background: transparent;
+            border: none;
+            padding: 0;
+            margin: 0;
+            text-align: center;
+            overflow-x: auto;
+            overflow-y: hidden;
+        }
+
+        .mermaid {
+            background: #FFFFFF;
+            border: 1px solid #E2E8F0;
+            border-radius: 8px;
+            padding: 16px;
+            margin: 16px 0;
+            text-align: center;
+            overflow-x: auto;
+            overflow-y: hidden;
+        }
+
+        /* Mermaid 다이어그램 반응형 지원 */
+        .mermaid svg {
+            max-width: 100%;
+            height: auto;
+        }
+    </style>
+    <!-- Mermaid.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.0/dist/mermaid.min.js"></script>
+</head>
+<body>
+    <nav class="nav-bar">
+        <div class="nav-logo">📄 문서 처리 자동화</div>
+        <div class="nav-progress">
+            <span class="current-topic">문서 처리 자동화</span>
+            <span class="slide-counter">1 / 9</span>
+        </div>
+    </nav>
+
+    <div class="scroll-progress">
+        <div class="scroll-progress-bar"></div>
+    </div>
+
+    <div class="slide-container">
+        <!-- Slide 1: Intro -->
+        <section class="slide intro" id="slide-1">
+            <h1 class="header-1">📄 문서 처리 자동화</h1>
+            <h2 class="header-2">24시간 쉬지 않는 서류 정리 시스템 만들기</h2>
+            <div class="callout-center">
+                <ol class="step-list">
+                    <li>똑똑한 서류 분류 시스템 구축</li>
+                    <li>종이문서를 디지털로 자동 변환</li>
+                    <li>중요 정보 자동 추출 및 정리</li>
+                    <li>완전 자동화 문서 처리 라인 완성</li>
+                </ol>
+            </div>
+        </section>
+
+        <!-- Slide 2: 문서 처리에서 마주하는 3가지 핵심 문제 -->
+        <section class="slide" id="slide-2">
+            <h2 class="header-2">🚨 문서 처리 업무의 3가지 핵심 문제점</h2>
+            <div class="message">매일 반복되는 문서 업무에서 우리가 직면하는 가장 큰 문제들을 파악해보세요</div>
+            
+            <div class="content-grid content-grid-3">
+                <div class="content-card">
+                    <div class="card-title">❌ 문제 1: 무분별한 문서 분류</div>
+                    <div class="basic-font"><strong>현재 상황:</strong></div>
+                    <ul class="checklist">
+                        <li>계약서, 견적서, 세금계산서가 뒤섞임</li>
+                        <li>어떤 부서로 보내야 할지 모르겠음</li>
+                        <li>분류 실수로 업무 지연 발생</li>
+                        <li>긴급 문서를 놓치는 실수</li>
+                    </ul>
+                    
+                    <div class="basic-font"><strong>🎯 지향하는 결과:</strong></div>
+                    <ul class="checklist">
+                        <li>문서가 자동으로 적절한 폴더/팀으로 분류</li>
+                        <li>계약서 → 법무팀 폴더, 견적서 → 영업팀 폴더</li>
+                        <li>세금계산서 → 회계팀 폴더로 즉시 이동</li>
+                        <li>긴급 문서는 별도 우선순위 처리</li>
+                    </ul>
+                    
+                    <div class="code-block">😰 매일 겪는 문제:
+📄 신규 문서 100장 
+→ 🤷‍♂️ "이건 어디로?"
+→ ⏰ 2시간씩 일일이 분류
+→ 😱 중요 문서 놓침</div>
+                </div>
+                
+                <div class="content-card">
+                    <div class="card-title">❌ 문제 2: 종이문서 디지털화 지옥</div>
+                    <div class="basic-font"><strong>현재 상황:</strong></div>
+                    <ul class="checklist">
+                        <li>스캔한 이미지에서 글자 읽기 힘듦</li>
+                        <li>수작업으로 타이핑 재작업</li>
+                        <li>오타와 누락이 빈번히 발생</li>
+                        <li>한글/숫자 인식 정확도 낮음</li>
+                    </ul>
+                    
+                    <div class="basic-font"><strong>🎯 지향하는 결과:</strong></div>
+                    <ul class="checklist">
+                        <li>PDF 파일이 폴더에 업로드되면 즉시 처리</li>
+                        <li>스캔 이미지가 검색 가능한 텍스트로 변환</li>
+                        <li>원본 레이아웃과 표 구조 완벽 보존</li>
+                        <li>한글 손글씨까지 95% 정확도로 인식</li>
+                    </ul>
+                    
+                    <div class="code-block">😰 매일 겪는 문제:
+📷 스캔 이미지
+→ 👀 눈으로 하나하나 읽기
+→ ⌨️ 손으로 다시 타이핑
+→ 😵 오타와 누락 발생</div>
+                </div>
+                
+                <div class="content-card">
+                    <div class="card-title">❌ 문제 3: 핵심 정보 추출의 어려움</div>
+                    <div class="basic-font"><strong>현재 상황:</strong></div>
+                    <ul class="checklist">
+                        <li>계약서에서 금액, 날짜 찾기 복잡</li>
+                        <li>중요 조건 놓치고 검토</li>
+                        <li>수작업 정리로 시간 과다 소요</li>
+                        <li>사람마다 추출 기준이 달라짐</li>
+                    </ul>
+                    
+                    <div class="basic-font"><strong>🎯 지향하는 결과:</strong></div>
+                    <ul class="checklist">
+                        <li>문서에서 핵심 정보가 키-값 쌍으로 추출</li>
+                        <li>회사명, 금액, 날짜, 담당자 정보 자동 정리</li>
+                        <li>추출된 데이터를 CSV/Excel 파일로 저장</li>
+                        <li>표준화된 형식으로 일관성 있는 데이터 관리</li>
+                    </ul>
+                    
+                    <div class="code-block">😰 매일 겪는 문제:
+📑 10페이지 계약서
+→ 🔍 중요 정보는 어디에?
+→ 📝 수작업 정리 30분
+→ 😱 중요 조건 놓침</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 3: 업스테이지 AI로 문제 해결하기 -->
+        <section class="slide" id="slide-3">
+            <h2 class="header-2">🎯 업스테이지 AI 노드로 3가지 문제 완벽 해결</h2>
+            <div class="message">한국어를 정말 잘 아는 업스테이지 AI가 각 문제에 최적화된 솔루션을 제공합니다</div>
+            
+            <div class="content-grid content-grid-3">
+                <div class="content-card">
+                    <div class="card-title">✅ 솔루션 1: Document Classify</div>
+                    <div class="basic-font"><strong>업스테이지 문서 분류 노드</strong></div>
+                    <div class="code-block">📄 혼재된 문서들
+↓
+🤖 Document Classify 노드
+• 한국어 특화 AI 모델
+• 문서 내용 + 구조 분석  
+• 99% 정확도 분류
+↓
+🎯 자동 분류 완료
+✓ 계약서 → 법무팀
+✓ 세금계산서 → 회계팀  
+✓ 견적서 → 영업팀</div>
+                    <div class="basic-font"><strong>핵심 기능:</strong></div>
+                    <ul class="checklist">
+                        <li>한국어 비즈니스 문서 특화</li>
+                        <li>제목 + 내용 + 구조 종합 분석</li>
+                        <li>신뢰도 점수와 함께 분류 결과 제공</li>
+                        <li>사용자 정의 분류 카테고리 지원</li>
+                    </ul>
+                </div>
+                
+                <div class="content-card">
+                    <div class="card-title">✅ 솔루션 2: Document Parse</div>
+                    <div class="basic-font"><strong>업스테이지 문서 파싱 노드</strong></div>
+                    <div class="code-block">📷 스캔한 이미지/PDF
+↓
+🤖 Document Parse 노드
+• 한글 OCR 최고 성능
+• 표, 목록, 제목 구조화
+• 95% 정확도 텍스트 추출
+↓
+📝 완벽한 디지털 텍스트
+✓ 원본 레이아웃 유지
+✓ 표 구조 그대로 변환
+✓ 검색 가능한 텍스트</div>
+                    <div class="basic-font"><strong>핵심 기능:</strong></div>
+                    <ul class="checklist">
+                        <li>한국어 손글씨까지 인식</li>
+                        <li>복잡한 표 구조 정확히 파싱</li>
+                        <li>이미지 + PDF 동시 지원</li>
+                        <li>원본 문서 레이아웃 보존</li>
+                    </ul>
+                </div>
+                
+                <div class="content-card">
+                    <div class="card-title">✅ 솔루션 3: Information Extract</div>
+                    <div class="basic-font"><strong>업스테이지 정보 추출 노드</strong></div>
+                    <div class="code-block">📑 복잡한 문서
+↓
+🤖 Information Extract 노드
+• 핵심 정보만 스마트 추출
+• 한국어 맥락 이해
+• 97% 정확도 추출
+↓
+📊 구조화된 데이터
+✓ 회사명: ㈜한국기업
+✓ 계약금액: 1억 2천만원
+✓ 계약기간: 2024.3.1~2025.2.28
+✓ 담당자: 김철수 부장</div>
+                    <div class="basic-font"><strong>핵심 기능:</strong></div>
+                    <ul class="checklist">
+                        <li>사용자 정의 추출 필드 설정</li>
+                        <li>한국 비즈니스 관습 이해</li>
+                        <li>JSON 형태로 구조화된 출력</li>
+                        <li>추출 신뢰도 점수 제공</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 4: 문제1 해결 - Document Classify 노드 활용 -->
+        <section class="slide" id="slide-4">
+            <h2 class="header-2">🎯 문제1 해결: Document Classify로 완벽한 문서 분류</h2>
+            <div class="message">업스테이지 Document Classify 노드가 혼재된 문서들을 99% 정확도로 자동 분류합니다</div>
+            
+            <div class="content-grid content-grid-2">
+                <div class="content-card">
+                    <div class="card-title">⚙️ Document Classify 설정하기</div>
+                    <ol class="step-list">
+                        <li><strong>노드 추가 및 Credential 설정</strong><br>업스테이지 API 키를 Credential에 등록</li>
+                        <li><strong>분류 카테고리 정의</strong><br>계약서, 세금계산서, 견적서, 기술문서 등 정의</li>
+                        <li><strong>문서 입력 연결</strong><br>File Upload나 HTTP Request 노드와 연결</li>
+                        <li><strong>분류 결과 처리</strong><br>Switch 노드로 카테고리별 다른 경로 설정</li>
+                        <li><strong>신뢰도 임계값 설정</strong><br>90% 이상일 때만 자동 분류, 미만시 사람 검토</li>
+                    </ol>
+                    
+                    <div class="basic-font"><strong>주요 장점:</strong></div>
+                    <ul class="checklist">
+                        <li>한국어 비즈니스 문서에 최적화</li>
+                        <li>복잡한 규칙 설정 불필요</li>
+                        <li>신뢰도 점수로 품질 보장</li>
+                    </ul>
+                </div>
+                
+                <div class="content-card">
+                    <div class="card-title">🏆 실제 분류 성능</div>
+                    <div class="code-block">📊 업스테이지 Document Classify 성능
+
+분류 정확도:
+계약서    ████████████ 99.2%
+세금계산서 ███████████ 98.8%  
+견적서    ████████████ 99.1%
+기술문서   ██████████ 97.5%
+기타문서   █████████ 95.3%
+
+⚡ 처리 속도: 평균 2초/문서
+🎯 전체 정확도: 98.4%
+💪 신뢰도 90% 이상: 96.7%</div>
+                    
+                    <div class="basic-font"><strong>기존 방식 vs 업스테이지:</strong></div>
+                    <table class="content-table">
+                        <tr>
+                            <th>비교 항목</th>
+                            <th>기존 수작업</th>
+                            <th>업스테이지 AI</th>
+                        </tr>
+                        <tr>
+                            <td>정확도</td>
+                            <td>85% (사람 실수)</td>
+                            <td>98.4% (AI 정확성)</td>
+                        </tr>
+                        <tr>
+                            <td>처리 시간</td>
+                            <td>5분/문서</td>
+                            <td>2초/문서</td>
+                        </tr>
+                        <tr>
+                            <td>업무 시간</td>
+                            <td>하루 8시간</td>
+                            <td>24시간 무제한</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 5: 문제2 해결 - Document Parse 노드 활용 -->
+        <section class="slide" id="slide-5">
+            <h2 class="header-2">🔄 문제2 해결: Document Parse로 완벽한 디지털 변환</h2>
+            <div class="message">업스테이지 Document Parse 노드가 스캔 이미지를 95% 정확도로 디지털 텍스트로 변환합니다</div>
+            
+            <div class="content-grid content-grid-2">
+                <div class="content-card">
+                    <div class="card-title">⚙️ Document Parse 설정하기</div>
+                    <ol class="step-list">
+                        <li><strong>노드 추가 및 인증 설정</strong><br>업스테이지 API Credential 등록</li>
+                        <li><strong>입력 파일 연결</strong><br>이미지(JPG, PNG) 또는 PDF 파일 입력</li>
+                        <li><strong>파싱 옵션 선택</strong><br>OCR만 할지, 구조 분석까지 할지 설정</li>
+                        <li><strong>출력 형식 지정</strong><br>Text, JSON, 또는 구조화된 데이터 선택</li>
+                        <li><strong>후속 처리 연결</strong><br>추출된 텍스트를 다음 노드로 전달</li>
+                    </ol>
+                    
+                    <div class="basic-font"><strong>주요 특징:</strong></div>
+                    <ul class="checklist">
+                        <li>한글 손글씨 인식 지원</li>
+                        <li>복잡한 표 구조 정확히 파싱</li>
+                        <li>원본 레이아웃 정보 보존</li>
+                        <li>다양한 출력 형식 지원</li>
+                    </ul>
+                </div>
+                
+                <div class="content-card">
+                    <div class="card-title">🏆 Document Parse 성능 비교</div>
+                    <div class="code-block">📊 한국어 문서 OCR 성능 비교
+
+                    기존 OCR vs 업스테이지
+한글 인식률:  ██████████ 95.2% (업스테이지)
+             ███████░░░ 78.5% (기존 OCR)
+
+숫자 인식률:  ████████████ 99.1% (업스테이지)  
+             ██████████░░ 89.3% (기존 OCR)
+
+표 구조보존:  ███████████ 96.8% (업스테이지)
+             ████░░░░░░░░ 45.2% (기존 OCR)
+
+처리 속도:   ⚡ 평균 5초/페이지 (업스테이지)
+             ⏱️ 평균 15초/페이지 (기존 OCR)</div>
+                    
+                    <div class="basic-font"><strong>실제 처리 결과:</strong></div>
+                    <table class="content-table">
+                        <tr>
+                            <th>문서 유형</th>
+                            <th>기존 OCR 정확도</th>
+                            <th>업스테이지 정확도</th>
+                        </tr>
+                        <tr>
+                            <td>계약서</td>
+                            <td>82%</td>
+                            <td>96%</td>
+                        </tr>
+                        <tr>
+                            <td>세금계산서</td>
+                            <td>75%</td>
+                            <td>98%</td>
+                        </tr>
+                        <tr>
+                            <td>손글씨 문서</td>
+                            <td>45%</td>
+                            <td>89%</td>
+                        </tr>
+                        <tr>
+                            <td>복잡한 표</td>
+                            <td>35%</td>
+                            <td>94%</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 6: 문제3 해결 - Information Extract 노드 활용 -->
+        <section class="slide" id="slide-6">
+            <h2 class="header-2">🔍 문제3 해결: Information Extract로 스마트한 정보 추출</h2>
+            <div class="message">업스테이지 Information Extract 노드가 복잡한 문서에서 핵심 정보를 97% 정확도로 추출합니다</div>
+            
+            <div class="content-grid content-grid-2">
+                <div class="content-card">
+                    <div class="card-title">⚙️ Information Extract 설정하기</div>
+                    <ol class="step-list">
+                        <li><strong>추출 필드 정의</strong><br>회사명, 계약금액, 계약기간 등 필요한 필드 지정</li>
+                        <li><strong>템플릿 설정</strong><br>문서 유형별(계약서, 세금계산서) 추출 템플릿 구성</li>
+                        <li><strong>입력 연결</strong><br>Document Parse 결과나 원본 텍스트 연결</li>
+                        <li><strong>출력 형식 설정</strong><br>JSON, CSV, 또는 구조화된 데이터 형태 선택</li>
+                        <li><strong>후속 처리 연결</strong><br>데이터베이스 저장, 알림 발송 등 연결</li>
+                    </ol>
+                    
+                    <div class="basic-font"><strong>추출 가능한 정보 유형:</strong></div>
+                    <ul class="checklist">
+                        <li>회사명, 사업자번호, 주소, 연락처</li>
+                        <li>계약 금액, 기간, 조건, 담당자</li>
+                        <li>제품명, 수량, 단가, 총액</li>
+                        <li>날짜, 시간, 위치, 상태 정보</li>
+                    </ul>
+                </div>
+                
+                <div class="content-card">
+                    <div class="card-title">🏆 Information Extract 실제 성능</div>
+                    <div class="code-block">📊 정보 추출 정확도 비교
+
+                 수작업 vs 업스테이지 AI
+회사명 추출:   ████████████ 98.9% (업스테이지)
+              ██████████░░ 92.3% (수작업)
+
+금액 추출:    ███████████ 99.2% (업스테이지)  
+              ████████░░░░ 87.1% (수작업)
+
+날짜 추출:    ████████████ 97.8% (업스테이지)
+              █████████░░░ 89.4% (수작업)
+
+처리 속도:    ⚡ 평균 3초/문서 (업스테이지)
+              ⏱️ 평균 15분/문서 (수작업)</div>
+                    
+                    <div class="basic-font"><strong>실제 사용 사례:</strong></div>
+                    <div class="code-block">✅ 계약서 자동 처리 시나리오
+
+📑 계약서 입력
+     ↓
+🤖 Information Extract 노드
+     ↓
+📊 추출된 핵심 정보:
+{
+  "계약회사": "㈜디지털솔루션",
+  "계약금액": "50,000,000원", 
+  "계약기간": "2024-03-01 ~ 2025-02-28",
+  "담당자": "김영희 팀장",
+  "연락처": "02-1234-5678",
+  "특이사항": "분기별 성과 점검"
+}
+     ↓
+🔔 자동 알림 및 DB 저장</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 7: 3개 업스테이지 노드로 완성하는 통합 워크플로우 -->
+        <section class="slide" id="slide-7">
+            <h2 class="header-2">🔗 3개 업스테이지 노드로 완성하는 통합 워크플로우</h2>
+            <div class="message">Document Classify → Document Parse → Information Extract 3단계로 완벽한 문서 처리 자동화 완성</div>
+            
+            <div class="content-card">
+                <div class="card-title">🏭 업스테이지 3단계 완전 자동화 워크플로우</div>
+                <div class="mermaid-container">
+                    <pre class="mermaid">
+flowchart LR
+    A["📧 문서 입력<br/>이메일/웹/스캔"] --> B["🎯 Document Classify<br/>문서 종류 분류<br/><small>99% 정확도</small>"]
+    B --> C["📝 Document Parse<br/>OCR 텍스트 추출<br/><small>95% 정확도</small>"]
+    C --> D["🔍 Information Extract<br/>핵심 정보 추출<br/><small>97% 정확도</small>"]
+    D --> E["💾 시스템 연동<br/>DB저장/알림/보고서"]
+    
+    style A fill:#e3f2fd,stroke:#1976d2,stroke-width:2px
+    style B fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px  
+    style C fill:#e8f5e8,stroke:#388e3c,stroke-width:2px
+    style D fill:#fff3e0,stroke:#f57c00,stroke-width:2px
+    style E fill:#fce4ec,stroke:#c2185b,stroke-width:2px
+                    </pre>
+                </div>
+                
+                <div class="basic-font"><strong>각 단계별 자동 처리:</strong></div>
+                <div class="code-block">📊 전체 처리 시간: 평균 10초/문서 (기존 대비 95% 단축)
+
+1️⃣ Document Classify (2초)
+   • 계약서, 견적서, 세금계산서 자동 분류
+   • 신뢰도 점수 기반 품질 보장
+
+2️⃣ Document Parse (5초) 
+   • 스캔 이미지를 디지털 텍스트로 변환
+   • 한글 손글씨까지 정확히 인식
+
+3️⃣ Information Extract (3초)
+   • 회사명, 금액, 날짜 등 핵심 정보 추출  
+   • JSON 형태 구조화된 데이터로 출력
+
+🔄 24시간 무정지 운영 가능</div>
+            </div>
+        </section>
+
+        <!-- Slide 8: 실제 적용 사례 -->
+        <section class="slide" id="slide-8">
+            <h2 class="header-2">🏆 놀라운 성과 - 실제 적용 사례</h2>
+            <div class="message">실제 도입한 회사들의 극적인 업무 혁신 사례를 확인해보세요</div>
+            
+            <div class="content-grid content-grid-2">
+                <div class="content-card">
+                    <div class="card-title">💼 회계팀 골치거리 해결</div>
+                    <div class="basic-font"><strong>도입 전 문제점:</strong></div>
+                    <ul class="checklist">
+                        <li>매일 수십 장의 세금계산서 수동 입력</li>
+                        <li>단순 입력에만 하루 종일 매달림</li>
+                        <li>숫자 실수로 인한 회계 오류 빈발</li>
+                    </ul>
+                    
+                    <div class="basic-font"><strong>자동화 후 결과:</strong></div>
+                    <div class="code-block">⏰ 수동 입력 시간: 8시간 → 1.5시간 (80% 단축)
+🎯 입력 정확도: 95% 이상 달성
+🚀 업무 만족도: 회계팀이 분석 업무에 집중 가능</div>
+                </div>
+                
+                <div class="content-card">
+                    <div class="card-title">⚖️ 법무팀 계약서 관리 혁신</div>
+                    <div class="basic-font"><strong>도입 전 문제점:</strong></div>
+                    <ul class="checklist">
+                        <li>계약서 검토에 3일씩 소요</li>
+                        <li>계약 만료일 깜빡해서 갱신 누락</li>
+                        <li>중요 조건 놓쳐서 나중에 문제 발생</li>
+                    </ul>
+                    
+                    <div class="basic-font"><strong>자동화 후 결과:</strong></div>
+                    <div class="code-block">⏰ 검토 시간: 4시간 → 1.5시간 (60% 단축)
+📅 계약 갱신: 100% 놓치지 않음
+🔍 위험 요소: 자동 감지로 사전 대응</div>
+                </div>
+            </div>
+            
+            <div class="callout">
+                🎯 <strong>도입 효과 요약:</strong> 문서 처리 자동화로 직원들이 단순 반복 업무에서 벗어나 창의적이고 전략적인 업무에 집중할 수 있게 되었습니다. 이제 AI 비서팀이 24시간 서류를 정리하는 동안, 우리는 더 의미 있는 일에 시간을 투자할 수 있습니다!
+            </div>
+        </section>
+
+        <!-- Slide 9: 구축 가이드 -->
+        <section class="slide" id="slide-9">
+            <h2 class="header-2">🛠️ 우리 회사 맞춤 시스템 구축하기</h2>
+            <div class="message">5단계로 완성하는 문서 처리 자동화 시스템 구축 가이드</div>
+            
+            <div class="content-grid content-grid-2">
+                <div class="content-card">
+                    <div class="card-title">📋 구축 단계별 가이드</div>
+                    <ol class="step-list">
+                        <li><strong>현재 상황 점검</strong><br>어떤 업무가 가장 비효율적인지 파악</li>
+                        <li><strong>자동화 설계</strong><br>n8n으로 처리 방법 계획 수립</li>
+                        <li><strong>AI 비서팀 투입</strong><br>김, 최, 박 담당자 활용</li>
+                        <li><strong>기존 시스템 연결</strong><br>회계/관리 프로그램과 연동</li>
+                        <li><strong>성과 확인</strong><br>자동화 전후 효과 측정</li>
+                    </ol>
+                </div>
+                
+                <div class="content-card">
+                    <div class="card-title">🎯 기대 효과</div>
+                    <table class="content-table">
+                        <tr>
+                            <th>개선 영역</th>
+                            <th>Before</th>
+                            <th>After</th>
+                        </tr>
+                        <tr>
+                            <td>처리 시간</td>
+                            <td>수 시간</td>
+                            <td>수 분</td>
+                        </tr>
+                        <tr>
+                            <td>정확도</td>
+                            <td>70-80%</td>
+                            <td>95% 이상</td>
+                        </tr>
+                        <tr>
+                            <td>업무 만족도</td>
+                            <td>단순 반복 업무</td>
+                            <td>창의적 업무 집중</td>
+                        </tr>
+                        <tr>
+                            <td>문서 관리</td>
+                            <td>분실 위험</td>
+                            <td>완벽 추적</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            
+            <div class="callout">
+                💫 <strong>완성!</strong> 이제 문서 처리 자동화 시스템으로 AI 비서팀이 24시간 일하는 똑똑한 사무실을 만들었습니다! 다음 강의에서는 더욱 지능적인 LLM 노드들의 활용법을 알아보겠습니다.
+            </div>
+        </section>
+
+
+    </div>
+
+    <script>
+        // Progress bar functionality
+        function updateProgressBar() {
+            const scrollTop = window.pageYOffset;
+            const docHeight = document.body.offsetHeight - window.innerHeight;
+            const scrollPercent = (scrollTop / docHeight) * 100;
+            document.querySelector('.scroll-progress-bar').style.width = scrollPercent + '%';
+        }
+
+        // Update slide counter
+        function updateSlideCounter() {
+            const slides = document.querySelectorAll('.slide');
+            const scrollTop = window.pageYOffset + 150;
+            let currentSlide = 1;
+            
+            slides.forEach((slide, index) => {
+                const slideTop = slide.offsetTop;
+                const slideBottom = slideTop + slide.offsetHeight;
+                
+                if (scrollTop >= slideTop && scrollTop < slideBottom) {
+                    currentSlide = index + 1;
+                }
+            });
+            
+            document.querySelector('.slide-counter').textContent = `${currentSlide} / ${slides.length}`;
+        }
+
+        // Event listeners
+        window.addEventListener('scroll', () => {
+            updateProgressBar();
+            updateSlideCounter();
+        });
+
+        // Initialize
+        updateProgressBar();
+        updateSlideCounter();
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowDown' || e.key === 'ArrowRight') {
+                const slides = document.querySelectorAll('.slide');
+                const current = Math.floor(window.pageYOffset / window.innerHeight);
+                if (current < slides.length - 1) {
+                    slides[current + 1].scrollIntoView({ behavior: 'smooth' });
+                }
+            } else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
+                const slides = document.querySelectorAll('.slide');
+                const current = Math.floor(window.pageYOffset / window.innerHeight);
+                if (current > 0) {
+                    slides[current - 1].scrollIntoView({ behavior: 'smooth' });
+                }
+            }
+        });
+    </script>
+    
+    <!-- Mermaid 초기화 스크립트 -->
+    <script>
+        // Mermaid 안전 체크 및 설정
+        if (typeof mermaid !== 'undefined') {
+            mermaid.initialize({
+                startOnLoad: true,
+                theme: 'neutral',
+                themeVariables: {
+                    primaryColor: '#1B365D',
+                    primaryTextColor: '#2D3748',
+                    primaryBorderColor: '#E2E8F0',
+                    lineColor: '#636E72',
+                    backgroundColor: '#FFFFFF',
+                    secondaryColor: '#F8F9FA',
+                    tertiaryColor: '#E2E8F0'
+                },
+                flowchart: {
+                    useMaxWidth: true,
+                    htmlLabels: true
+                },
+                sequence: {
+                    useMaxWidth: true,
+                    wrap: true
+                }
+            });
+        }
+    </script>
+</body>
+</html>

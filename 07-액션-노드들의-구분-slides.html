@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>액션 노드들의 구분 - 데이터 처리 3단계</title>
+    <style>
+        /* Global Reset and Base Styles */
+        *, *::before, *::after { box-sizing: border-box; }
+        html, body { max-width: 100%; overflow-x: hidden; margin: 0; padding: 0; }
+        :root { scrollbar-gutter: stable both-edges; }
+        
+        img, video, svg, canvas, iframe, table { max-width: 100%; height: auto; }
+        pre, code, .code-block { max-width: 100%; overflow: auto; }
+        
+        .content-grid { min-width: 0; }
+        .content-grid > * { min-width: 0; overflow-wrap: anywhere; }
+        
+        .basic-font, .card-title, .header-1, .header-2, .header-3 { overflow-wrap: anywhere; word-break: break-word; }
+
+        /* Typography */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #2D3748;
+            background: #FFFFFF;
+        }
+
+        .basic-font {
+            font-size: 13pt;
+            color: #2D3748;
+            line-height: 1.3;
+            margin-bottom: 8px;
+        }
+
+        .header-3 {
+            font-size: 15pt;
+            font-weight: 600;
+            color: #1B365D;
+            margin-bottom: 6px;
+            line-height: 1.3;
+            text-align: left;
+        }
+
+        .header-2 {
+            font-size: 18pt;
+            font-weight: 600;
+            color: #1B365D;
+            margin-bottom: 9px;
+            line-height: 1.3;
+        }
+
+        .header-1 {
+            font-size: 21pt;
+            font-weight: 700;
+            color: #1B365D;
+            margin-bottom: 12px;
+            line-height: 1.2;
+        }
+
+        .message {
+            font-size: 15pt;
+            font-weight: 500;
+            color: rgb(115, 113, 113);
+            margin-bottom: 6px;
+            line-height: 1.3;
+            text-align: left;
+        }
+
+        /* Navigation */
+        .nav-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 70px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid #E2E8F0;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 5vw;
+            box-shadow: 0 2px 10px rgba(27, 54, 93, 0.1);
+        }
+
+        .nav-logo {
+            height: 40px;
+            font-size: 24px;
+            font-weight: 700;
+            color: #1B365D;
+        }
+
+        .nav-progress {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 14px;
+            color: #636E72;
+        }
+
+        .nav-progress .current-topic {
+            font-weight: 600;
+            color: #1B365D;
+            max-width: 300px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .nav-progress .slide-counter {
+            background: #F8F9FA;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            color: #636E72;
+        }
+
+        /* Progress Bar */
+        .scroll-progress {
+            position: fixed;
+            top: 70px;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: #F8F9FA;
+            z-index: 999;
+        }
+
+        .scroll-progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #1B365D 0%, rgb(135, 0, 232) 100%);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        /* Layout */
+        .slide-container {
+            width: 100%;
+            background: #FFFFFF;
+            padding-top: 100px;
+        }
+
+        .slide {
+            min-height: calc(100vh - 100px);
+            width: 100%;
+            padding: 32px 5vw 48px 5vw;
+            display: flex;
+            flex-direction: column;
+            text-align: left;
+            scroll-margin-top: 100px;
+            box-sizing: border-box;
+        }
+
+        .slide + .slide {
+            border-top: 2px solid #F8F9FA;
+        }
+
+        /* Content Layout */
+        .content-grid {
+            display: grid;
+            gap: 8px;
+            margin: 12px 0;
+        }
+
+        .content-grid-2 {
+            grid-template-columns: 1fr 1fr;
+        }
+
+        .content-grid-3 {
+            grid-template-columns: repeat(3, 1fr);
+        }
+
+        /* Cards */
+        .content-card {
+            background: #FFFFFF;
+            border: 1px solid rgb(235, 226, 240);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 8px;
+            box-shadow: 0 2px 8px rgba(27, 54, 93, 0.05);
+            transition: all 0.2s ease;
+            margin-top: 0px;
+        }
+
+        .content-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(27, 54, 93, 0.1);
+        }
+
+        .card-title {
+            font-size: 15pt;
+            font-weight: 600;
+            color: #1B365D;
+            margin-bottom: 12px;
+            margin-top: 6px;
+            text-align: left;
+        }
+
+        /* Callouts */
+        .callout-center {
+            background: #ffffff;
+            border: 1px solid rgba(27, 54, 93, 0.12);
+            border-radius: 14px;
+            padding: 20px 24px;
+            margin: 24px auto;
+            width: fit-content;
+            box-shadow: 0 4px 16px rgba(27, 54, 93, 0.08), 0 1px 3px rgba(27, 54, 93, 0.06);
+            text-align: left;
+        }
+
+        .callout {
+            padding: 16px;
+            margin: 8px auto;
+            background: rgba(178, 73, 234, 0.04);
+            border: 0px;
+            text-align: left;
+            width: 100%;
+            border-radius: 8px;
+            font-size: 13pt;
+            line-height: 1.7;
+        }
+
+        /* Lists */
+        .step-list {
+            list-style: none;
+            counter-reset: step-counter;
+            margin: 12px 0;
+            padding-left: 0;
+        }
+
+        .step-list > li {
+            counter-increment: step-counter;
+            margin-bottom: 10px;
+            padding-left: 36px;
+            position: relative;
+            line-height: 1.2;
+            font-size: 12pt;
+        }
+
+        .step-list > li::before {
+            content: counter(step-counter);
+            position: absolute;
+            left: 0;
+            top: 0;
+            background: rgba(114, 29, 171, 0.7);
+            color: white;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12pt;
+            font-weight: 600;
+        }
+
+        .checklist {
+            list-style: none;
+            margin: 12px 0;
+            padding-left: 0;
+        }
+
+        .checklist li {
+            padding: 4px 0 4px 26px;
+            position: relative;
+            margin-bottom: 0px;
+            line-height: 1.2;
+            font-size: 12pt;
+        }
+
+        .checklist li::before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: rgba(114, 29, 171, 0.7);
+            font-weight: bold;
+            font-size: 12pt;
+        }
+
+        /* Tables */
+        .content-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 12px 0;
+            background: #FFFFFF;
+            border: 1px solid #E2E8F0;
+            border-radius: 8px;
+            overflow: hidden;
+            font-size: 12pt;
+        }
+
+        .content-table th {
+            background: #F8F9FA;
+            padding: 8px 8px;
+            font-size: 13pt;
+            font-weight: 600;
+            color: #1B365D;
+            text-align: left;
+            border-bottom: 2px solid #E2E8F0;
+        }
+
+        .content-table td {
+            padding: 8px 8px;
+            color: #2D3748;
+            border-bottom: 1.5px solid #F8F9FA;
+            text-align: left;
+            vertical-align: top;
+        }
+
+        .content-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .content-table tr:hover {
+            background: rgba(178, 73, 234, 0.05);
+        }
+
+        /* Code Blocks */
+        .code-block {
+            background: #F8F9FA;
+            border: 1px solid #E2E8F0;
+            border-radius: 8px;
+            padding: 8px 12px;
+            margin: 8px 0;
+            font-family: 'Monaco', 'Menlo', 'Consolas', monospace;
+            font-size: 10pt;
+            color: #2D3748;
+            overflow-x: auto;
+            line-height: 1.4;
+        }
+
+        /* Center alignment for intro slide */
+        .slide.intro {
+            text-align: center;
+            justify-content: center;
+        }
+
+        .slide.intro .header-1,
+        .slide.intro .header-2 {
+            text-align: center;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .content-grid-2,
+            .content-grid-3 {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+            
+            .slide {
+                padding: 16px 3vw 32px 3vw;
+                min-height: calc(100vh - 80px);
+            }
+            
+            .nav-bar {
+                height: 60px;
+                padding: 0 3vw;
+            }
+            
+            .slide-container {
+                padding-top: 80px;
+            }
+            
+            .header-1 { font-size: 22pt; }
+            .header-2 { font-size: 17pt; }
+            .header-3 { font-size: 15pt; }
+            .basic-font { font-size: 13pt; }
+            
+            .content-card {
+                padding: 16px;
+                margin-bottom: 4px;
+            }
+        }
+
+        /* Smooth scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* 코드 블록 전용 스타일 - 향상된 라인 브레이크 지원 */
+        .code-block {
+            background: #F8F9FA;
+            border: 1px solid #E2E8F0;
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin: 12px 0;
+            font-family: 'Monaco', 'Menlo', 'Consolas', 'Courier New', monospace;
+            font-size: 11pt;
+            color: #2D3748;
+            line-height: 1.5;
+            /* 향상된 라인 브레이크 기능 */
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            word-break: break-all;
+            overflow-x: auto;
+        }
+
+        /* 인라인 코드 스타일 */
+        .inline-code {
+            background: #F8F9FA;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Monaco', 'Menlo', 'Consolas', 'Courier New', monospace;
+            font-size: 0.9em;
+            color: #1B365D;
+            border: 1px solid #E2E8F0;
+        }
+
+        /* Mermaid 다이어그램 스타일 */
+        .mermaid {
+            background: #FFFFFF;
+            border: 1px solid #E2E8F0;
+            border-radius: 8px;
+            padding: 16px;
+            margin: 16px 0;
+            text-align: center;
+            overflow-x: auto;
+            overflow-y: hidden;
+        }
+
+        /* Mermaid 다이어그램 반응형 지원 */
+        .mermaid svg {
+            max-width: 100%;
+            height: auto;
+        }
+    </style>
+    <!-- Mermaid.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.0/dist/mermaid.min.js"></script>
+</head>
+<body>
+    <nav class="nav-bar">
+        <div class="nav-logo">🍳 데이터 요리사</div>
+        <div class="nav-progress">
+            <span class="current-topic">액션 노드들의 구분</span>
+            <span class="slide-counter">1 / 8</span>
+        </div>
+    </nav>
+
+    <div class="scroll-progress">
+        <div class="scroll-progress-bar"></div>
+    </div>
+
+    <div class="slide-container">
+        <!-- Slide 1: Intro -->
+        <section class="slide intro" id="slide-1">
+            <h1 class="header-1">🍳 액션 노드들의 구분</h1>
+            <h2 class="header-2">자동화 직원들의 전문 분야별 업무 분담</h2>
+            <div class="callout-center">
+                <ol class="step-list">
+                    <li><strong>데이터 처리 도구</strong> - Set, Function, HTTP Request</li>
+                    <li><strong>파일 처리 도구</strong> - Read/Write Binary Files</li>
+                    <li><strong>소통 도구</strong> - Gmail, Slack</li>
+                    <li><strong>저장 도구</strong> - 데이터베이스 연결 노드들</li>
+                </ol>
+            </div>
+        </section>
+
+        <!-- Slide 2: 3단계 개념 -->
+        <section class="slide" id="slide-2">
+            <h2 class="header-2">🍽️ 요리하듯 데이터 처리하기</h2>
+            <div class="message">맛있는 요리를 위해 재료 준비 → 손질 → 완성하듯 데이터도 3단계로 처리</div>
+            
+            <div class="content-grid content-grid-3">
+                <div class="content-card">
+                    <div class="card-title">🛒 1단계: 재료 준비</div>
+                    <div class="basic-font"><strong>데이터 가져오기</strong></div>
+                    <ul class="checklist">
+                        <li>냉장고에서 재료 꺼내기</li>
+                        <li>마트에서 재료 사기</li>
+                        <li>서랍에서 문서 찾기</li>
+                    </ul>
+                    <div class="basic-font">↓</div>
+                    <div class="basic-font">HTTP Request, Database, Google Sheets</div>
+                </div>
+                
+                <div class="content-card">
+                    <div class="card-title">🔪 2단계: 재료 손질</div>
+                    <div class="basic-font"><strong>데이터 변형하기</strong></div>
+                    <ul class="checklist">
+                        <li>양파 썰기, 당근 다지기</li>
+                        <li>고기 적당한 크기로 자르기</li>
+                        <li>양념 섞어서 조미료 만들기</li>
+                    </ul>
+                    <div class="basic-font">↓</div>
+                    <div class="basic-font">Set 노드, Function 노드</div>
+                </div>
+                
+                <div class="content-card">
+                    <div class="card-title">🍽️ 3단계: 완성품 서빙</div>
+                    <div class="basic-font"><strong>데이터 저장하기</strong></div>
+                    <ul class="checklist">
+                        <li>완성된 요리를 식탁에</li>
+                        <li>맛있게 만든 사진 SNS에</li>
+                        <li>가족들에게 자랑하기</li>
+                    </ul>
+                    <div class="basic-font">↓</div>
+                    <div class="basic-font">Database, Google Sheets, Slack</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 3: 1단계 데이터 가져오기 -->
+        <section class="slide" id="slide-3">
+            <h2 class="header-2">🛒 1단계: 데이터 가져오기 (재료 준비)</h2>
+            <div class="message">좋은 요리를 위해서는 좋은 재료가 필요하듯, 좋은 자동화를 위해서도 좋은 데이터 수집이 필요</div>
+            
+            <div class="content-grid content-grid-2">
+                <div class="content-card">
+                    <div class="card-title">🌐 HTTP Request - 외부 배송 서비스</div>
+                    <div class="basic-font">택시를 불러서 원하는 곳에서 재료를 가져오는 것과 같아요</div>
+                    
+                    <div class="basic-font"><strong>실제 사용 예시:</strong></div>
+                    <table class="content-table">
+                        <tr>
+                            <th>가져올 정보</th>
+                            <th>활용 방법</th>
+                        </tr>
+                        <tr>
+                            <td>날씨 정보</td>
+                            <td>사무실 스크린에 표시</td>
+                        </tr>
+                        <tr>
+                            <td>환율 정보</td>
+                            <td>실시간 환율 업데이트</td>
+                        </tr>
+                        <tr>
+                            <td>주가 정보</td>
+                            <td>투자 포트폴리오 모니터링</td>
+                        </tr>
+                        <tr>
+                            <td>소셜미디어</td>
+                            <td>인스타그램 포스트 정보</td>
+                        </tr>
+                    </table>
+                </div>
+                
+                <div class="content-card">
+                    <div class="card-title">🗄️ 데이터베이스 - 회사 서류함</div>
+                    <div class="basic-font">회사 서류함에서 필요한 문서를 찾는 것과 같아요</div>
+                    
+                    <table class="content-table">
+                        <tr>
+                            <th>서류함 업무</th>
+                            <th>데이터베이스 업무</th>
+                        </tr>
+                        <tr>
+                            <td>고객 카드 찾기</td>
+                            <td>고객 정보 조회 (Select)</td>
+                        </tr>
+                        <tr>
+                            <td>새 고객 카드 추가</td>
+                            <td>새 고객 등록 (Insert)</td>
+                        </tr>
+                        <tr>
+                            <td>고객 정보 수정</td>
+                            <td>기존 정보 변경 (Update)</td>
+                        </tr>
+                        <tr>
+                            <td>퇴사자 카드 삭제</td>
+                            <td>불필요 데이터 삭제 (Delete)</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 4: 클라우드 서비스 -->
+        <section class="slide" id="slide-4">
+            <h2 class="header-2">☁️ 클라우드 서비스 - 온라인 백화점</h2>
+            <div class="message">온라인 백화점에서 물건을 주문하듯 클라우드에 저장된 정보 가져오기</div>
+            
+            <div class="content-grid content-grid-2">
+                <div class="content-card">
+                    <div class="card-title">📊 자주 사용하는 클라우드 서비스</div>
+                    <table class="content-table">
+                        <tr>
+                            <th>일상 예시</th>
+                            <th>비즈니스 활용</th>
+                            <th>노드</th>
+                        </tr>
+                        <tr>
+                            <td>가계부 엑셀 파일</td>
+                            <td>매출 데이터 가져오기</td>
+                            <td>Google Sheets</td>
+                        </tr>
+                        <tr>
+                            <td>배경화면 사진들</td>
+                            <td>회사 자료 가져오기</td>
+                            <td>Google Drive</td>
+                        </tr>
+                        <tr>
+                            <td>에버노트 메모</td>
+                            <td>업무 내용 가져오기</td>
+                            <td>Notion</td>
+                        </tr>
+                        <tr>
+                            <td>클라우드 동기화 폴더</td>
+                            <td>파일 리스트 가져오기</td>
+                            <td>Dropbox</td>
+                        </tr>
+                    </table>
+                </div>
+                
+                <div class="content-card">
+                    <div class="card-title">🔑 주요 데이터베이스 노드</div>
+                    <ul class="checklist">
+                        <li><strong>MySQL/PostgreSQL:</strong> 전통적인 데이터베이스</li>
+                        <li><strong>Supabase:</strong> 요즘 인기 클라우드 DB</li>
+                        <li><strong>Airtable:</strong> 사용하기 쉬운 클라우드 DB</li>
+                    </ul>
+                    
+                    <div class="basic-font"><strong>💡 선택 기준:</strong></div>
+                    <ul class="checklist">
+                        <li>데이터 양과 복잡성</li>
+                        <li>팀의 기술 수준</li>
+                        <li>예산과 유지보수</li>
+                        <li>보안 요구사항</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 5: 2단계 데이터 변형 -->
+        <section class="slide" id="slide-5">
+            <h2 class="header-2">🔪 2단계: 데이터 변형하기 (재료 손질)</h2>
+            <div class="message">요리하기 전 재료를 다듬듯 데이터도 사용하기 좋게 가공이 필요</div>
+            
+            <div class="content-grid content-grid-2">
+                <div class="content-card">
+                    <div class="card-title">🥕 데이터 손질이 필요한 이유</div>
+                    <table class="content-table">
+                        <tr>
+                            <th>요리 상황</th>
+                            <th>데이터 상황</th>
+                        </tr>
+                        <tr>
+                            <td>양파가 너무 커서 잘라야 함</td>
+                            <td>고객 이름이 너무 길어서 줄여야 함</td>
+                        </tr>
+                        <tr>
+                            <td>대파를 송송 썰기</td>
+                            <td>가격을 원에서 달러로 변환</td>
+                        </tr>
+                        <tr>
+                            <td>여러 재료를 섞어서 한 접시에</td>
+                            <td>이름, 전화번호를 합쳐서 한 줄로</td>
+                        </tr>
+                        <tr>
+                            <td>상한 재료 골라내기</td>
+                            <td>좋은 고객만 목록에서 걸러내기</td>
+                        </tr>
+                    </table>
+                </div>
+                
+                <div class="content-card">
+                    <div class="card-title">🔧 Set 노드 - 만능 나이프</div>
+                    <div class="basic-font">주방의 만능 나이프처럼 대부분의 데이터 손질을 해결</div>
+                    
+                    <div class="basic-font"><strong>Set 노드로 할 수 있는 작업:</strong></div>
+                    <ul class="checklist">
+                        <li>이름 조합: "김철수" + " 고객님"</li>
+                        <li>단위 변환: 1000원 × 1200 = 달러</li>
+                        <li>날짜 정리: "2024-03-15" → "3월 15일"</li>
+                        <li>중요 정보만 골라내기</li>
+                    </ul>
+                    
+                    <div class="basic-font"><strong>장점:</strong> 코딩 없이 마우스 클릭만으로 설정!</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 6: Function 노드 -->
+        <section class="slide" id="slide-6">
+            <h2 class="header-2">👨‍🍳 Function 노드 - 전문 요리사 호출</h2>
+            <div class="message">Set 노드로 해결 안 되는 복잡한 작업은 전문 요리사에게 맡기기</div>
+            
+            <div class="content-grid content-grid-2">
+                <div class="content-card">
+                    <div class="card-title">🍜 전문 요리사가 필요한 상황</div>
+                    <div class="basic-font">집에서는 못 만드는 요리를 전문 요리사에게 부탁하는 것처럼</div>
+                    
+                    <div class="basic-font"><strong>Function 노드가 필요한 경우:</strong></div>
+                    <ul class="checklist">
+                        <li>복잡한 점수 계산 (할인율, 세금, 수수료)</li>
+                        <li>데이터 분류 (100명을 나이, 성별, 지역별로)</li>
+                        <li>고급 문자 처리 (이메일에서 중요 부분 추출)</li>
+                        <li>복잡한 조건 로직</li>
+                    </ul>
+                </div>
+                
+                <div class="content-card">
+                    <div class="card-title">🪄 초보자도 사용하는 마법</div>
+                    <ol class="step-list">
+                        <li>해야 할 작업을 ChatGPT에게 설명</li>
+                        <li>ChatGPT가 만든 코드 복사해서 붙여넣기</li>
+                        <li>테스트해보고 안 되면 다시 요청</li>
+                    </ol>
+                    
+                    <div class="basic-font"><strong>예시 요청:</strong></div>
+                    <div class="code-block">"고객 나이를 계산해서 
+20대, 30대, 40대로 분류하는 
+JavaScript 코드를 만들어주세요"</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 7: 3단계 데이터 저장 -->
+        <section class="slide" id="slide-7">
+            <h2 class="header-2">🍽️ 3단계: 데이터 저장하기 (완성품 서빙)</h2>
+            <div class="message">완성된 요리를 상에 내놓듯 처리된 데이터를 적절한 곳에 저장</div>
+            
+            <div class="content-grid content-grid-3">
+                <div class="content-card">
+                    <div class="card-title">🗄️ 데이터베이스 저장</div>
+                    <div class="basic-font"><strong>큰 창고에 보관</strong></div>
+                    <ul class="checklist">
+                        <li>Supabase: 클라우드 DB</li>
+                        <li>MySQL: 전통적 안정성</li>
+                        <li>PostgreSQL: 고급 기능</li>
+                    </ul>
+                    <div class="basic-font"><strong>용도:</strong> 고객정보, 주문내역, 재고데이터</div>
+                </div>
+                
+                <div class="content-card">
+                    <div class="card-title">☁️ 클라우드 서비스</div>
+                    <div class="basic-font"><strong>모두가 볼 수 있는 공간</strong></div>
+                    <ul class="checklist">
+                        <li>Google Sheets: 함께 수정하는 표</li>
+                        <li>Google Drive: 문서, 사진 업로드</li>
+                        <li>Notion: 팀 작업 공간</li>
+                    </ul>
+                    <div class="basic-font"><strong>용도:</strong> 주간리포트, 업무대시보드</div>
+                </div>
+                
+                <div class="content-card">
+                    <div class="card-title">💬 커뮤니케이션 도구</div>
+                    <div class="basic-font"><strong>사람들에게 따뜻하게 서빙</strong></div>
+                    <ul class="checklist">
+                        <li>Slack: 팀 채터에서 즉시 알림</li>
+                        <li>Gmail: 공식적인 이메일 발송</li>
+                        <li>SMS: 긴급 알림</li>
+                    </ul>
+                    <div class="basic-font"><strong>용도:</strong> 완료알림, 결과리포트</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 8: 실무 패턴 예시 -->
+        <section class="slide" id="slide-8">
+            <h2 class="header-2">🎯 실제 업무 3단계 패턴</h2>
+            <div class="message">실제 비즈니스에서 자주 사용하는 데이터 처리 패턴들</div>
+            
+            <div class="content-grid content-grid-2">
+                <div class="content-card">
+                    <div class="card-title">📊 월말 리포트 자동 생성</div>
+                    <div class="basic-font"><strong>상황:</strong> 여러 시스템의 데이터를 모아서 월말 리포트 작성</div>
+                    
+                    <div class="code-block">1단계: 5개 서비스에서 월간 데이터 수집
+(재료 준비)
+↓
+2단계: Function 노드로 통계 계산하고 차트 만들기
+(재료 손질)
+↓
+3단계: Google Sheets로 리포트 업로드 + 사장님께 이메일
+(완성품 서빙)</div>
+                </div>
+                
+                <div class="content-card">
+                    <div class="card-title">🎂 생일 축하 이벤트 자동화</div>
+                    <div class="basic-font"><strong>상황:</strong> 오늘이 생일인 고객들에게 개인화된 축하 메시지</div>
+                    
+                    <div class="code-block">1단계: 고객 DB에서 오늘 생일인 고객들 찾기
+(재료 준비)
+↓
+2단계: Set 노드로 각 고객명 + 축하 메시지 조합
+(재료 손질)
+↓
+3단계: Gmail로 각 고객에게 개인화된 이메일 발송
+(완성품 서빙)</div>
+                </div>
+            </div>
+            
+            <div class="content-card">
+                <div class="card-title">🍽️ 무료급식소 운영 (100명 처리)</div>
+                <div class="basic-font"><strong>상황:</strong> 하루에 100명의 신청자 데이터를 처리해서 담당자에게 배정</div>
+                
+                <div class="code-block">1단계: Google Sheets에서 신청자 명단 가져오기 (재료 준비)
+↓
+2단계: Set 노드로 반별 배정하고 알림 메시지 작성 (재료 손질)
+↓  
+3단계: Slack으로 각 반 담당자에게 알림 발송 (완성품 서빙)</div>
+                
+                <div class="callout">
+                    🎯 <strong>핵심 포인트:</strong> 이제 3단계 패턴을 이해하셨다면, 어떤 복잡한 업무도 논리적으로 자동화할 수 있습니다. 다음 강의에서는 더 심화된 데이터 저장 기술들을 알아보겠습니다.
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        // Progress bar functionality
+        function updateProgressBar() {
+            const scrollTop = window.pageYOffset;
+            const docHeight = document.body.offsetHeight - window.innerHeight;
+            const scrollPercent = (scrollTop / docHeight) * 100;
+            document.querySelector('.scroll-progress-bar').style.width = scrollPercent + '%';
+        }
+
+        // Update slide counter
+        function updateSlideCounter() {
+            const slides = document.querySelectorAll('.slide');
+            const scrollTop = window.pageYOffset + 150;
+            let currentSlide = 1;
+            
+            slides.forEach((slide, index) => {
+                const slideTop = slide.offsetTop;
+                const slideBottom = slideTop + slide.offsetHeight;
+                
+                if (scrollTop >= slideTop && scrollTop < slideBottom) {
+                    currentSlide = index + 1;
+                }
+            });
+            
+            document.querySelector('.slide-counter').textContent = `${currentSlide} / ${slides.length}`;
+        }
+
+        // Event listeners
+        window.addEventListener('scroll', () => {
+            updateProgressBar();
+            updateSlideCounter();
+        });
+
+        // Initialize
+        updateProgressBar();
+        updateSlideCounter();
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowDown' || e.key === 'ArrowRight') {
+                const slides = document.querySelectorAll('.slide');
+                const current = Math.floor(window.pageYOffset / window.innerHeight);
+                if (current < slides.length - 1) {
+                    slides[current + 1].scrollIntoView({ behavior: 'smooth' });
+                }
+            } else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
+                const slides = document.querySelectorAll('.slide');
+                const current = Math.floor(window.pageYOffset / window.innerHeight);
+                if (current > 0) {
+                    slides[current - 1].scrollIntoView({ behavior: 'smooth' });
+                }
+            }
+        });
+    </script>
+    
+    <!-- Mermaid 초기화 스크립트 -->
+    <script>
+        // Mermaid 설정 및 초기화
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'neutral',
+            themeVariables: {
+                primaryColor: '#1B365D',
+                primaryTextColor: '#2D3748',
+                primaryBorderColor: '#E2E8F0',
+                lineColor: '#636E72',
+                backgroundColor: '#FFFFFF',
+                secondaryColor: '#F8F9FA',
+                tertiaryColor: '#E2E8F0'
+            },
+            flowchart: {
+                useMaxWidth: true,
+                htmlLabels: true
+            },
+            sequence: {
+                useMaxWidth: true,
+                wrap: true
+            }
+        });
+    </script>
+</body>
+</html>

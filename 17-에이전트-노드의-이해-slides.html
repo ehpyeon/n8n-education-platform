@@ -1,0 +1,1102 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>19강: 에이전트 노드의 이해</title>
+    <style>
+        /* Global Reset and Base Styles */
+        *, *::before, *::after { box-sizing: border-box; }
+        html, body { max-width: 100%; overflow-x: hidden; margin: 0; padding: 0; }
+        :root { scrollbar-gutter: stable both-edges; }
+        
+        img, video, svg, canvas, iframe, table { max-width: 100%; height: auto; }
+        pre, code, .code-block { max-width: 100%; overflow: auto; }
+        
+        .content-grid { min-width: 0; }
+        .content-grid > * { min-width: 0; overflow-wrap: anywhere; }
+        
+        .basic-font, .card-title, .header-1, .header-2, .header-3 { overflow-wrap: anywhere; word-break: break-word; }
+
+        /* Typography */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #2D3748;
+            background: #FFFFFF;
+        }
+
+        .basic-font {
+            font-size: 13pt;
+            color: #2D3748;
+            line-height: 1.3;
+            margin-bottom: 8px;
+        }
+
+        .header-3 {
+            font-size: 15pt;
+            font-weight: 600;
+            color: #1B365D;
+            margin-bottom: 6px;
+            line-height: 1.3;
+            text-align: left;
+        }
+
+        .header-2 {
+            font-size: 18pt;
+            font-weight: 600;
+            color: #1B365D;
+            margin-bottom: 9px;
+            line-height: 1.3;
+        }
+
+        .header-1 {
+            font-size: 21pt;
+            font-weight: 700;
+            color: #1B365D;
+            margin-bottom: 12px;
+            line-height: 1.2;
+        }
+
+        .message {
+            font-size: 15pt;
+            font-weight: 500;
+            color: rgb(115, 113, 113);
+            margin-bottom: 6px;
+            line-height: 1.3;
+            text-align: left;
+        }
+
+        /* Navigation */
+        .nav-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 70px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid #E2E8F0;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 5vw;
+            box-shadow: 0 2px 10px rgba(27, 54, 93, 0.1);
+        }
+
+        .nav-logo {
+            height: 40px;
+            font-size: 24px;
+            font-weight: 700;
+            color: #1B365D;
+        }
+
+        .nav-progress {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 14px;
+            color: #636E72;
+        }
+
+        .nav-progress .current-topic {
+            font-weight: 600;
+            color: #1B365D;
+            max-width: 300px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .nav-progress .slide-counter {
+            background: #F8F9FA;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            color: #636E72;
+        }
+
+        /* Progress Bar */
+        .scroll-progress {
+            position: fixed;
+            top: 70px;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: #F8F9FA;
+            z-index: 999;
+        }
+
+        .scroll-progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #1B365D 0%, rgb(135, 0, 232) 100%);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        /* Layout */
+        .slide-container {
+            width: 100%;
+            background: #FFFFFF;
+            padding-top: 100px;
+        }
+
+        .slide {
+            min-height: calc(100vh - 100px);
+            width: 100%;
+            padding: 32px 5vw 48px 5vw;
+            display: flex;
+            flex-direction: column;
+            text-align: left;
+            scroll-margin-top: 100px;
+            box-sizing: border-box;
+        }
+
+        .slide + .slide {
+            border-top: 2px solid #F8F9FA;
+        }
+
+        /* Content Layout */
+        .content-grid {
+            display: grid;
+            gap: 8px;
+            margin: 12px 0;
+        }
+
+        .content-grid-2 {
+            grid-template-columns: 1fr 1fr;
+        }
+
+        .content-grid-3 {
+            grid-template-columns: repeat(3, 1fr);
+        }
+
+        /* Cards */
+        .content-card {
+            background: #FFFFFF;
+            border: 1px solid rgb(235, 226, 240);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 8px;
+            box-shadow: 0 2px 8px rgba(27, 54, 93, 0.05);
+            transition: all 0.2s ease;
+            margin-top: 0px;
+        }
+
+        .content-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(27, 54, 93, 0.1);
+        }
+
+        .card-title {
+            font-size: 15pt;
+            font-weight: 600;
+            color: #1B365D;
+            margin-bottom: 12px;
+            margin-top: 6px;
+            text-align: left;
+        }
+
+        /* Callouts */
+        .callout-center {
+            background: #ffffff;
+            border: 1px solid rgba(27, 54, 93, 0.12);
+            border-radius: 14px;
+            padding: 20px 24px;
+            margin: 24px auto;
+            width: fit-content;
+            box-shadow: 0 4px 16px rgba(27, 54, 93, 0.08), 0 1px 3px rgba(27, 54, 93, 0.06);
+            text-align: left;
+        }
+
+        .callout {
+            padding: 16px;
+            margin: 8px auto;
+            background: rgba(178, 73, 234, 0.04);
+            border: 0px;
+            text-align: left;
+            width: 100%;
+            border-radius: 8px;
+            font-size: 13pt;
+            line-height: 1.7;
+        }
+
+        /* Lists */
+        .step-list {
+            list-style: none;
+            counter-reset: step-counter;
+            margin: 12px 0;
+            padding-left: 0;
+        }
+
+        .step-list > li {
+            counter-increment: step-counter;
+            margin-bottom: 10px;
+            padding-left: 36px;
+            position: relative;
+            line-height: 1.2;
+            font-size: 12pt;
+        }
+
+        .step-list > li::before {
+            content: counter(step-counter);
+            position: absolute;
+            left: 0;
+            top: 0;
+            background: rgba(114, 29, 171, 0.7);
+            color: white;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12pt;
+            font-weight: 600;
+        }
+
+        .checklist {
+            list-style: none;
+            margin: 12px 0;
+            padding-left: 0;
+        }
+
+        .checklist li {
+            padding: 4px 0 4px 26px;
+            position: relative;
+            margin-bottom: 0px;
+            line-height: 1.2;
+            font-size: 12pt;
+        }
+
+        .checklist li::before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: rgba(114, 29, 171, 0.7);
+            font-weight: bold;
+            font-size: 12pt;
+        }
+
+        /* Tables */
+        .content-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 12px 0;
+            background: #FFFFFF;
+            border: 1px solid #E2E8F0;
+            border-radius: 8px;
+            overflow: hidden;
+            font-size: 12pt;
+        }
+
+        .content-table th {
+            background: #F8F9FA;
+            padding: 8px 8px;
+            font-size: 13pt;
+            font-weight: 600;
+            color: #1B365D;
+            text-align: left;
+            border-bottom: 2px solid #E2E8F0;
+        }
+
+        .content-table td {
+            padding: 8px 8px;
+            color: #2D3748;
+            border-bottom: 1.5px solid #F8F9FA;
+            text-align: left;
+            vertical-align: top;
+        }
+
+        .content-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .content-table tr:hover {
+            background: rgba(178, 73, 234, 0.05);
+        }
+
+        /* Code Blocks */
+        .code-block {
+            background: #F8F9FA;
+            border: 1px solid #E2E8F0;
+            border-radius: 8px;
+            padding: 8px 12px;
+            margin: 8px 0;
+            font-family: 'Monaco', 'Menlo', 'Consolas', monospace;
+            font-size: 10pt;
+            color: #2D3748;
+            overflow-x: auto;
+            line-height: 1.4;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        /* Center alignment for intro slide */
+        .slide.intro {
+            text-align: center;
+            justify-content: center;
+        }
+
+        .slide.intro .header-1,
+        .slide.intro .header-2 {
+            text-align: center;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .content-grid-2,
+            .content-grid-3 {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+            
+            .slide {
+                padding: 16px 3vw 32px 3vw;
+                min-height: calc(100vh - 80px);
+            }
+            
+            .nav-bar {
+                height: 60px;
+                padding: 0 3vw;
+            }
+            
+            .slide-container {
+                padding-top: 80px;
+            }
+            
+            .header-1 { font-size: 22pt; }
+            .header-2 { font-size: 17pt; }
+            .header-3 { font-size: 15pt; }
+            .basic-font { font-size: 13pt; }
+            
+            .content-card {
+                padding: 16px;
+                margin-bottom: 4px;
+            }
+        }
+
+        /* Smooth scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* 코드 블록 전용 스타일 - 향상된 라인 브레이크 지원 */
+        .code-block {
+            background: #F8F9FA;
+            border: 1px solid #E2E8F0;
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin: 12px 0;
+            font-family: 'Monaco', 'Menlo', 'Consolas', 'Courier New', monospace;
+            font-size: 11pt;
+            color: #2D3748;
+            line-height: 1.5;
+            /* 향상된 라인 브레이크 기능 */
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            word-break: break-all;
+            overflow-x: auto;
+        }
+
+        /* 인라인 코드 스타일 */
+        .inline-code {
+            background: #F8F9FA;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Monaco', 'Menlo', 'Consolas', 'Courier New', monospace;
+            font-size: 0.9em;
+            color: #1B365D;
+            border: 1px solid #E2E8F0;
+        }
+
+        /* Mermaid 다이어그램 스타일 */
+        .mermaid {
+            background: #FFFFFF;
+            border: 1px solid #E2E8F0;
+            border-radius: 8px;
+            padding: 16px;
+            margin: 16px 0;
+            text-align: center;
+            overflow-x: auto;
+            overflow-y: hidden;
+        }
+
+        /* Mermaid 다이어그램 반응형 지원 */
+        .mermaid svg {
+            max-width: 100%;
+            height: auto;
+        }
+    </style>
+    <!-- Mermaid.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.0/dist/mermaid.min.js"></script>
+</head>
+<body>
+    <nav class="nav-bar">
+        <div class="nav-logo">🤖 스마트 에이전트</div>
+        <div class="nav-progress">
+            <span class="current-topic">에이전트 노드의 이해</span>
+            <span class="slide-counter">19강</span>
+        </div>
+    </nav>
+
+    <div class="scroll-progress">
+        <div class="scroll-progress-bar"></div>
+    </div>
+
+    <div class="slide-container">
+        <!-- Slide 1: Intro -->
+        <section class="slide intro" id="slide-1">
+            <h1 class="header-1">🤖 에이전트 노드의 이해</h1>
+            <h2 class="header-2">스마트 업무 매니저를 회사에 고용하기</h2>
+            <div class="callout-center">
+                <ol class="step-list">
+                    <li>스마트 업무 매니저의 특별한 능력</li>
+                    <li>똑똑한 뇌(LLM) 선택하기</li>
+                    <li>완벽한 기억력(Memory) 시스템</li>
+                    <li>만능 도구함(Tools) 활용법</li>
+                </ol>
+            </div>
+        </section>
+
+        <!-- Slide 2: 일반 직원 vs 스마트 매니저 -->
+        <section class="slide" id="slide-2">
+            <h2 class="header-2">🆚 일반 직원 vs 스마트 업무 매니저</h2>
+            <div class="message">목표만 알려주면 스스로 방법을 찾아서 해결하는 완전 자율형 직원입니다</div>
+            
+            <div class="content-grid content-grid-2">
+                <div class="content-card">
+                    <div class="card-title">👤 일반 AI 직원</div>
+                    <ul class="checklist">
+                        <li>정해진 매뉴얼대로만 일함</li>
+                        <li>단계별로 세세하게 지시 필요</li>
+                        <li>예상치 못한 상황에 멈춤</li>
+                        <li>하나의 도구만 사용 가능</li>
+                    </ul>
+                    
+                    <div class="code-block">업무 방식:
+"A를 하세요" → A 실행
+"B를 하세요" → B 실행
+예외 상황 → 정지</div>
+                </div>
+                
+                <div class="content-card">
+                    <div class="card-title">🧠 스마트 업무 매니저</div>
+                    <ul class="checklist">
+                        <li>목표만 주면 스스로 방법 결정</li>
+                        <li>상황을 판단하여 자율적 처리</li>
+                        <li>예상치 못한 문제도 해결책 모색</li>
+                        <li>필요한 도구를 스스로 선택</li>
+                    </ul>
+                    
+                    <div class="code-block">업무 방식:
+"고객 불만을 해결해주세요"
+→ 고객과 소통
+→ 자료 검색
+→ 해결책 제시
+→ 결과 보고</div>
+                </div>
+            </div>
+            
+        </section>
+
+        <!-- Slide 3: 3가지 특별한 능력 -->
+        <section class="slide" id="slide-3">
+            <h2 class="header-2">⚡ 스마트 업무 매니저의 3가지 특별한 능력</h2>
+            <div class="message">경험 많은 팀장처럼 상황을 스스로 판단하고 적절한 방법을 찾아 문제를 해결합니다</div>
+            
+            <div class="content-grid content-grid-3">
+                <div class="content-card">
+                    <div class="card-title">🎯 자율 판단 능력</div>
+                    <ul class="checklist">
+                        <li>미리 정해진 매뉴얼 없이도 상황 판단</li>
+                        <li>필요한 도구나 방법을 스스로 선택</li>
+                        <li>예상치 못한 문제도 해결책 모색</li>
+                    </ul>
+                    <div class="basic-font">→ 10년 차 팀장급 판단력</div>
+                </div>
+                
+                <div class="content-card">
+                    <div class="card-title">🔄 빠른 적응 능력</div>
+                    <ul class="checklist">
+                        <li>새로운 정보가 들어오면 즉시 전략 변경</li>
+                        <li>변화하는 상황에 유연하게 대응</li>
+                        <li>실시간으로 최적의 방법 선택</li>
+                    </ul>
+                    <div class="basic-font">→ 상황 변화에 즉석 대응</div>
+                </div>
+                
+                <div class="content-card">
+                    <div class="card-title">🚀 적극적 문제 해결</div>
+                    <ul class="checklist">
+                        <li>목표 달성을 위한 능동적 계획 수립</li>
+                        <li>단계별로 적절한 도구 선택</li>
+                        <li>중간 결과 보고 다음 단계 결정</li>
+                    </ul>
+                    <div class="basic-font">→ 완전 자율 업무 처리</div>
+                </div>
+            </div>
+            
+            <div class="callout">
+                🎯 <strong>핵심 결론:</strong> 스마트 업무 매니저는 10년 차 팀장처럼 자율 판단, 빠른 적응, 적극적 문제 해결이 가능한 완전 자율형 직원입니다. 예상치 못한 상황에도 스스로 최적의 해결책을 찾아 처리합니다.
+            </div>
+        </section>
+
+        <!-- Slide 4: 3가지 핵심 구성 요소 -->
+        <section class="slide" id="slide-4">
+            <h2 class="header-2">🧩 스마트 업무 매니저의 3가지 핵심 구성 요소</h2>
+            <div class="message">사람처럼 뇌와 기억력, 그리고 도구를 활용하여 완전한 업무 처리가 가능합니다</div>
+            
+            <!-- n8n 에이전트 노드 실제 구성 이미지 -->
+            <div class="content-card" style="text-align: center; margin-bottom: 20px;">
+                <div class="card-title">🎯 n8n 에이전트 노드 실제 구성</div>
+                <img src="https://r2.madebyagents.com/n8n-ai-agent-node.webp" 
+                     alt="n8n AI Agent Node - LLM, Memory, Tools 연결 구성" 
+                     style="max-width: 40%; height: auto; border-radius: 8px; margin: 12px 0;"/>
+                <div style="font-size: 11pt; color: #636E72; margin-top: 8px;">
+                    출처: <a href="https://r2.madebyagents.com/n8n-ai-agent-node.webp" style="color: #1B365D;">madebyagents.com</a>
+                </div>
+            </div>
+            
+            <!-- 구성 요소 관계 도식도 - 브랜드 색상 적용 -->
+            <div style="background: rgba(178, 73, 234, 0.04); border-radius: 12px; padding: 24px; margin: 20px 0; text-align: center; border: 1px solid rgba(135, 0, 232, 0.1);">
+                <div style="display: flex; justify-content: space-around; align-items: center; flex-wrap: wrap; gap: 20px;">
+                    <!-- LLM (뇌) -->
+                    <div style="position: relative;">
+                        <div style="background: linear-gradient(135deg, #1B365D 0%, rgb(135, 0, 232) 100%); color: white; border-radius: 50%; width: 80px; height: 80px; display: flex; align-items: center; justify-content: center; font-size: 24px; margin: 0 auto 8px; box-shadow: 0 4px 12px rgba(135, 0, 232, 0.3);">🧠</div>
+                        <div style="font-weight: 600; color: #1B365D; font-size: 14pt;">LLM (뇌)</div>
+                        <div style="font-size: 11pt; color: #636E72;">판단 & 계획</div>
+                    </div>
+                    
+                    <!-- 화살표 1 -->
+                    <div style="color: rgb(135, 0, 232); font-size: 24px; font-weight: bold;">↔</div>
+                    
+                    <!-- Memory (기억력) -->
+                    <div style="position: relative;">
+                        <div style="background: linear-gradient(135deg, rgb(132, 50, 199) 0%, rgba(194, 134, 231, 0.9) 100%); color: white; border-radius: 50%; width: 80px; height: 80px; display: flex; align-items: center; justify-content: center; font-size: 24px; margin: 0 auto 8px; box-shadow: 0 4px 12px rgba(132, 50, 199, 0.3);">💾</div>
+                        <div style="font-weight: 600; color: #1B365D; font-size: 14pt;">Memory (기억력)</div>
+                        <div style="font-size: 11pt; color: #636E72;">경험 & 학습</div>
+                    </div>
+                    
+                    <!-- 화살표 2 -->
+                    <div style="color: rgb(135, 0, 232); font-size: 24px; font-weight: bold;">↔</div>
+                    
+                    <!-- Tools (도구함) -->
+                    <div style="position: relative;">
+                        <div style="background: linear-gradient(135deg, rgb(93, 0, 232) 0%, #1B365D 100%); color: white; border-radius: 50%; width: 80px; height: 80px; display: flex; align-items: center; justify-content: center; font-size: 24px; margin: 0 auto 8px; box-shadow: 0 4px 12px rgba(93, 0, 232, 0.3);">🛠️</div>
+                        <div style="font-weight: 600; color: #1B365D; font-size: 14pt;">Tools (도구함)</div>
+                        <div style="font-size: 11pt; color: #636E72;">실행 & 처리</div>
+                    </div>
+                </div>
+                
+                <!-- 상호작용 설명 -->
+                <div style="margin-top: 16px; padding: 12px; background: white; border-radius: 8px; border: 1px solid rgba(135, 0, 232, 0.2); box-shadow: 0 2px 8px rgba(135, 0, 232, 0.08);">
+                    <div style="font-size: 13pt; color: #2D3748; text-align: center;">
+                        <strong style="color: #1B365D;">협업 과정:</strong> 뇌가 상황을 분석 → 기억력에서 경험 찾기 → 적절한 도구 선택 → 결과를 다시 기억에 저장
+                    </div>
+                </div>
+            </div>
+            
+            <div class="content-grid content-grid-3">
+                <div class="content-card">
+                    <div class="card-title">🧠 똑똑한 뇌 (LLM)</div>
+                    <div class="basic-font"><strong>핵심 두뇌 역할:</strong></div>
+                    <ul class="checklist">
+                        <li>상황을 분석하고 판단 내리기</li>
+                        <li>고객 요청 이해하고 계획 수립</li>
+                        <li>복잡한 문제 해결책 도출</li>
+                    </ul>
+                    
+                    <div class="basic-font"><strong>선택 옵션:</strong></div>
+                    <ul class="checklist">
+                        <li>GPT-4: 범용 고성능 두뇌</li>
+                        <li>Claude: 신중한 분석 두뇌</li>
+                        <li>Solar: 한국어 특화 두뇌</li>
+                    </ul>
+                </div>
+                
+                <div class="content-card">
+                    <div class="card-title">💾 완벽한 기억력 (Memory)</div>
+                    <div class="basic-font"><strong>기억 시스템:</strong></div>
+                    <ul class="checklist">
+                        <li>이전 대화 내용 모두 기억</li>
+                        <li>처리했던 업무 이력 보관</li>
+                        <li>경험 축적으로 점점 똑똑해짐</li>
+                    </ul>
+                    
+                    <div class="basic-font"><strong>활용 효과:</strong></div>
+                    <ul class="checklist">
+                        <li>맥락 파악으로 정확한 답변</li>
+                        <li>개인화된 서비스 제공</li>
+                        <li>반복 학습으로 성능 향상</li>
+                    </ul>
+                </div>
+                
+                <div class="content-card">
+                    <div class="card-title">🛠️ 만능 도구함 (Tools)</div>
+                    <div class="basic-font"><strong>실무 도구들:</strong></div>
+                    <ul class="checklist">
+                        <li>데이터 찾기 및 저장</li>
+                        <li>이메일 자동 발송</li>
+                        <li>파일 생성 및 처리</li>
+                    </ul>
+                    
+                    <div class="basic-font"><strong>스마트 선택:</strong></div>
+                    <ul class="checklist">
+                        <li>상황에 맞는 최적 도구 선택</li>
+                        <li>여러 도구 조합 사용</li>
+                        <li>결과에 따라 도구 변경</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 5: LLM 선택 가이드 - 전면 개편 -->
+        <section class="slide" id="slide-5">
+            <h2 class="header-2">🧠 똑똑한 뇌 선택하기</h2>
+            <div class="message">업무 특성에 맞는 최적의 AI 두뇌를 선택하여 최고의 성능을 발휘할 수 있습니다</div>
+            
+            <div class="content-grid content-grid-2">
+                <!-- 좌측: LLM 목록 (이미지) -->
+                <div class="content-card">
+                    <div class="card-title">🤖 주요 LLM 선택 옵션</div>
+                    <div style="display: flex; gap: 12px; justify-content: center; margin: 16px 0;">
+                        <div style="flex: 1; text-align: center;">
+                            <img src="https://clip.pss.so/XmQhXvTX+" 
+                                 alt="LLM 선택 옵션 1" 
+                                 style="max-width: 100%; height: auto; border-radius: 8px; border: 1px solid #E2E8F0; box-shadow: 0 2px 8px rgba(135, 0, 232, 0.1);"/>
+                        </div>
+                        <div style="flex: 1; text-align: center;">
+                            <img src="https://clip.pss.so/L9wk2FRv+" 
+                                 alt="LLM 선택 옵션 2" 
+                                 style="max-width: 100%; height: auto; border-radius: 8px; border: 1px solid #E2E8F0; box-shadow: 0 2px 8px rgba(135, 0, 232, 0.1);"/>
+                        </div>
+                    </div>
+                    <div class="basic-font" style="text-align: center; color: #636E72; font-size: 11pt; margin-top: 8px;">
+                        다양한 LLM 옵션 중 업무 특성, 가격 등을 고려하여 선택
+                    </div>
+                </div>
+                
+                <!-- 우측: 프롬프트 엔지니어링 -->
+                <div class="content-card">
+                    <div class="card-title">📋 프롬프트 엔지니어링 5단계 실전 예시</div>
+                    
+                    <!-- 5단계 프로세스 -->
+                    <ol class="step-list" style="margin-bottom: 16px;">
+                        <li><strong>역할 설정</strong> - 전문가 페르소나 부여</li>
+                        <li><strong>컨텍스트 제공</strong> - 상황 배경 정보 제공</li>
+                        <li><strong>작업 명시</strong> - 구체적 수행 작업 설명</li>
+                        <li><strong>제약사항 설정</strong> - 안전하고 규정에 맞는 동작</li>
+                        <li><strong>출력 형식 지정</strong> - 일관된 결과 형식 보장</li>
+                    </ol>
+                    
+                    <!-- 실제 프롬프트 예시 -->
+                    <div class="code-block" style="margin-top: 12px; font-size: 10pt; line-height: 1.5;">
+<span style="background: rgba(135, 0, 232, 0.1); padding: 2px 6px; border-radius: 4px; color: #1B365D; font-weight: 600;">[1. 역할 설정]</span> 
+당신은 10년 경력의 고객 서비스 전문가입니다. 
+온라인 쇼핑몰에서 다양한 고객 문의를 처리한 경험이 있습니다.
+
+<span style="background: rgba(132, 50, 199, 0.1); padding: 2px 6px; border-radius: 4px; color: #1B365D; font-weight: 600;">[2. 컨텍스트]</span> 
+고객 김철수님이 3일 전에 주문한 스마트폰 케이스(주문번호: #12345)가 
+예정일보다 2일 늦어져서 배송 지연 문의를 하셨습니다.
+배송업체 측 시스템 점검으로 인한 지연입니다.
+
+<span style="background: rgba(194, 134, 231, 0.1); padding: 2px 6px; border-radius: 4px; color: #1B365D; font-weight: 600;">[3. 작업 명시]</span> 
+고객의 불편함을 공감하며 현재 상황을 설명하고,
+구체적인 해결책과 보상 방안을 제시하세요.
+
+<span style="background: rgba(114, 29, 171, 0.1); padding: 2px 6px; border-radius: 4px; color: #1B365D; font-weight: 600;">[4. 제약사항]</span> 
+- 정중하고 공감하는 톤 유지
+- 회사 정책 범위 내에서 해결책 제시
+- 고객 개인정보 보호 준수
+
+<span style="background: rgba(93, 0, 232, 0.1); padding: 2px 6px; border-radius: 4px; color: #1B365D; font-weight: 600;">[5. 출력 형식]</span> 
+다음 JSON 형태로 구조화하여 응답하세요:
+{
+  "인사말": "고객에게 드리는 첫 인사",
+  "상황파악": "현재 배송 상태 설명", 
+  "사과": "지연에 대한 사과 메시지",
+  "해결책": "구체적 해결 방안",
+  "보상": "제공 가능한 보상 내용",
+  "후속조치": "추가 지원 방안"
+}
+                    </div>
+                    
+                    <div class="basic-font" style="margin-top: 8px; font-size: 11pt; color: #636E72;">
+                        💡 각 단계를 색상으로 구분하여 체계적인 프롬프트 작성 가능
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 6: 메모리 시스템 -->
+        <section class="slide" id="slide-6">
+            <h2 class="header-2">💾 완벽한 기억력 시스템</h2>
+            <div class="message">이전 대화를 기억하여 맥락을 파악하고 개인화된 서비스를 제공합니다</div>
+            
+            <div class="content-grid content-grid-2">
+                <!-- 좌측: 이미지 및 핵심 특징 -->
+                <div class="content-card">
+                    <div class="card-title">🔍 메모리 시스템 핵심 특징</div>
+                    
+                    <!-- 메모리 시스템 이미지 -->
+                    <div style="text-align: center; margin: 16px 0;">
+                        <img src="https://clip.pss.so/mPmpVrKt+" 
+                             alt="AI 메모리 시스템 구조도" 
+                             style="max-width: 54%; height: auto; border-radius: 8px; border: 1px solid #E2E8F0; box-shadow: 0 2px 8px rgba(135, 0, 232, 0.1);"/>
+                    </div>
+                    
+                    <div class="basic-font"><strong>🎯 핵심 능력:</strong></div>
+                    <ul class="checklist">
+                        <li>이전 대화 완벽 기억</li>
+                        <li>고객별 개인정보 저장</li>
+                        <li>상황별 최적 응답 학습</li>
+                        <li>지속적 성능 향상</li>
+                    </ul>
+                    
+                    <div class="basic-font" style="margin-top: 12px; color: #636E72; font-size: 11pt;">
+                        💡 <strong>결과:</strong> 10년 차 전담 상담원처럼 고객을 완벽히 기억하는 개인 맞춤 서비스
+                    </div>
+                </div>
+                
+                <!-- 우측: 확장된 실제 대화 예시 -->
+                <div class="content-card">
+                    <div class="card-title">💬 실제 메모리 활용 대화 시연</div>
+                    
+                    <div class="code-block" style="margin-bottom: 16px; font-size: 11pt; line-height: 1.6;">
+<span style="color: #1B365D; font-weight: 600;">🗓️ 3일 전 첫 문의:</span>
+<span style="color: #636E72;">user:</span> 스마트워치 주문했는데 언제 와요?
+<span style="color: rgb(135, 0, 232); font-weight: 600;">bot:</span> 김철수님, 주문번호 #12345 스마트워치는 
+     내일(화요일) 오후 배송 예정입니다.
+
+<span style="color: #636E72;">user:</span> 혹시 집에 없으면 어떻게 하나요?
+<span style="color: rgb(135, 0, 232); font-weight: 600;">bot:</span> 무인택배함 배송 가능하시다면 설정해드릴게요.
+     아니면 직장으로 배송 변경도 가능합니다.
+
+<span style="color: #636E72;">user:</span> 그럼 직장으로 변경해주세요.
+<span style="color: rgb(135, 0, 232); font-weight: 600;">bot:</span> 서울시 강남구 테헤란로 ○○○ 빌딩으로
+     배송지 변경 완료했습니다!
+                    </div>
+                    
+                    <div class="code-block" style="font-size: 11pt; line-height: 1.6;">
+<span style="color: #1B365D; font-weight: 600;">🗓️ 오늘 추가 문의:</span>
+<span style="color: #636E72;">user:</span> 지난주에 문의했던 배송 건 어떻게 됐나요?
+<span style="color: rgb(135, 0, 232); font-weight: 600;">bot:</span> 김철수님! 3일 전에 문의하신 #12345 스마트워치 
+     말씀이시죠? 어제 직장으로 배송 완료되었습니다.
+     혹시 받지 못하셨나요?
+
+<span style="color: #636E72;">user:</span> 아, 받았어요! 그런데 또 다른 주문도 했는데...
+<span style="color: rgb(135, 0, 232); font-weight: 600;">bot:</span> 아, 어제 새로 주문하신 #12346 무선이어폰 건
+     말씀이시군요! 이전 배송 지연 경험을 고려해
+     빠른 배송으로 처리해드렸습니다.
+     
+     내일(금요일) 직장으로 배송 예정이며,
+     배송 출발 시 실시간 알림 드릴게요!
+
+<span style="color: #636E72;">user:</span> 우와, 제가 말하지도 않았는데 어떻게 아셨어요?
+<span style="color: rgb(135, 0, 232); font-weight: 600;">bot:</span> 김철수님의 이전 주문 패턴과 배송 선호도를
+     기억하고 있어서 미리 최적화해드렸습니다! 😊
+                    </div>
+                    
+                    <div class="basic-font" style="margin-top: 12px; color: #636E72; font-size: 11pt;">
+                        ⭐ <strong>메모리 효과:</strong> 고객 이름, 주문 이력, 배송 선호도, 과거 문제점까지 모두 기억하여 완전 개인화 서비스 제공
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 7: 도구 통합 시스템 -->
+        <section class="slide" id="slide-7">
+            <h2 class="header-2">🛠️ 만능 도구함 활용</h2>
+            <div class="message">상황에 맞는 최적의 도구를 스스로 선택하여 VIP 고객처럼 완벽한 서비스를 제공합니다</div>
+            
+            <div class="content-grid content-grid-2">
+                <!-- 좌측: 이미지 및 도구 아이콘 -->
+                <div class="content-card">
+                    <div class="card-title">🔧 만능 도구함 시각화</div>
+                    
+                    <!-- 이미지 영역 -->
+                    <div style="display: flex; gap: 12px; margin: 16px 0;">
+                        <div style="flex: 1; text-align: center;">
+                            <img src="https://clip.pss.so/jMmjdXV5+" 
+                                 alt="AI 에이전트 도구 선택 시스템" 
+                                 style="max-width: 100%; height: auto; border-radius: 8px; border: 1px solid #E2E8F0; box-shadow: 0 2px 8px rgba(135, 0, 232, 0.1);"/>
+                        </div>
+                        <div style="flex: 1; text-align: center;">
+                            <img src="https://clip.pss.so/3SRQr8ZK+" 
+                                 alt="스마트 도구 활용 프로세스" 
+                                 style="max-width: 100%; height: auto; border-radius: 8px; border: 1px solid #E2E8F0; box-shadow: 0 2px 8px rgba(135, 0, 232, 0.1);"/>
+                        </div>
+                    </div>
+                    
+                    <!-- 도구 카테고리 원형 아이콘 -->
+                    <div style="display: flex; justify-content: space-around; align-items: center; margin: 20px 0; padding: 16px; background: rgba(178, 73, 234, 0.04); border-radius: 12px;">
+                        <!-- 정보 검색 도구 -->
+                        <div style="text-align: center;">
+                            <div style="background: linear-gradient(135deg, #1B365D 0%, rgb(135, 0, 232) 100%); color: white; border-radius: 50%; width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; font-size: 20px; margin: 0 auto 8px; box-shadow: 0 3px 8px rgba(135, 0, 232, 0.3);">🔍</div>
+                            <div style="font-weight: 600; color: #1B365D; font-size: 11pt; margin-bottom: 4px;">정보 검색 도구</div>
+                            <div style="font-size: 9pt; color: #636E72;">웹 검색, DB 조회<br>파일 검색</div>
+                        </div>
+                        
+                        <!-- 데이터 처리 도구 -->
+                        <div style="text-align: center;">
+                            <div style="background: linear-gradient(135deg, rgb(132, 50, 199) 0%, rgba(194, 134, 231, 0.9) 100%); color: white; border-radius: 50%; width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; font-size: 20px; margin: 0 auto 8px; box-shadow: 0 3px 8px rgba(132, 50, 199, 0.3);">📊</div>
+                            <div style="font-weight: 600; color: #1B365D; font-size: 11pt; margin-bottom: 4px;">데이터 처리 도구</div>
+                            <div style="font-size: 9pt; color: #636E72;">데이터 변환<br>조건 처리, 분석</div>
+                        </div>
+                        
+                        <!-- 커뮤니케이션 도구 -->
+                        <div style="text-align: center;">
+                            <div style="background: linear-gradient(135deg, rgb(93, 0, 232) 0%, #1B365D 100%); color: white; border-radius: 50%; width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; font-size: 20px; margin: 0 auto 8px; box-shadow: 0 3px 8px rgba(93, 0, 232, 0.3);">💬</div>
+                            <div style="font-weight: 600; color: #1B365D; font-size: 11pt; margin-bottom: 4px;">커뮤니케이션 도구</div>
+                            <div style="font-size: 9pt; color: #636E72;">이메일, Slack<br>SMS, 알림</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 우측: 실제 에이전트 워크플로우 & 상세 예시 -->
+                <div class="content-card">
+                    <div class="card-title">⚙️ 실제 에이전트 워크플로우 & 상세 예시</div>
+                    
+                    <!-- 실제 에이전트 워크플로우 -->
+                    <div style="background: #F8F9FA; border-radius: 12px; padding: 16px; margin-bottom: 16px;">
+                        <div style="text-align: center; font-weight: 600; margin-bottom: 12px; color: #1B365D; font-size: 12pt;">🤖 에이전트 워크플로우</div>
+                        
+                        <!-- 사용자 요청 -->
+                        <div style="text-align: center; margin-bottom: 12px;">
+                            <div style="background: rgba(93, 0, 232, 0.1); padding: 8px 16px; border-radius: 20px; color: #1B365D; font-size: 11pt; font-weight: 600; display: inline-block;">
+                                👤 사용자 요청
+                            </div>
+                            <div style="color: rgb(135, 0, 232); font-size: 16px; margin: 6px 0;">↓</div>
+                        </div>
+                        
+                        <!-- 에이전트 노드 (3가지 구성요소) -->
+                        <div style="background: rgba(178, 73, 234, 0.05); border: 2px solid rgba(135, 0, 232, 0.2); border-radius: 12px; padding: 14px; margin: 8px 0;">
+                            <div style="text-align: center; font-weight: 600; color: #1B365D; margin-bottom: 10px; font-size: 11pt;">🧩 에이전트 노드</div>
+                            
+                            <div style="display: flex; justify-content: space-between; align-items: center; padding: 0 20px;">
+                                <!-- LLM (뇌) -->
+                                <div style="text-align: center; flex: 1;">
+                                    <div style="background: #1B365D; color: white; border-radius: 50%; width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; font-size: 18px; margin: 0 auto 6px;">🧠</div>
+                                    <div style="font-size: 10pt; color: #1B365D; font-weight: 600;">LLM</div>
+                                    <div style="font-size: 9pt; color: #636E72;">판단</div>
+                                </div>
+                                
+                                <div style="color: rgb(135, 0, 232); font-size: 16px; margin: 0 10px;">↔</div>
+                                
+                                <!-- Memory (기억력) -->
+                                <div style="text-align: center; flex: 1;">
+                                    <div style="background: #1B365D; color: white; border-radius: 50%; width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; font-size: 18px; margin: 0 auto 6px;">💾</div>
+                                    <div style="font-size: 10pt; color: #1B365D; font-weight: 600;">Memory</div>
+                                    <div style="font-size: 9pt; color: #636E72;">기억</div>
+                                </div>
+                                
+                                <div style="color: rgb(135, 0, 232); font-size: 16px; margin: 0 10px;">↔</div>
+                                
+                                <!-- Tools (도구) -->
+                                <div style="text-align: center; flex: 1;">
+                                    <div style="background: #1B365D; color: white; border-radius: 50%; width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; font-size: 18px; margin: 0 auto 6px;">🛠️</div>
+                                    <div style="font-size: 10pt; color: #1B365D; font-weight: 600;">Tools</div>
+                                    <div style="font-size: 9pt; color: #636E72;">실행</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 결과 반환 -->
+                        <div style="text-align: center; margin-top: 12px;">
+                            <div style="color: rgb(135, 0, 232); font-size: 16px; margin: 6px 0;">↓</div>
+                            <div style="background: rgba(135, 0, 232, 0.1); padding: 8px 16px; border-radius: 20px; color: #1B365D; font-size: 11pt; font-weight: 600; display: inline-block;">
+                                ✅ 완성된 결과 반환
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- VIP 고객 불만 해결 상세 예시 -->
+                    <div style="margin-top: 16px;">
+                        <div class="basic-font" style="font-weight: 600; margin-bottom: 12px; color: #1B365D; font-size: 12pt;">📋 VIP 고객 불만 해결 상세 예시</div>
+                        
+                        <!-- 1단계: 사용자 요청 -->
+                        <div style="background: rgba(93, 0, 232, 0.05); border-radius: 8px; padding: 12px; margin-bottom: 10px;">
+                            <div style="font-weight: 600; color: #1B365D; margin-bottom: 6px; font-size: 10pt;">👤 사용자 요청</div>
+                            <div class="code-block" style="font-size: 9pt; margin: 0; padding: 8px;">
+"김철수 고객이 배송 지연으로 불만을 제기했습니다. 
+VIP 고객이니 빠르게 해결해주세요."
+                            </div>
+                        </div>
+                        
+                        <!-- 2단계: 에이전트 노드 동작 -->
+                        <div style="background: rgba(178, 73, 234, 0.05); border-radius: 8px; padding: 12px; margin-bottom: 10px;">
+                            <div style="font-weight: 600; color: #1B365D; margin-bottom: 6px; font-size: 10pt;">🧩 에이전트 노드 내부 동작</div>
+                            <div class="code-block" style="font-size: 9pt; margin: 0; padding: 8px;">
+🧠 LLM: "VIP 고객 불만 → 우선 처리 필요" 분석
+💾 Memory: "김철수님 = VIP, 이전 만족도 높음" 기억
+🛠️ Tools: DB검색→배송API→보상계산
+                            </div>
+                        </div>
+                        
+                        <!-- 3단계: 다음 액션 -->
+                        <div style="background: rgba(135, 0, 232, 0.05); border-radius: 8px; padding: 12px;">
+                            <div style="font-weight: 600; color: #1B365D; margin-bottom: 6px; font-size: 10pt;">🚀 다음 액션</div>
+                            <div class="code-block" style="font-size: 9pt; margin: 0; padding: 8px;">
+• 계산된 VIP 등급별 보상(20% 할인쿠폰) 제공
+• 개인화된 사과 이메일 발송 (과거 이력 반영)
+• 익일 특급배송 변경 안내 전달
+• 관리자에게 VIP 고객 처리 완료 보고 (Slack)
+• 고객 만족도 개선을 위한 후속 관리 일정 등록
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 8: 완전 자율형 직원 완성 -->
+        <section class="slide" id="slide-8">
+            <h2 class="header-2">🎉 완전 자율형 직원 완성!</h2>
+            <div class="message">이제 목표만 알려주면 스스로 판단하고 해결하는 10년 차 팀장급 직원을 고용했습니다</div>
+            
+            <div class="content-grid content-grid-2">
+                <!-- 좌측: 완성된 에이전트 워크플로우 예시 -->
+                <div class="content-card">
+                    <div class="card-title">🎯 완성된 Agent Workflow 예시</div>
+                    
+                    <!-- 에이전트 워크플로우 이미지 -->
+                    <div style="text-align: center; margin: 16px 0;">
+                        <img src="https://clip.pss.so/pR2gSjXN+" 
+                             alt="완성된 에이전트 워크플로우 실제 구현" 
+                             style="max-width: 90%; height: auto; border-radius: 8px; border: 1px solid #E2E8F0; box-shadow: 0 2px 8px rgba(135, 0, 232, 0.1);"/>
+                    </div>
+                    
+                    <div class="basic-font" style="text-align: center; color: #636E72; font-size: 11pt; margin-top: 12px;">
+                        실제 n8n에서 구현된 LLM + Memory + Tools 통합 시스템
+                    </div>
+                </div>
+                
+                <!-- 우측: 핵심 실무 적용 효과 -->
+                <div class="content-card" style="display: flex; flex-direction: column; justify-content: space-between; height: 100%;">
+                    <div class="card-title">🚀 핵심 실무 적용 효과</div>
+                    
+                    
+                    <!-- 3가지 핵심 효과를 가로 방향 도형으로 표현 -->
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin: 30px 0; gap: 16px;">
+                        <!-- 완전 자동화 -->
+                        <div style="text-align: center; flex: 1;">
+                            <div style="background: linear-gradient(135deg, #1B365D 0%, rgb(135, 0, 232) 100%); color: white; border-radius: 12px; width: 85px; height: 65px; display: flex; align-items: center; justify-content: center; font-size: 26px; margin: 0 auto 12px; box-shadow: 0 4px 12px rgba(135, 0, 232, 0.3);">🤖</div>
+                            <div style="font-weight: 600; color: #1B365D; font-size: 12pt; margin-bottom: 6px;">완전 자동화</div>
+                            <div style="font-size: 10pt; color: #636E72; line-height: 1.4;">복잡한 업무도<br>목표만 주면<br>스스로 완료</div>
+                        </div>
+                        
+                        <!-- 24시간 서비스 -->
+                        <div style="text-align: center; flex: 1;">
+                            <div style="background: linear-gradient(135deg, rgb(135, 0, 232) 0%, rgba(194, 134, 231, 0.9) 100%); color: white; border-radius: 12px; width: 85px; height: 65px; display: flex; align-items: center; justify-content: center; font-size: 26px; margin: 0 auto 12px; box-shadow: 0 4px 12px rgba(135, 0, 232, 0.3);">⏰</div>
+                            <div style="font-weight: 600; color: #1B365D; font-size: 12pt; margin-bottom: 6px;">24시간 서비스</div>
+                            <div style="font-size: 10pt; color: #636E72; line-height: 1.4;">중단 없는<br>연속 운영으로<br>고객 만족도 UP</div>
+                        </div>
+                        
+                        <!-- 지능형 학습 -->
+                        <div style="text-align: center; flex: 1;">
+                            <div style="background: linear-gradient(135deg, rgba(194, 134, 231, 0.9) 0%, rgba(114, 29, 171, 0.8) 100%); color: white; border-radius: 12px; width: 85px; height: 65px; display: flex; align-items: center; justify-content: center; font-size: 26px; margin: 0 auto 12px; box-shadow: 0 4px 12px rgba(135, 0, 232, 0.3);">🧠</div>
+                            <div style="font-weight: 600; color: #1B365D; font-size: 12pt; margin-bottom: 6px;">지능형 학습</div>
+                            <div style="font-size: 10pt; color: #636E72; line-height: 1.4;">경험 축적으로<br>지속적인<br>성능 향상</div>
+                        </div>
+                    </div>
+                    
+                    <!-- 핵심 시사점 -->
+                    <div style="background: rgba(178, 73, 234, 0.04); border-radius: 8px; padding: 18px; margin-top: 24px; border-left: 4px solid rgb(135, 0, 232);">
+                        <div style="font-weight: 600; color: #1B365D; font-size: 12pt; text-align: center; line-height: 1.5;">
+                            💡 <strong>핵심 시사점:</strong> AI가 단순 도구에서 자율적 팀원으로 진화, 인간은 창의적 전략 업무에 집중 가능
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="callout">
+                🎯 <strong>완성!</strong> 이제 스마트 업무 매니저가 회사에서 완전 자율적으로 일하는 시스템을 구축했습니다! 목표만 알려주면 스스로 판단하고 필요한 도구를 찾아서 완벽하게 업무를 처리하는 10년 차 팀장급 AI 직원을 고용했습니다. 다음 강의에서는 회사의 모든 지식을 활용하는 RAG 시스템 제작법을 알아보겠습니다!
+            </div>
+        </section>
+    </div>
+
+    <script>
+        // Progress bar functionality
+        function updateProgressBar() {
+            const scrollTop = window.pageYOffset;
+            const docHeight = document.body.offsetHeight - window.innerHeight;
+            const scrollPercent = (scrollTop / docHeight) * 100;
+            document.querySelector('.scroll-progress-bar').style.width = scrollPercent + '%';
+        }
+
+        // Update slide counter
+        function updateSlideCounter() {
+            const slides = document.querySelectorAll('.slide');
+            const scrollTop = window.pageYOffset + 150;
+            let currentSlide = 1;
+            
+            slides.forEach((slide, index) => {
+                const slideTop = slide.offsetTop;
+                const slideBottom = slideTop + slide.offsetHeight;
+                
+                if (scrollTop >= slideTop && scrollTop < slideBottom) {
+                    currentSlide = index + 1;
+                }
+            });
+            
+            document.querySelector('.slide-counter').textContent = `${currentSlide} / ${slides.length}`;
+        }
+
+        // Event listeners
+        window.addEventListener('scroll', () => {
+            updateProgressBar();
+            updateSlideCounter();
+        });
+
+        // Initialize
+        updateProgressBar();
+        updateSlideCounter();
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowDown' || e.key === 'ArrowRight') {
+                const slides = document.querySelectorAll('.slide');
+                const current = Math.floor(window.pageYOffset / window.innerHeight);
+                if (current < slides.length - 1) {
+                    slides[current + 1].scrollIntoView({ behavior: 'smooth' });
+                }
+            } else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
+                const slides = document.querySelectorAll('.slide');
+                const current = Math.floor(window.pageYOffset / window.innerHeight);
+                if (current > 0) {
+                    slides[current - 1].scrollIntoView({ behavior: 'smooth' });
+                }
+            }
+        });
+    </script>
+    
+    <!-- Mermaid 초기화 스크립트 -->
+    <script>
+        // Mermaid 설정 및 초기화
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'neutral',
+            themeVariables: {
+                primaryColor: '#1B365D',
+                primaryTextColor: '#2D3748',
+                primaryBorderColor: '#E2E8F0',
+                lineColor: '#636E72',
+                backgroundColor: '#FFFFFF',
+                secondaryColor: '#F8F9FA',
+                tertiaryColor: '#E2E8F0'
+            },
+            flowchart: {
+                useMaxWidth: true,
+                htmlLabels: true
+            },
+            sequence: {
+                useMaxWidth: true,
+                wrap: true
+            }
+        });
+    </script>
+</body>
+</html>

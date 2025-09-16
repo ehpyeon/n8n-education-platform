@@ -1,0 +1,947 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>노드와 연결 이해 - n8n 워크플로우 설계</title>
+    <style>
+        /* Global Reset and Base Styles */
+        *, *::before, *::after { box-sizing: border-box; }
+        html, body { max-width: 100%; overflow-x: hidden; margin: 0; padding: 0; }
+        :root { scrollbar-gutter: stable both-edges; }
+        
+        img, video, svg, canvas, iframe, table { max-width: 100%; height: auto; }
+        pre, code, .code-block { max-width: 100%; overflow: auto; }
+        
+        .content-grid { min-width: 0; }
+        .content-grid > * { min-width: 0; overflow-wrap: anywhere; }
+        
+        .basic-font, .card-title, .header-1, .header-2, .header-3 { overflow-wrap: anywhere; word-break: break-word; }
+
+        /* Typography */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #2D3748;
+            background: #FFFFFF;
+        }
+
+        .basic-font {
+            font-size: 13pt;
+            color: #2D3748;
+            line-height: 1.3;
+            margin-bottom: 8px;
+        }
+
+        .header-3 {
+            font-size: 15pt;
+            font-weight: 600;
+            color: #1B365D;
+            margin-bottom: 6px;
+            line-height: 1.3;
+            text-align: left;
+        }
+
+        .header-2 {
+            font-size: 18pt;
+            font-weight: 600;
+            color: #1B365D;
+            margin-bottom: 9px;
+            line-height: 1.3;
+        }
+
+        .header-1 {
+            font-size: 21pt;
+            font-weight: 700;
+            color: #1B365D;
+            margin-bottom: 12px;
+            line-height: 1.2;
+        }
+
+        .message {
+            font-size: 15pt;
+            font-weight: 500;
+            color: rgb(115, 113, 113);
+            margin-bottom: 6px;
+            line-height: 1.3;
+            text-align: left;
+        }
+
+        /* Navigation */
+        .nav-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 70px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid #E2E8F0;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 5vw;
+            box-shadow: 0 2px 10px rgba(27, 54, 93, 0.1);
+        }
+
+        .nav-logo {
+            height: 40px;
+            font-size: 24px;
+            font-weight: 700;
+            color: #1B365D;
+        }
+
+        .nav-progress {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 14px;
+            color: #636E72;
+        }
+
+        .nav-progress .current-topic {
+            font-weight: 600;
+            color: #1B365D;
+            max-width: 300px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .nav-progress .slide-counter {
+            background: #F8F9FA;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            color: #636E72;
+        }
+
+        /* Progress Bar */
+        .scroll-progress {
+            position: fixed;
+            top: 70px;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: #F8F9FA;
+            z-index: 999;
+        }
+
+        .scroll-progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #1B365D 0%, rgb(135, 0, 232) 100%);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        /* Layout */
+        .slide-container {
+            width: 100%;
+            background: #FFFFFF;
+            padding-top: 100px;
+        }
+
+        .slide {
+            min-height: calc(100vh - 100px);
+            width: 100%;
+            padding: 32px 5vw 48px 5vw;
+            display: flex;
+            flex-direction: column;
+            text-align: left;
+            scroll-margin-top: 100px;
+            box-sizing: border-box;
+        }
+
+        .slide + .slide {
+            border-top: 2px solid #F8F9FA;
+        }
+
+        /* Content Layout */
+        .content-grid {
+            display: grid;
+            gap: 8px;
+            margin: 12px 0;
+        }
+
+        .content-grid-2 {
+            grid-template-columns: 1fr 1fr;
+        }
+
+        .content-grid-3 {
+            grid-template-columns: repeat(3, 1fr);
+        }
+
+        /* Cards */
+        .content-card {
+            background: #FFFFFF;
+            border: 1px solid rgb(235, 226, 240);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 8px;
+            box-shadow: 0 2px 8px rgba(27, 54, 93, 0.05);
+            transition: all 0.2s ease;
+            margin-top: 0px;
+        }
+
+        .content-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(27, 54, 93, 0.1);
+        }
+
+        .card-title {
+            font-size: 15pt;
+            font-weight: 600;
+            color: #1B365D;
+            margin-bottom: 12px;
+            margin-top: 6px;
+            text-align: left;
+        }
+
+        /* Callouts */
+        .callout-center {
+            background: #ffffff;
+            border: 1px solid rgba(27, 54, 93, 0.12);
+            border-radius: 14px;
+            padding: 20px 24px;
+            margin: 24px auto;
+            width: fit-content;
+            box-shadow: 0 4px 16px rgba(27, 54, 93, 0.08), 0 1px 3px rgba(27, 54, 93, 0.06);
+            text-align: left;
+        }
+
+        .callout {
+            padding: 16px;
+            margin: 8px auto;
+            background: rgba(178, 73, 234, 0.04);
+            border: 0px;
+            text-align: left;
+            width: 100%;
+            border-radius: 8px;
+            font-size: 13pt;
+            line-height: 1.7;
+        }
+
+        /* Lists */
+        .step-list {
+            list-style: none;
+            counter-reset: step-counter;
+            margin: 12px 0;
+            padding-left: 0;
+        }
+
+        .step-list > li {
+            counter-increment: step-counter;
+            margin-bottom: 10px;
+            padding-left: 36px;
+            position: relative;
+            line-height: 1.2;
+            font-size: 12pt;
+        }
+
+        .step-list > li::before {
+            content: counter(step-counter);
+            position: absolute;
+            left: 0;
+            top: 0;
+            background: rgba(114, 29, 171, 0.7);
+            color: white;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12pt;
+            font-weight: 600;
+        }
+
+        .checklist {
+            list-style: none;
+            margin: 12px 0;
+            padding-left: 0;
+        }
+
+        .checklist li {
+            padding: 4px 0 4px 26px;
+            position: relative;
+            margin-bottom: 0px;
+            line-height: 1.2;
+            font-size: 12pt;
+        }
+
+        .checklist li::before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: rgba(114, 29, 171, 0.7);
+            font-weight: bold;
+            font-size: 12pt;
+        }
+
+        /* Tables */
+        .content-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 12px 0;
+            background: #FFFFFF;
+            border: 1px solid #E2E8F0;
+            border-radius: 8px;
+            overflow: hidden;
+            font-size: 12pt;
+        }
+
+        .content-table th {
+            background: #F8F9FA;
+            padding: 8px 8px;
+            font-size: 13pt;
+            font-weight: 600;
+            color: #1B365D;
+            text-align: left;
+            border-bottom: 2px solid #E2E8F0;
+        }
+
+        .content-table td {
+            padding: 8px 8px;
+            color: #2D3748;
+            border-bottom: 1.5px solid #F8F9FA;
+            text-align: left;
+            vertical-align: top;
+        }
+
+        .content-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .content-table tr:hover {
+            background: rgba(178, 73, 234, 0.05);
+        }
+
+        /* Code Blocks */
+        .code-block {
+            background: #F8F9FA;
+            border: 1px solid #E2E8F0;
+            border-radius: 8px;
+            padding: 8px 12px;
+            margin: 8px 0;
+            font-family: 'Monaco', 'Menlo', 'Consolas', monospace;
+            font-size: 10pt;
+            color: #2D3748;
+            overflow-x: auto;
+            line-height: 1.4;
+        }
+
+        /* Center alignment for intro slide */
+        .slide.intro {
+            text-align: center;
+            justify-content: center;
+        }
+
+        .slide.intro .header-1,
+        .slide.intro .header-2 {
+            text-align: center;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .content-grid-2,
+            .content-grid-3 {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+            
+            .slide {
+                padding: 16px 3vw 32px 3vw;
+                min-height: calc(100vh - 80px);
+            }
+            
+            .nav-bar {
+                height: 60px;
+                padding: 0 3vw;
+            }
+            
+            .slide-container {
+                padding-top: 80px;
+            }
+            
+            .header-1 { font-size: 22pt; }
+            .header-2 { font-size: 17pt; }
+            .header-3 { font-size: 15pt; }
+            .basic-font { font-size: 13pt; }
+            
+            .content-card {
+                padding: 16px;
+                margin-bottom: 4px;
+            }
+        }
+
+        /* Smooth scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* 코드 블록 전용 스타일 - 향상된 라인 브레이크 지원 */
+        .code-block {
+            background: #F8F9FA;
+            border: 1px solid #E2E8F0;
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin: 12px 0;
+            font-family: 'Monaco', 'Menlo', 'Consolas', 'Courier New', monospace;
+            font-size: 11pt;
+            color: #2D3748;
+            line-height: 1.5;
+            /* 향상된 라인 브레이크 기능 */
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            word-break: break-all;
+            overflow-x: auto;
+        }
+
+        /* 인라인 코드 스타일 */
+        .inline-code {
+            background: #F8F9FA;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Monaco', 'Menlo', 'Consolas', 'Courier New', monospace;
+            font-size: 0.9em;
+            color: #1B365D;
+            border: 1px solid #E2E8F0;
+        }
+
+        /* Mermaid 다이어그램 스타일 */
+        .mermaid {
+            background: #FFFFFF;
+            border: 1px solid #E2E8F0;
+            border-radius: 8px;
+            padding: 16px;
+            margin: 16px 0;
+            text-align: center;
+            overflow-x: auto;
+            overflow-y: hidden;
+        }
+
+        /* Mermaid 다이어그램 반응형 지원 */
+        .mermaid svg {
+            max-width: 100%;
+            height: auto;
+        }
+    </style>
+    <!-- Mermaid.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.0/dist/mermaid.min.js"></script>
+</head>
+<body>
+    <nav class="nav-bar">
+        <div class="nav-logo">🔗 n8n 마스터</div>
+        <div class="nav-progress">
+            <span class="current-topic">노드와 연결 이해</span>
+            <span class="slide-counter">1 / 11</span>
+        </div>
+    </nav>
+
+    <div class="scroll-progress">
+        <div class="scroll-progress-bar"></div>
+    </div>
+
+    <div class="slide-container">
+        <!-- Slide 1: Intro -->
+        <section class="slide intro" id="slide-1">
+            <h1 class="header-1">🔗 노드와 연결 이해</h1>
+            <h2 class="header-2">레고 블록처럼 조립하는 자동화 만들기</h2>
+            <div class="callout-center">
+                <ol class="step-list">
+                    <li><strong>트리거 노드</strong> - 자동화의 시작점 (손님이 문을 두드리는 소리)</li>
+                    <li><strong>액션 노드</strong> - 실제 일을 하는 직원들</li>
+                    <li><strong>연결선</strong> - 정보가 흘러가는 파이프라인</li>
+                    <li><strong>기본 워크플로우</strong> - Manual Trigger → Set → 결과 확인</li>
+                </ol>
+            </div>
+        </section>
+
+        <!-- Slide 2: 노드 개념 -->
+        <section class="slide" id="slide-2">
+            <h2 class="header-2">🧩 노드란? - 워크플로우의 핵심 블록</h2>
+            <div class="message">노드는 특정 작업을 수행하는 독립적인 단위입니다</div>
+            
+            <div class="content-grid content-grid-2">
+                <div class="content-card">
+                    <div class="card-title">🏗️ 노드의 핵심 특징</div>
+                    <ul class="checklist">
+                        <li>독립성: 고유한 기능 담당</li>
+                        <li>재사용성: 여러 워크플로우에서 활용</li>
+                        <li>설정 가능성: 세부 옵션 커스터마이징</li>
+                        <li>확장성: 새로운 노드 추가 가능</li>
+                    </ul>
+                </div>
+                
+                <div class="content-card">
+                    <div class="card-title">🔄 노드 동작 원리</div>
+                    <div class="code-block">
+입력 데이터 → [노드 처리] → 출력 데이터
+    ↓
+JSON 형태로 다음 노드에 전달
+    ↓
+워크플로우 체인 형성</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 3: 트리거 노드 -->
+        <section class="slide" id="slide-3">
+            <h2 class="header-2">🚀 트리거 노드 - 워크플로우의 시작점</h2>
+            <div class="message">워크플로우를 시작하는 다양한 신호와 방법들</div>
+            
+            <div class="content-grid content-grid-3">
+                <div class="content-card">
+                    <div class="card-title">⚡ 이벤트 기반</div>
+                    <ul class="checklist">
+                        <li>Webhook: HTTP 요청 수신</li>
+                        <li>Email Trigger: 새 이메일 도착</li>
+                        <li>File Trigger: 파일 변경 감지</li>
+                        <li>Database Trigger: DB 변경 반응</li>
+                    </ul>
+                </div>
+                
+                <div class="content-card">
+                    <div class="card-title">⏰ 시간 기반</div>
+                    <ul class="checklist">
+                        <li>Cron: 정밀한 스케줄링</li>
+                        <li>Interval: 간격 기반 실행</li>
+                        <li>Schedule: 특정 시간 실행</li>
+                    </ul>
+                </div>
+                
+                <div class="content-card">
+                    <div class="card-title">👆 수동 트리거</div>
+                    <ul class="checklist">
+                        <li>Manual Trigger: 직접 실행</li>
+                        <li>Chat Trigger: 대화 시작점</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 4: 액션 노드 -->
+        <section class="slide" id="slide-4">
+            <h2 class="header-2">⚙️ 액션 노드 - 실제 작업 수행</h2>
+            <div class="message">트리거 이후 실제 비즈니스 로직을 처리하는 작업 노드들</div>
+            
+            <div class="content-grid content-grid-2">
+                <div class="content-card">
+                    <div class="card-title">🔧 데이터 처리 노드</div>
+                    <table class="content-table">
+                        <tr>
+                            <th>노드</th>
+                            <th>기능</th>
+                        </tr>
+                        <tr>
+                            <td>Set</td>
+                            <td>데이터 필드 추가/수정/삭제</td>
+                        </tr>
+                        <tr>
+                            <td>Function</td>
+                            <td>JavaScript/Python 코드 실행</td>
+                        </tr>
+                        <tr>
+                            <td>Item Lists</td>
+                            <td>배열 데이터 분할/병합</td>
+                        </tr>
+                    </table>
+                </div>
+                
+                <div class="content-card">
+                    <div class="card-title">🌐 외부 서비스 연동</div>
+                    <table class="content-table">
+                        <tr>
+                            <th>노드</th>
+                            <th>기능</th>
+                        </tr>
+                        <tr>
+                            <td>HTTP Request</td>
+                            <td>REST API 호출</td>
+                        </tr>
+                        <tr>
+                            <td>Email</td>
+                            <td>이메일 발송</td>
+                        </tr>
+                        <tr>
+                            <td>Slack</td>
+                            <td>메시지 전송</td>
+                        </tr>
+                        <tr>
+                            <td>Google Sheets</td>
+                            <td>스프레드시트 조작</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 5: AI 서비스 노드 -->
+        <section class="slide" id="slide-5">
+            <h2 class="header-2">🤖 AI/ML 서비스 노드 - 지능형 처리</h2>
+            <div class="message">인공지능을 활용한 고급 데이터 처리와 분석</div>
+            
+            <div class="content-grid content-grid-2">
+                <div class="content-card">
+                    <div class="card-title">🧠 대화형 AI</div>
+                    <ul class="checklist">
+                        <li>Agent: AI 에이전트 통합 관리</li>
+                        <li>OpenAI: GPT 모델 활용</li>
+                        <li>Upstage: 한국어 AI 서비스</li>
+                    </ul>
+                </div>
+                
+                <div class="content-card">
+                    <div class="card-title">☁️ 클라우드 AI</div>
+                    <ul class="checklist">
+                        <li>Google Cloud AI: 번역, 이미지 분석</li>
+                        <li>AWS AI: 음성 인식, 텍스트 분석</li>
+                        <li>Azure AI: 언어 이해, 비전 서비스</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="callout">
+                💡 <strong>AI 노드 활용 팁:</strong> 비즈니스 요구사항에 맞는 AI 서비스를 선택하여 데이터 분석, 자동 분류, 고객 응답 등을 자동화할 수 있습니다.
+            </div>
+        </section>
+
+        <!-- Slide 6: 컨트롤 노드 -->
+        <section class="slide" id="slide-6">
+            <h2 class="header-2">🎛️ 컨트롤 노드 - 흐름 제어</h2>
+            <div class="message">워크플로우의 실행 흐름을 제어하고 조건부 처리를 담당</div>
+            
+            <div class="content-grid content-grid-2">
+                <div class="content-card">
+                    <div class="card-title">🔀 조건부 실행</div>
+                    <table class="content-table">
+                        <tr>
+                            <th>노드</th>
+                            <th>용도</th>
+                        </tr>
+                        <tr>
+                            <td>IF</td>
+                            <td>참/거짓 조건 분기</td>
+                        </tr>
+                        <tr>
+                            <td>Switch</td>
+                            <td>다중 조건 분기</td>
+                        </tr>
+                        <tr>
+                            <td>Wait</td>
+                            <td>지연 시간 설정</td>
+                        </tr>
+                    </table>
+                </div>
+                
+                <div class="content-card">
+                    <div class="card-title">📊 데이터 흐름 제어</div>
+                    <table class="content-table">
+                        <tr>
+                            <th>노드</th>
+                            <th>용도</th>
+                        </tr>
+                        <tr>
+                            <td>Merge</td>
+                            <td>여러 데이터 스트림 병합</td>
+                        </tr>
+                        <tr>
+                            <td>Split In Batches</td>
+                            <td>대용량 데이터 배치 처리</td>
+                        </tr>
+                        <tr>
+                            <td>Stop and Error</td>
+                            <td>워크플로우 중단</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 7: 연결 유형 -->
+        <section class="slide" id="slide-7">
+            <h2 class="header-2">🔗 연결 유형 - 데이터 흐름의 경로</h2>
+            <div class="message">노드 간 데이터 전달과 에러 처리를 위한 다양한 연결 방식</div>
+            
+            <div class="content-grid content-grid-3">
+                <div class="content-card">
+                    <div class="card-title">✅ Main Connection</div>
+                    <div class="basic-font">정상적인 데이터 처리 경로</div>
+                    <ul class="checklist">
+                        <li>성공적인 노드 실행 후 전달</li>
+                        <li>주요 비즈니스 로직 경로</li>
+                        <li>데이터 변환과 처리의 통로</li>
+                    </ul>
+                </div>
+                
+                <div class="content-card">
+                    <div class="card-title">❌ Error Connection</div>
+                    <div class="basic-font">오류 발생 시 처리 경로</div>
+                    <ul class="checklist">
+                        <li>예외 상황 대안 처리</li>
+                        <li>에러 로깅 및 알림</li>
+                        <li>복구 메커니즘 구현</li>
+                    </ul>
+                </div>
+                
+                <div class="content-card">
+                    <div class="card-title">🔀 조건부 Connection</div>
+                    <div class="basic-font">조건에 따른 분기 처리</div>
+                    <ul class="checklist">
+                        <li>IF 노드의 True/False</li>
+                        <li>Switch 노드의 다중 분기</li>
+                        <li>API 응답 상태별 처리</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 8: 분기 패턴 -->
+        <section class="slide" id="slide-8">
+            <h2 class="header-2">🌐 분기 패턴 - 워크플로우 설계 전략</h2>
+            <div class="message">비즈니스 요구사항에 맞는 효율적인 워크플로우 구조</div>
+            
+            <div class="content-grid content-grid-2">
+                <div class="content-card">
+                    <div class="card-title">📝 Sequential Flow (순차적)</div>
+                    <div class="code-block">Trigger → Process A → Process B → Process C → End</div>
+                    <div class="basic-font"><strong>활용 사례:</strong></div>
+                    <ul class="checklist">
+                        <li>데이터 검증 → 변환 → 저장</li>
+                        <li>사용자 입력 → 분석 → 응답</li>
+                        <li>파일 수집 → 처리 → 배포</li>
+                    </ul>
+                </div>
+                
+                <div class="content-card">
+                    <div class="card-title">⚡ Parallel Flow (병렬)</div>
+                    <div class="code-block">Trigger → Split → [A, B, C] → Merge → End</div>
+                    <div class="basic-font"><strong>활용 사례:</strong></div>
+                    <ul class="checklist">
+                        <li>다중 API 동시 호출</li>
+                        <li>여러 채널 알림 발송</li>
+                        <li>독립적 데이터 처리 병렬화</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="content-grid content-grid-2">
+                <div class="content-card">
+                    <div class="card-title">🔄 Conditional Flow (조건부)</div>
+                    <div class="code-block">Trigger → IF → [True Path, False Path] → End</div>
+                    <div class="basic-font"><strong>활용 사례:</strong></div>
+                    <ul class="checklist">
+                        <li>사용자 권한별 다른 처리</li>
+                        <li>데이터 값 기반 분기 로직</li>
+                        <li>시간/날짜 조건부 작업</li>
+                    </ul>
+                </div>
+                
+                <div class="content-card">
+                    <div class="card-title">🔁 Loop Flow (반복)</div>
+                    <div class="code-block">Start → Process → Decision → [Continue, Exit]</div>
+                    <div class="basic-font"><strong>활용 사례:</strong></div>
+                    <ul class="checklist">
+                        <li>대용량 데이터 배치 처리</li>
+                        <li>API 페이지네이션 처리</li>
+                        <li>재시도 로직 구현</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 9: 데이터 구조 -->
+        <section class="slide" id="slide-9">
+            <h2 class="header-2">📊 데이터 구조와 참조 방법</h2>
+            <div class="message">n8n에서 데이터를 처리하고 노드 간 참조하는 방법</div>
+            
+            <div class="content-grid content-grid-2">
+                <div class="content-card">
+                    <div class="card-title">📋 JSON 기반 데이터</div>
+                    <div class="code-block">[
+  {
+    "id": 1,
+    "name": "김철수",
+    "email": "kim@example.com",
+    "metadata": {
+      "created_at": "2024-01-01",
+      "source": "web_form"
+    }
+  }
+]</div>
+                </div>
+                
+                <div class="content-card">
+                    <div class="card-title">🔍 노드 참조 방법</div>
+                    <table class="content-table">
+                        <tr>
+                            <th>참조 방식</th>
+                            <th>문법</th>
+                        </tr>
+                        <tr>
+                            <td>노드명 참조</td>
+                            <td>{{ $node["노드명"].json }}</td>
+                        </tr>
+                        <tr>
+                            <td>인덱스 참조</td>
+                            <td>{{ $node["노드명"].json[0] }}</td>
+                        </tr>
+                        <tr>
+                            <td>필드 참조</td>
+                            <td>{{ $node["노드명"].json.field_name }}</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            
+            <div class="callout">
+                📁 <strong>데이터 전달 메커니즘:</strong> JSON Data(구조화 텍스트)와 Binary Data(파일/이미지)로 구분되어 노드 간 전달됩니다.
+            </div>
+        </section>
+
+        <!-- Slide 10: Best Practices -->
+        <section class="slide" id="slide-10">
+            <h2 class="header-2">🎯 워크플로우 설계 Best Practices</h2>
+            <div class="message">효과적이고 확장 가능한 워크플로우 구축을 위한 실무 가이드</div>
+            
+            <div class="content-grid content-grid-2">
+                <div class="content-card">
+                    <div class="card-title">📋 노드 선택 기준</div>
+                    <ol class="step-list">
+                        <li><strong>기능 적합성</strong><br>요구사항에 정확히 맞는 노드 선택</li>
+                        <li><strong>성능 특성</strong><br>처리량과 응답 시간 고려</li>
+                        <li><strong>안정성</strong><br>프로덕션 환경에서의 신뢰성</li>
+                    </ol>
+                </div>
+                
+                <div class="content-card">
+                    <div class="card-title">🔧 연결 설계 원칙</div>
+                    <ol class="step-list">
+                        <li><strong>명확한 데이터 플로우</strong><br>각 연결의 목적과 데이터 형태 문서화</li>
+                        <li><strong>에러 처리 경로</strong><br>예외 상황에 대한 명확한 대응 방안</li>
+                        <li><strong>확장 가능한 구조</strong><br>미래 기능 추가를 고려한 설계</li>
+                    </ol>
+                </div>
+            </div>
+            
+            <div class="content-card">
+                <div class="card-title">🏗️ 모듈화된 구조 예시</div>
+                <div class="code-block">데이터 수집 모듈 → 데이터 검증 모듈 → 데이터 저장 모듈
+     ↓                 ↓                 ↓
+  API 호출         필드 검증         Database 저장
+  파일 업로드      형식 변환         CSV 내보내기</div>
+            </div>
+        </section>
+
+        <!-- Slide 11: 마무리 -->
+        <section class="slide" id="slide-11">
+            <h2 class="header-2">🎉 마무리 - 노드와 연결 마스터!</h2>
+            <div class="message">이제 어떤 복잡한 비즈니스 요구사항도 직관적인 워크플로우로 구현할 수 있습니다</div>
+            
+            <div class="content-grid content-grid-2">
+                <div class="content-card">
+                    <div class="card-title">✅ 핵심 학습 내용</div>
+                    <ul class="checklist">
+                        <li>노드의 종류와 특성 이해</li>
+                        <li>연결 패턴과 데이터 흐름</li>
+                        <li>트리거-액션 기본 구조</li>
+                        <li>효과적인 워크플로우 설계</li>
+                    </ul>
+                </div>
+                
+                <div class="content-card">
+                    <div class="card-title">🚀 다음 단계</div>
+                    <div class="basic-font">다음 강의에서는 이러한 노드들을 안전하게 외부 서비스와 연결하는 <strong>Credential 관리</strong>에 대해 알아보겠습니다.</div>
+                </div>
+            </div>
+            
+            <div class="callout">
+                🎯 <strong>성공 포인트:</strong> 노드와 연결을 완전히 이해하면, 복잡한 비즈니스 요구사항도 직관적인 워크플로우로 구현할 수 있습니다!
+            </div>
+        </section>
+    </div>
+
+    <script>
+        // Progress bar functionality
+        function updateProgressBar() {
+            const scrollTop = window.pageYOffset;
+            const docHeight = document.body.offsetHeight - window.innerHeight;
+            const scrollPercent = (scrollTop / docHeight) * 100;
+            document.querySelector('.scroll-progress-bar').style.width = scrollPercent + '%';
+        }
+
+        // Update slide counter
+        function updateSlideCounter() {
+            const slides = document.querySelectorAll('.slide');
+            const scrollTop = window.pageYOffset + 150;
+            let currentSlide = 1;
+            
+            slides.forEach((slide, index) => {
+                const slideTop = slide.offsetTop;
+                const slideBottom = slideTop + slide.offsetHeight;
+                
+                if (scrollTop >= slideTop && scrollTop < slideBottom) {
+                    currentSlide = index + 1;
+                }
+            });
+            
+            document.querySelector('.slide-counter').textContent = `${currentSlide} / ${slides.length}`;
+        }
+
+        // Event listeners
+        window.addEventListener('scroll', () => {
+            updateProgressBar();
+            updateSlideCounter();
+        });
+
+        // Initialize
+        updateProgressBar();
+        updateSlideCounter();
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowDown' || e.key === 'ArrowRight') {
+                const slides = document.querySelectorAll('.slide');
+                const current = Math.floor(window.pageYOffset / window.innerHeight);
+                if (current < slides.length - 1) {
+                    slides[current + 1].scrollIntoView({ behavior: 'smooth' });
+                }
+            } else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
+                const slides = document.querySelectorAll('.slide');
+                const current = Math.floor(window.pageYOffset / window.innerHeight);
+                if (current > 0) {
+                    slides[current - 1].scrollIntoView({ behavior: 'smooth' });
+                }
+            }
+        });
+    </script>
+    
+    <!-- Mermaid 초기화 스크립트 -->
+    <script>
+        // Mermaid 설정 및 초기화
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'neutral',
+            themeVariables: {
+                primaryColor: '#1B365D',
+                primaryTextColor: '#2D3748',
+                primaryBorderColor: '#E2E8F0',
+                lineColor: '#636E72',
+                backgroundColor: '#FFFFFF',
+                secondaryColor: '#F8F9FA',
+                tertiaryColor: '#E2E8F0'
+            },
+            flowchart: {
+                useMaxWidth: true,
+                htmlLabels: true
+            },
+            sequence: {
+                useMaxWidth: true,
+                wrap: true
+            }
+        });
+    </script>
+</body>
+</html>

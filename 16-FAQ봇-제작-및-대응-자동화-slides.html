@@ -1,0 +1,945 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>18강: 고객 문의 접수 및 대응 자동화</title>
+    <style>
+        /* Global Reset and Base Styles */
+        *, *::before, *::after { box-sizing: border-box; }
+        html, body { max-width: 100%; overflow-x: hidden; margin: 0; padding: 0; }
+        :root { scrollbar-gutter: stable both-edges; }
+        
+        img, video, svg, canvas, iframe, table { max-width: 100%; height: auto; }
+        pre, code, .code-block { max-width: 100%; overflow: auto; }
+        
+        .content-grid { min-width: 0; }
+        .content-grid > * { min-width: 0; overflow-wrap: anywhere; }
+        
+        .basic-font, .card-title, .header-1, .header-2, .header-3 { overflow-wrap: anywhere; word-break: break-word; }
+
+        /* Typography */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #2D3748;
+            background: #FFFFFF;
+        }
+
+        .basic-font {
+            font-size: 13pt;
+            color: #2D3748;
+            line-height: 1.3;
+            margin-bottom: 8px;
+        }
+
+        .header-3 {
+            font-size: 15pt;
+            font-weight: 600;
+            color: #1B365D;
+            margin-bottom: 6px;
+            line-height: 1.3;
+            text-align: left;
+        }
+
+        .header-2 {
+            font-size: 18pt;
+            font-weight: 600;
+            color: #1B365D;
+            margin-bottom: 9px;
+            line-height: 1.3;
+        }
+
+        .header-1 {
+            font-size: 21pt;
+            font-weight: 700;
+            color: #1B365D;
+            margin-bottom: 12px;
+            line-height: 1.2;
+        }
+
+        .message {
+            font-size: 15pt;
+            font-weight: 500;
+            color: rgb(115, 113, 113);
+            margin-bottom: 6px;
+            line-height: 1.3;
+            text-align: left;
+        }
+
+        /* Navigation */
+        .nav-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 70px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid #E2E8F0;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 5vw;
+            box-shadow: 0 2px 10px rgba(27, 54, 93, 0.1);
+        }
+
+        .nav-logo {
+            height: 40px;
+            font-size: 24px;
+            font-weight: 700;
+            color: #1B365D;
+        }
+
+        .nav-progress {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 14px;
+            color: #636E72;
+        }
+
+        .nav-progress .current-topic {
+            font-weight: 600;
+            color: #1B365D;
+            max-width: 300px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .nav-progress .slide-counter {
+            background: #F8F9FA;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            color: #636E72;
+        }
+
+        /* Progress Bar */
+        .scroll-progress {
+            position: fixed;
+            top: 70px;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: #F8F9FA;
+            z-index: 999;
+        }
+
+        .scroll-progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #1B365D 0%, rgb(135, 0, 232) 100%);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        /* Layout */
+        .slide-container {
+            width: 100%;
+            background: #FFFFFF;
+            padding-top: 100px;
+        }
+
+        .slide {
+            min-height: calc(100vh - 100px);
+            width: 100%;
+            padding: 32px 5vw 48px 5vw;
+            display: flex;
+            flex-direction: column;
+            text-align: left;
+            scroll-margin-top: 100px;
+            box-sizing: border-box;
+        }
+
+        .slide + .slide {
+            border-top: 2px solid #F8F9FA;
+        }
+
+        /* Content Layout */
+        .content-grid {
+            display: grid;
+            gap: 8px;
+            margin: 12px 0;
+        }
+
+        .content-grid-2 {
+            grid-template-columns: 1fr 1fr;
+        }
+
+        .content-grid-3 {
+            grid-template-columns: repeat(3, 1fr);
+        }
+
+        /* Cards */
+        .content-card {
+            background: #FFFFFF;
+            border: 1px solid rgb(235, 226, 240);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 8px;
+            box-shadow: 0 2px 8px rgba(27, 54, 93, 0.05);
+            transition: all 0.2s ease;
+            margin-top: 0px;
+        }
+
+        .content-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(27, 54, 93, 0.1);
+        }
+
+        .card-title {
+            font-size: 15pt;
+            font-weight: 600;
+            color: #1B365D;
+            margin-bottom: 12px;
+            margin-top: 6px;
+            text-align: left;
+        }
+
+        /* Callouts */
+        .callout-center {
+            background: #ffffff;
+            border: 1px solid rgba(27, 54, 93, 0.12);
+            border-radius: 14px;
+            padding: 20px 24px;
+            margin: 24px auto;
+            width: fit-content;
+            box-shadow: 0 4px 16px rgba(27, 54, 93, 0.08), 0 1px 3px rgba(27, 54, 93, 0.06);
+            text-align: left;
+        }
+
+        .callout {
+            padding: 16px;
+            margin: 8px auto;
+            background: rgba(178, 73, 234, 0.04);
+            border: 0px;
+            text-align: left;
+            width: 100%;
+            border-radius: 8px;
+            font-size: 13pt;
+            line-height: 1.7;
+        }
+
+        /* Lists */
+        .step-list {
+            list-style: none;
+            counter-reset: step-counter;
+            margin: 12px 0;
+            padding-left: 0;
+        }
+
+        .step-list > li {
+            counter-increment: step-counter;
+            margin-bottom: 10px;
+            padding-left: 36px;
+            position: relative;
+            line-height: 1.2;
+            font-size: 12pt;
+        }
+
+        .step-list > li::before {
+            content: counter(step-counter);
+            position: absolute;
+            left: 0;
+            top: 0;
+            background: rgba(114, 29, 171, 0.7);
+            color: white;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12pt;
+            font-weight: 600;
+        }
+
+        .checklist {
+            list-style: none;
+            margin: 12px 0;
+            padding-left: 0;
+        }
+
+        .checklist li {
+            padding: 4px 0 4px 26px;
+            position: relative;
+            margin-bottom: 0px;
+            line-height: 1.2;
+            font-size: 12pt;
+        }
+
+        .checklist li::before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: rgba(114, 29, 171, 0.7);
+            font-weight: bold;
+            font-size: 12pt;
+        }
+
+        /* Tables */
+        .content-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 12px 0;
+            background: #FFFFFF;
+            border: 1px solid #E2E8F0;
+            border-radius: 8px;
+            overflow: hidden;
+            font-size: 12pt;
+        }
+
+        .content-table th {
+            background: #F8F9FA;
+            padding: 8px 8px;
+            font-size: 13pt;
+            font-weight: 600;
+            color: #1B365D;
+            text-align: left;
+            border-bottom: 2px solid #E2E8F0;
+        }
+
+        .content-table td {
+            padding: 8px 8px;
+            color: #2D3748;
+            border-bottom: 1.5px solid #F8F9FA;
+            text-align: left;
+            vertical-align: top;
+        }
+
+        .content-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .content-table tr:hover {
+            background: rgba(178, 73, 234, 0.05);
+        }
+
+        /* Code Blocks */
+        .code-block {
+            background: #F8F9FA;
+            border: 1px solid #E2E8F0;
+            border-radius: 8px;
+            padding: 8px 12px;
+            margin: 8px 0;
+            font-family: 'Monaco', 'Menlo', 'Consolas', monospace;
+            font-size: 10pt;
+            color: #2D3748;
+            overflow-x: auto;
+            line-height: 1.4;
+        }
+
+        /* Center alignment for intro slide */
+        .slide.intro {
+            text-align: center;
+            justify-content: center;
+        }
+
+        .slide.intro .header-1,
+        .slide.intro .header-2 {
+            text-align: center;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .content-grid-2,
+            .content-grid-3 {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+            
+            .slide {
+                padding: 16px 3vw 32px 3vw;
+                min-height: calc(100vh - 80px);
+            }
+            
+            .nav-bar {
+                height: 60px;
+                padding: 0 3vw;
+            }
+            
+            .slide-container {
+                padding-top: 80px;
+            }
+            
+            .header-1 { font-size: 22pt; }
+            .header-2 { font-size: 17pt; }
+            .header-3 { font-size: 15pt; }
+            .basic-font { font-size: 13pt; }
+            
+            .content-card {
+                padding: 16px;
+                margin-bottom: 4px;
+            }
+        }
+
+        /* Smooth scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* 코드 블록 전용 스타일 - 향상된 라인 브레이크 지원 */
+        .code-block {
+            background: #F8F9FA;
+            border: 1px solid #E2E8F0;
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin: 12px 0;
+            font-family: 'Monaco', 'Menlo', 'Consolas', 'Courier New', monospace;
+            font-size: 11pt;
+            color: #2D3748;
+            line-height: 1.5;
+            /* 향상된 라인 브레이크 기능 */
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            word-break: break-all;
+            overflow-x: auto;
+        }
+
+        /* 인라인 코드 스타일 */
+        .inline-code {
+            background: #F8F9FA;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Monaco', 'Menlo', 'Consolas', 'Courier New', monospace;
+            font-size: 0.9em;
+            color: #1B365D;
+            border: 1px solid #E2E8F0;
+        }
+
+        /* Mermaid 다이어그램 스타일 */
+        .mermaid {
+            background: #FFFFFF;
+            border: 1px solid #E2E8F0;
+            border-radius: 8px;
+            padding: 16px;
+            margin: 16px 0;
+            text-align: center;
+            overflow-x: auto;
+            overflow-y: hidden;
+        }
+
+        /* Mermaid 다이어그램 반응형 지원 */
+        .mermaid svg {
+            max-width: 100%;
+            height: auto;
+        }
+    </style>
+    <!-- Mermaid.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.0/dist/mermaid.min.js"></script>
+</head>
+<body>
+    <nav class="nav-bar">
+        <div class="nav-logo">📞 고객 서비스</div>
+        <div class="nav-progress">
+            <span class="current-topic">고객 문의 접수 및 대응 자동화</span>
+            <span class="slide-counter">18강</span>
+        </div>
+    </nav>
+
+    <div class="scroll-progress">
+        <div class="scroll-progress-bar"></div>
+    </div>
+
+    <div class="slide-container">
+        <!-- Slide 1: Intro -->
+        <section class="slide intro" id="slide-1">
+            <h1 class="header-1">📞 고객 문의 접수 및 대응 자동화</h1>
+            <h2 class="header-2">24시간 쉬지 않는 똑똑한 고객 서비스 비서 만들기</h2>
+            <div class="callout-center">
+                <ol class="step-list">
+                    <li>고객 문의 자동 접수 시스템</li>
+                    <li>AI 기반 문의 분류 및 분석</li>
+                    <li>담당자 자동 배정 및 알림</li>
+                    <li>완전 자동화된 고객 응답</li>
+                </ol>
+            </div>
+        </section>
+
+        <!-- Slide 2: 현재 문제점 -->
+        <section class="slide" id="slide-2">
+            <h2 class="header-2">😰 현재 고객 문의 처리의 문제점</h2>
+            <div class="message">우체통에 쌓인 편지처럼 매일 쌓이는 문의 때문에 정작 중요한 업무에 집중하지 못해요</div>
+            
+            <div class="content-grid content-grid-2">
+                <div class="content-card">
+                    <div class="card-title">😵 일상 속 문제와 비교</div>
+                    <table class="content-table">
+                        <tr>
+                            <th>일상 상황</th>
+                            <th>문의 업무 문제</th>
+                        </tr>
+                        <tr>
+                            <td>우체통에 편지 쌓여도 모름</td>
+                            <td>문의 발견 지연</td>
+                        </tr>
+                        <tr>
+                            <td>편지 종류 확인 후 분류</td>
+                            <td>수동 분류 필요</td>
+                        </tr>
+                        <tr>
+                            <td>급한 편지 구분 어려움</td>
+                            <td>우선순위 판단 어려움</td>
+                        </tr>
+                        <tr>
+                            <td>답장 쓰느라 하루 다 감</td>
+                            <td>시간 소모</td>
+                        </tr>
+                    </table>
+                </div>
+                
+                <div class="content-card">
+                    <div class="card-title">✨ 자동화로 해결</div>
+                    <ul class="checklist">
+                        <li>자동 접수: 문의 즉시 알림</li>
+                        <li>스마트 분류: AI 자동 담당부서 배정</li>
+                        <li>우선순위 자동 판단: 긴급도 평가</li>
+                        <li>자동 안내: 접수 확인 즉시 발송</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 3: 전체 시스템 흐름 -->
+        <section class="slide" id="slide-3">
+            <h2 class="header-2">🎯 완성된 시스템 동작 과정</h2>
+            <div class="message">똑똑한 비서가 24시간 고객 문의를 처리하는 전체 흐름</div>
+            
+            <div class="content-card">
+                <div class="card-title">🔄 자동화 시스템 전체 흐름</div>
+                <div class="code-block">1. 문의 접수 📮 (Form Trigger)
+   "새 편지가 도착했어요!"
+   ↓
+2. 내용 확인 및 분류 🤖 (AI 분석)
+   "이건 기술 문의네요, 김팀장님께 보내드릴게요"
+   ↓  
+3. 고객 정보 확인 📋 (데이터베이스 검색)
+   "기존 고객이시네요, 구매 이력도 함께 전달할게요"
+   ↓
+4. 담당자에게 전달 🔔 (Slack/이메일 알림)
+   "김팀장님, 긴급 문의 1건 들어왔습니다"
+   ↓
+5. 고객에게 접수 확인 ✉️ (자동 답변)
+   "문의 접수되었습니다. 24시간 내 답변드릴게요"</div>
+            </div>
+        </section>
+
+        <!-- Slide 4: 고객 문의 폼 -->
+        <section class="slide" id="slide-4">
+            <h2 class="header-2">📝 1단계: 고객 문의 폼 만들기</h2>
+            <div class="message">은행 번호표 뽑는 기계처럼 고객이 쉽게 문의할 수 있는 온라인 창구</div>
+            
+            <div class="content-grid content-grid-2">
+                <div class="content-card">
+                    <div class="card-title">📋 Form Trigger 설정</div>
+                    <table class="content-table">
+                        <tr>
+                            <th>항목</th>
+                            <th>목적</th>
+                        </tr>
+                        <tr>
+                            <td>고객 정보</td>
+                            <td>이름, 이메일, 연락처</td>
+                        </tr>
+                        <tr>
+                            <td>문의 분류</td>
+                            <td>기술/제품/결제/기타</td>
+                        </tr>
+                        <tr>
+                            <td>긴급도</td>
+                            <td>높음/보통/낮음</td>
+                        </tr>
+                        <tr>
+                            <td>문의 내용</td>
+                            <td>제목과 상세 설명</td>
+                        </tr>
+                    </table>
+                </div>
+                
+                <div class="content-card">
+                    <div class="card-title">🏦 은행 업무와 비교</div>
+                    <table class="content-table">
+                        <tr>
+                            <th>은행 업무</th>
+                            <th>문의 폼</th>
+                        </tr>
+                        <tr>
+                            <td>번호표에 업무 종류</td>
+                            <td>문의 유형 선택</td>
+                        </tr>
+                        <tr>
+                            <td>신분증 본인 확인</td>
+                            <td>이름/연락처 입력</td>
+                        </tr>
+                        <tr>
+                            <td>업무 내용 메모</td>
+                            <td>문의 제목/내용</td>
+                        </tr>
+                        <tr>
+                            <td>급한 일인지 표시</td>
+                            <td>긴급도 선택</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            
+            <div class="callout">
+                📋 <strong>Set 노드 활용:</strong> 접수 일시, 문의 번호 자동 생성, 고객 정보 표준화, 우선순위 점수 변환 등을 자동으로 처리합니다.
+            </div>
+        </section>
+
+        <!-- Slide 5: AI 분석 -->
+        <section class="slide" id="slide-5">
+            <h2 class="header-2">🤖 2단계: AI로 문의 내용 자동 분석</h2>
+            <div class="message">경험 많은 접수 담당자처럼 문의를 읽고 적절한 부서로 자동 배정</div>
+            
+            <div class="content-grid content-grid-2">
+                <div class="content-card">
+                    <div class="card-title">🧠 Upstage Chat 노드 활용</div>
+                    <ul class="checklist">
+                        <li>문의 유형 자동 판단</li>
+                        <li>긴급도 자동 평가</li>
+                        <li>필요한 정보 추출</li>
+                        <li>한국어 뉘앙스 완벽 이해</li>
+                    </ul>
+                    
+                    <div class="basic-font"><strong>분석 예시:</strong></div>
+                    <div class="code-block">"로그인이 안돼요" → 기술지원팀
+"서비스가 멈췄어요" → 높은 긴급도
+"배송 언제 되나요" → 배송팀</div>
+                </div>
+                
+                <div class="content-card">
+                    <div class="card-title">👩‍💼 경험 많은 직원처럼</div>
+                    <div class="basic-font">마치 10년 경력의 고객 서비스 담당자가 문의를 듣고 즉시 판단하는 것과 같습니다.</div>
+                    
+                    <div class="basic-font"><strong>AI가 파악하는 것들:</strong></div>
+                    <ul class="checklist">
+                        <li>고객의 감정 상태 (화남/궁금함/만족)</li>
+                        <li>문제의 심각도</li>
+                        <li>필요한 대응 방식</li>
+                        <li>예상 처리 시간</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 6: 데이터 저장 -->
+        <section class="slide" id="slide-6">
+            <h2 class="header-2">📂 3단계: 고객 정보 저장 및 관리</h2>
+            <div class="message">병원 접수처럼 모든 문의와 고객 정보를 체계적으로 보관</div>
+            
+            <div class="content-grid content-grid-2">
+                <div class="content-card">
+                    <div class="card-title">🏥 병원 접수 시스템과 비교</div>
+                    <table class="content-table">
+                        <tr>
+                            <th>병원 접수</th>
+                            <th>문의 관리</th>
+                        </tr>
+                        <tr>
+                            <td>환자 차트 기본정보</td>
+                            <td>고객 정보 저장</td>
+                        </tr>
+                        <tr>
+                            <td>진료과별 대기 명단</td>
+                            <td>부서별 문의 분류</td>
+                        </tr>
+                        <tr>
+                            <td>응급도별 우선순위</td>
+                            <td>긴급도별 처리 순서</td>
+                        </tr>
+                        <tr>
+                            <td>진료 완료 차트 정리</td>
+                            <td>처리 완료 상태 업데이트</td>
+                        </tr>
+                    </table>
+                </div>
+                
+                <div class="content-card">
+                    <div class="card-title">💾 저장하는 정보들</div>
+                    <div class="basic-font"><strong>고객 정보:</strong></div>
+                    <ul class="checklist">
+                        <li>이름, 연락처, 이메일</li>
+                        <li>문의 이력 및 패턴</li>
+                    </ul>
+                    
+                    <div class="basic-font"><strong>문의 내역:</strong></div>
+                    <ul class="checklist">
+                        <li>언제, 무엇을, 얼마나 급하게</li>
+                        <li>처리 상태와 담당자</li>
+                    </ul>
+                    
+                    <div class="basic-font"><strong>사용 도구:</strong> Google Sheets, Airtable, Supabase</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 7: 담당자 알림 -->
+        <section class="slide" id="slide-7">
+            <h2 class="header-2">🚨 4단계: 담당자 즉시 알림 시스템</h2>
+            <div class="message">응급실 트리아지처럼 긴급도에 따라 다른 방식으로 알림 발송</div>
+            
+            <div class="content-grid content-grid-2">
+                <div class="content-card">
+                    <div class="card-title">🏥 응급실 트리아지 시스템</div>
+                    <table class="content-table">
+                        <tr>
+                            <th>긴급도</th>
+                            <th>알림 방법</th>
+                            <th>대응 시간</th>
+                        </tr>
+                        <tr style="background: rgba(231, 112, 85, 0.1);">
+                            <td>높음 (8점 이상) 🚨</td>
+                            <td>Slack + 전화 + 이메일</td>
+                            <td>즉시 대응</td>
+                        </tr>
+                        <tr style="background: rgba(253, 203, 110, 0.1);">
+                            <td>보통 (4-7점) ⚠️</td>
+                            <td>Slack + 이메일</td>
+                            <td>4시간 내</td>
+                        </tr>
+                        <tr style="background: rgba(72, 187, 120, 0.1);">
+                            <td>낮음 (3점 이하) 📋</td>
+                            <td>이메일만</td>
+                            <td>24시간 내</td>
+                        </tr>
+                    </table>
+                </div>
+                
+                <div class="content-card">
+                    <div class="card-title">📱 Slack 알림 예시</div>
+                    <div class="code-block">🚨 긴급 고객 문의!
+고객: 김철수 (kim@company.com)
+문의: 서비스 완전 중단
+긴급도: 9/10점
+담당자: @김팀장 님 확인 부탁드려요!</div>
+                    
+                    <div class="basic-font"><strong>이중 소통:</strong></div>
+                    <ul class="checklist">
+                        <li>고객 → 자동 확인 메시지</li>
+                        <li>담당자 → 상세 알림</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 8: 자동 답변 -->
+        <section class="slide" id="slide-8">
+            <h2 class="header-2">✉️ 5단계: 고객 자동 답변 시스템</h2>
+            <div class="message">"잘 받았어요, 곧 연락드릴게요" 자동 확인 메일로 고객 안심시키기</div>
+            
+            <div class="content-grid content-grid-2">
+                <div class="content-card">
+                    <div class="card-title">📧 자동 답변 이메일 내용</div>
+                    <div class="code-block">안녕하세요, 김철수님!
+
+소중한 문의를 보내주셔서 감사합니다.
+문의가 정상적으로 접수되었으며, 
+다음과 같이 처리됩니다:
+
+• 문의 번호: INQ-2024-001
+• 접수 일시: 2024년 3월 15일 오후 2:30
+• 문의 유형: 기술지원
+• 예상 답변 시간: 4시간 이내
+• 담당자: 김기술팀장
+
+추가 문의사항이 있으시면 언제든 연락주세요.
+감사합니다.</div>
+                </div>
+                
+                <div class="content-card">
+                    <div class="card-title">🤖 24시간 자동 상담원</div>
+                    <div class="basic-font"><strong>밤 11시 문의 상황:</strong></div>
+                    <div class="code-block">고객: "반품하고 싶은데 어떻게 해야 하나요?"
+
+기존: "내일 오전에 답변드리겠습니다" 👎
+
+AI 적용 후:
+"안녕하세요! 반품은 구매일로부터 7일 이내... 
+자세한 절차를 안내해드릴게요" ✅</div>
+                    
+                    <div class="basic-font"><strong>결과:</strong></div>
+                    <ul class="checklist">
+                        <li>고객 만족도 대폭 상승</li>
+                        <li>직원은 중요한 문의만 처리</li>
+                        <li>24시간 고객 서비스 완성</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 9: 시스템 모니터링 -->
+        <section class="slide" id="slide-9">
+            <h2 class="header-2">📊 6단계: 전체 시스템 모니터링</h2>
+            <div class="message">택배 상황판처럼 "접수 → 분류 → 처리중 → 완료" 실시간 확인</div>
+            
+            <div class="content-grid content-grid-2">
+                <div class="content-card">
+                    <div class="card-title">📈 대시보드 확인 내용</div>
+                    <ul class="checklist">
+                        <li>일일 문의 접수 현황</li>
+                        <li>처리 시간 통계</li>
+                        <li>문의 유형 분포</li>
+                        <li>담당자별 업무량</li>
+                        <li>고객 만족도 점수</li>
+                    </ul>
+                </div>
+                
+                <div class="content-card">
+                    <div class="card-title">🎯 AI 답변 도우미 (고급)</div>
+                    <ol class="step-list">
+                        <li>고객 문의를 AI가 분석</li>
+                        <li>비슷한 과거 답변 패턴 검색</li>
+                        <li>답변 초안 작성해서 담당자 전송</li>
+                        <li>담당자 검토 후 최종 발송</li>
+                    </ol>
+                    
+                    <div class="basic-font"><strong>장점:</strong> 답변 속도 향상, 일관된 답변, 실수 방지</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 10: 마무리 및 성과 -->
+        <section class="slide" id="slide-10">
+            <h2 class="header-2">🎉 완성! 24시간 똑똑한 고객 비서</h2>
+            <div class="message">이제 고객 문의가 두렵지 않아요! 놀라운 업무 효율 개선 달성</div>
+            
+            <div class="content-grid content-grid-2">
+                <div class="content-card">
+                    <div class="card-title">📈 달라지는 일상</div>
+                    <table class="content-table">
+                        <tr>
+                            <th>기존 방식</th>
+                            <th>자동화 후</th>
+                        </tr>
+                        <tr>
+                            <td>수시로 이메일 확인</td>
+                            <td>Slack으로 즉시 알림</td>
+                        </tr>
+                        <tr>
+                            <td>문의 내용 읽고 고민</td>
+                            <td>AI가 자동 분류 배정</td>
+                        </tr>
+                        <tr>
+                            <td>"확인했어요" 답장</td>
+                            <td>자동 확인 메일 발송</td>
+                        </tr>
+                        <tr>
+                            <td>처리 현황 이메일 뒤적</td>
+                            <td>대시보드 한눈에 확인</td>
+                        </tr>
+                    </table>
+                </div>
+                
+                <div class="content-card">
+                    <div class="card-title">🏆 숫자로 보는 성과</div>
+                    <div class="basic-font"><strong>업무 효율 개선:</strong></div>
+                    <ul class="checklist">
+                        <li>스트레스 90% 감소</li>
+                        <li>분류 시간 80% 단축</li>
+                        <li>응답 속도 95% 향상</li>
+                        <li>관리 효율 85% 개선</li>
+                    </ul>
+                    
+                    <div class="basic-font"><strong>고객 서비스 향상:</strong></div>
+                    <ul class="checklist">
+                        <li>문의 놓침 0건</li>
+                        <li>평균 응답: 4시간 → 30분</li>
+                        <li>고객 만족도 25% 향상</li>
+                        <li>업무 효율성 200% 증대</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="callout">
+                🎯 <strong>완성!</strong> 이제 여러분도 24시간 쉬지 않는 똑똑한 비서를 갖게 되었습니다. 다음 강의에서는 더 다양한 액션 노드들을 활용한 고급 자동화를 알아보겠습니다!
+            </div>
+        </section>
+    </div>
+
+    <script>
+        // Progress bar functionality
+        function updateProgressBar() {
+            const scrollTop = window.pageYOffset;
+            const docHeight = document.body.offsetHeight - window.innerHeight;
+            const scrollPercent = (scrollTop / docHeight) * 100;
+            document.querySelector('.scroll-progress-bar').style.width = scrollPercent + '%';
+        }
+
+        // Update slide counter
+        function updateSlideCounter() {
+            const slides = document.querySelectorAll('.slide');
+            const scrollTop = window.pageYOffset + 150;
+            let currentSlide = 1;
+            
+            slides.forEach((slide, index) => {
+                const slideTop = slide.offsetTop;
+                const slideBottom = slideTop + slide.offsetHeight;
+                
+                if (scrollTop >= slideTop && scrollTop < slideBottom) {
+                    currentSlide = index + 1;
+                }
+            });
+            
+            document.querySelector('.slide-counter').textContent = `${currentSlide} / ${slides.length}`;
+        }
+
+        // Event listeners
+        window.addEventListener('scroll', () => {
+            updateProgressBar();
+            updateSlideCounter();
+        });
+
+        // Initialize
+        updateProgressBar();
+        updateSlideCounter();
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowDown' || e.key === 'ArrowRight') {
+                const slides = document.querySelectorAll('.slide');
+                const current = Math.floor(window.pageYOffset / window.innerHeight);
+                if (current < slides.length - 1) {
+                    slides[current + 1].scrollIntoView({ behavior: 'smooth' });
+                }
+            } else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
+                const slides = document.querySelectorAll('.slide');
+                const current = Math.floor(window.pageYOffset / window.innerHeight);
+                if (current > 0) {
+                    slides[current - 1].scrollIntoView({ behavior: 'smooth' });
+                }
+            }
+        });
+    </script>
+    
+    <!-- Mermaid 초기화 스크립트 -->
+    <script>
+        // Mermaid 설정 및 초기화
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'neutral',
+            themeVariables: {
+                primaryColor: '#1B365D',
+                primaryTextColor: '#2D3748',
+                primaryBorderColor: '#E2E8F0',
+                lineColor: '#636E72',
+                backgroundColor: '#FFFFFF',
+                secondaryColor: '#F8F9FA',
+                tertiaryColor: '#E2E8F0'
+            },
+            flowchart: {
+                useMaxWidth: true,
+                htmlLabels: true
+            },
+            sequence: {
+                useMaxWidth: true,
+                wrap: true
+            }
+        });
+    </script>
+</body>
+</html>

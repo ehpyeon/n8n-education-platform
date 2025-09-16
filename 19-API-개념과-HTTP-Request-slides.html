@@ -1,0 +1,917 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>14강: API 개념 및 HTTP Request</title>
+    <style>
+        /* === Overflow-safe Global Reset (필수) === */
+        *, *::before, *::after { box-sizing: border-box; }
+        html, body { max-width: 100%; overflow-x: hidden; }
+        :root { scrollbar-gutter: stable both-edges; }
+
+        /* 미디어/테이블이 그리드 밖으로 넘치지 않도록 */
+        img, video, svg, canvas, iframe, table { max-width: 100%; height: auto; }
+        pre, code, .code-block { max-width: 100%; overflow: auto; }
+
+        /* 그리드 자식이 최소 폭 강제로 늘어나며 넘침을 만드는 문제 방지 */
+        .content-grid { min-width: 0; }
+        .content-grid > * { min-width: 0; overflow-wrap: anywhere; }
+
+        /* 긴 단어/URL 강제 줄바꿈 */
+        .basic-font, .card-title, .header-1, .header-2, .header-3 { overflow-wrap: anywhere; word-break: break-word; }
+
+        /* 유틸리티: 강제 오버플로 방지 박스 */
+        .no-overflow { max-width: 100%; overflow: hidden; }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #FFFFFF;
+            color: #2D3748;
+            line-height: 1.6;
+        }
+
+        /* 🧭 고정 네비게이션 바 */
+        .nav-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 70px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid #E2E8F0;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 5vw;
+            box-shadow: 0 2px 10px rgba(27, 54, 93, 0.1);
+        }
+
+        .nav-logo {
+            height: 40px;
+            font-size: 24px;
+            font-weight: 700;
+            color: #1B365D;
+        }
+
+        .nav-progress {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 14px;
+            color: #636E72;
+        }
+
+        .nav-progress .current-topic {
+            font-weight: 600;
+            color: #1B365D;
+            max-width: 300px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .nav-progress .slide-counter {
+            background: #F8F9FA;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            color: #636E72;
+        }
+
+        /* 스크롤 진행률 표시 */
+        .scroll-progress {
+            position: fixed;
+            top: 70px;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: #F8F9FA;
+            z-index: 999;
+        }
+
+        .scroll-progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #1B365D 0%, rgb(135, 0, 232) 100%);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        /* 슬라이드 컨테이너 */
+        .slide-container {
+            width: 100%;
+            background: #FFFFFF;
+            padding-top: 100px;
+        }
+
+        .slide {
+            min-height: calc(100vh - 100px);
+            width: 100%;
+            padding: 32px 5vw 48px 5vw;
+            display: flex;
+            flex-direction: column;
+            text-align: left;
+            scroll-margin-top: 100px;
+            box-sizing: border-box;
+        }
+
+        .slide + .slide {
+            border-top: 2px solid #F8F9FA;
+        }
+
+        /* 타이포그래피 */
+        .header-1 {
+            font-size: 21pt;
+            font-weight: 700;
+            color: #1B365D;
+            margin-bottom: 12px;
+            line-height: 1.2;
+            text-align: center;
+        }
+
+        .header-2 {
+            font-size: 18pt;
+            font-weight: 600;
+            color: #1B365D;
+            margin-bottom: 9px;
+            line-height: 1.3;
+        }
+
+        .header-3 {
+            font-size: 15pt;
+            font-weight: 600;
+            color: #1B365D;
+            margin-bottom: 6px;
+            line-height: 1.3;
+        }
+
+        .basic-font {
+            font-size: 13pt;
+            color: #2D3748;
+            line-height: 1.3;
+            margin-bottom: 8px;
+        }
+
+        .message {
+            font-size: 15pt;
+            font-weight: 500;
+            color: rgb(115, 113, 113);
+            margin-bottom: 6px;
+            line-height: 1.3;
+            text-align: left;
+        }
+
+        /* 콜아웃 */
+        .callout-center {
+            text-align: center;
+            background: #ffffff;
+            border: 1px solid rgba(27, 54, 93, 0.12);
+            border-radius: 14px;
+            padding: 20px 24px;
+            margin: 24px auto;
+            width: fit-content;
+            box-shadow: 0 4px 16px rgba(27, 54, 93, 0.08), 0 1px 3px rgba(27, 54, 93, 0.06);
+        }
+
+        .callout {
+            padding: 16px;
+            margin: 8px auto;
+            background: rgba(178, 73, 234, 0.04);
+            border: 0px;
+            text-align: left;
+            width: 100%;
+            border-radius: 8px;
+            font-size: 13pt;
+            line-height: 1.7;
+        }
+
+        /* 콘텐츠 카드 */
+        .content-card {
+            background: #FFFFFF;
+            border: 1px solid rgb(235, 226, 240);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 8px;
+            box-shadow: 0 2px 8px rgba(27, 54, 93, 0.05);
+            transition: all 0.2s ease;
+            margin-top: 0px;
+        }
+
+        .content-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(27, 54, 93, 0.1);
+        }
+
+        .card-title {
+            font-size: 15pt;
+            font-weight: 600;
+            color: #1B365D;
+            margin-bottom: 12px;
+            margin-top: 6px;
+            text-align: left;
+        }
+
+        /* 그리드 시스템 */
+        .content-grid {
+            display: grid;
+            gap: 8px;
+            margin: 12px 0;
+        }
+
+        .content-grid-2 {
+            grid-template-columns: 1fr 1fr;
+        }
+
+        .content-grid-3 {
+            grid-template-columns: repeat(3, 1fr);
+        }
+
+        /* 리스트 스타일 */
+        .step-list {
+            list-style: none;
+            counter-reset: step-counter;
+            margin: 12px 0;
+            padding-left: 0;
+        }
+
+        .step-list > li {
+            counter-increment: step-counter;
+            margin-bottom: 10px;
+            padding-left: 36px;
+            position: relative;
+            line-height: 1.2;
+            font-size: 12pt;
+        }
+
+        .step-list > li::before {
+            content: counter(step-counter);
+            position: absolute;
+            left: 0;
+            top: 0;
+            background: rgba(114, 29, 171, 0.7);
+            color: white;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12pt;
+            font-weight: 600;
+        }
+
+        .checklist {
+            list-style: none;
+            margin: 12px 0;
+            padding-left: 0;
+        }
+
+        .checklist li {
+            padding: 4px 0 4px 26px;
+            position: relative;
+            margin-bottom: 0px;
+            line-height: 1.2;
+            font-size: 12pt;
+        }
+
+        .checklist li::before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: rgba(114, 29, 171, 0.7);
+            font-weight: bold;
+            font-size: 12pt;
+        }
+
+        /* 코드 블록 */
+        .code-block {
+            background: #F8F9FA;
+            border: 1px solid #E2E8F0;
+            border-radius: 8px;
+            padding: 8px 12px;
+            margin: 8px 0;
+            font-family: 'Monaco', 'Menlo', 'Consolas', monospace;
+            font-size: 10pt;
+            color: #2D3748;
+            overflow-x: auto;
+            line-height: 1.4;
+        }
+
+        /* 테이블 */
+        .content-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 12px 0;
+            background: #FFFFFF;
+            border: 1px solid #E2E8F0;
+            border-radius: 8px;
+            overflow: hidden;
+            font-size: 12pt;
+        }
+
+        .content-table th {
+            background: #F8F9FA;
+            padding: 8px 8px;
+            font-size: 15pt;
+            font-weight: 600;
+            color: #1B365D;
+            text-align: left;
+            border-bottom: 2px solid #E2E8F0;
+        }
+
+        .content-table td {
+            padding: 8px 8px;
+            color: #2D3748;
+            border-bottom: 1.5px solid #F8F9FA;
+            text-align: left;
+            vertical-align: top;
+        }
+
+        .content-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .content-table tr:hover {
+            background: rgba(178, 73, 234, 0.05);
+        }
+
+        /* 강조 스타일 */
+        .text-emphasis {
+            color: #1B365D;
+            font-weight: 600;
+        }
+
+        .text-highlight {
+            background: rgba(178, 73, 234, 0.04);
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: #1B365D;
+        }
+
+        /* 부드러운 스크롤 */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* 반응형 */
+        @media (max-width: 768px) {
+            .content-grid-2,
+            .content-grid-3 {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+            
+            .slide {
+                padding: 16px 3vw 32px 3vw;
+            }
+            
+            .nav-progress .current-topic {
+                display: none;
+            }
+            
+            .header-1 { font-size: 22pt; }
+            .header-2 { font-size: 17pt; }
+            .header-3 { font-size: 15pt; }
+            .basic-font { font-size: 13pt; }
+        }
+
+        /* 코드 블록 전용 스타일 - 향상된 라인 브레이크 지원 */
+        .code-block {
+            background: #F8F9FA;
+            border: 1px solid #E2E8F0;
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin: 12px 0;
+            font-family: 'Monaco', 'Menlo', 'Consolas', 'Courier New', monospace;
+            font-size: 11pt;
+            color: #2D3748;
+            line-height: 1.5;
+            /* 향상된 라인 브레이크 기능 */
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            word-break: break-all;
+            overflow-x: auto;
+        }
+
+        /* 인라인 코드 스타일 */
+        .inline-code {
+            background: #F8F9FA;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Monaco', 'Menlo', 'Consolas', 'Courier New', monospace;
+            font-size: 0.9em;
+            color: #1B365D;
+            border: 1px solid #E2E8F0;
+        }
+
+        /* Mermaid 다이어그램 스타일 */
+        .mermaid {
+            background: #FFFFFF;
+            border: 1px solid #E2E8F0;
+            border-radius: 8px;
+            padding: 16px;
+            margin: 16px 0;
+            text-align: center;
+            overflow-x: auto;
+            overflow-y: hidden;
+        }
+
+        /* Mermaid 다이어그램 반응형 지원 */
+        .mermaid svg {
+            max-width: 100%;
+            height: auto;
+        }
+    </style>
+    <!-- Mermaid.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.0/dist/mermaid.min.js"></script>
+</head>
+<body>
+    <!-- 네비게이션 바 -->
+    <nav class="nav-bar">
+        <div class="nav-logo">🚀 n8n 마스터클래스</div>
+        <div class="nav-progress">
+            <span class="current-topic">API 개념 및 HTTP Request</span>
+            <span class="slide-counter">14강</span>
+        </div>
+    </nav>
+
+    <!-- 스크롤 진행률 바 -->
+    <div class="scroll-progress">
+        <div class="scroll-progress-bar" id="progress-bar"></div>
+    </div>
+
+    <!-- 슬라이드 컨테이너 -->
+    <div class="slide-container">
+        <!-- 인트로 슬라이드 -->
+        <section class="slide" id="slide-1">
+            <h1 class="header-1">🌐 API 개념 및 HTTP Request</h1>
+            <h2 class="header-2" style="text-align: center;">문서 처리를 위한 외부 시스템 연동의 핵심</h2>
+            <div class="callout-center">
+                <ol class="step-list">
+                    <li><strong>문서 처리를 위한 외부 API 이해</strong> - 업스테이지, OpenAI 등 AI 서비스와 소통하는 방법</li>
+                    <li><strong>HTTP Request 노드 마스터</strong> - 모든 외부 문서 처리 서비스와 연결하는 핵심 도구</li>
+                    <li><strong>실전 문서 AI 연동</strong> - 업스테이지와 OpenAI API를 활용한 지능형 문서 처리</li>
+                </ol>
+            </div>
+        </section>
+
+        <!-- 슬라이드 2: 외부 업체 연락이 중요한 이유 -->
+        <section class="slide" id="slide-2">
+            <h2 class="header-2">📄 문서 처리를 위한 외부 AI 서비스 연동</h2>
+            <div class="message">문서 처리 업무가 복잡해지면서 외부 AI 서비스의 도움이 필요해졌습니다.</div>
+            
+            <div class="content-grid content-grid-2">
+                <div class="content-card">
+                    <h3 class="card-title">🔗 문서 AI 서비스 연동 필요성</h3>
+                    <ul class="checklist">
+                        <li>텍스트 추출: 업스테이지 Document Parse API</li>
+                        <li>정보 분석: OpenAI GPT API</li>
+                        <li>문서 분류: 업스테이지 Classify API</li>
+                        <li>번역 서비스: Google Translate API</li>
+                    </ul>
+                </div>
+                
+                <div class="content-card">
+                    <h3 class="card-title">⚡ AI 연동의 장점</h3>
+                    <ul class="checklist">
+                        <li>AI 모델의 최신 버전 사용</li>
+                        <li>클라우드 기반 무제한 처리</li>
+                        <li>전문 AI 서비스의 정확도</li>
+                        <li>개발 시간과 비용 절약</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="callout">
+                <strong>핵심:</strong> API는 우리 n8n과 외부 AI 서비스가 정해진 규칙에 따라 자동으로 문서 처리 작업을 주고받을 수 있게 해주는 표준 연동 방식입니다.
+            </div>
+        </section>
+
+        <!-- 슬라이드 3: 요청-응답 패턴 -->
+        <section class="slide" id="slide-3">
+            <h2 class="header-2">🔄 문서 처리 API 요청의 기본 흐름</h2>
+            <div class="message">모든 문서 처리 AI 서비스는 기본적으로 요청과 답변으로 이루어집니다.</div>
+            
+            <div class="content-grid content-grid-2">
+                <div class="content-card">
+                    <h3 class="card-title">📋 요청-답변 패턴</h3>
+                    <div class="code-block">n8n → AI 서비스 → 처리 결과 → n8n 워크플로우 활용</div>
+                    <ul class="checklist">
+                        <li>문서 분석 전문 식당 주문과 같은 방식</li>
+                        <li>메뉴(API 기능 목록)를 보고 선택</li>
+                        <li>정해진 형식으로 문서 데이터 전송</li>
+                        <li>처리된 결과를 받아서 다음 단계 진행</li>
+                    </ul>
+                </div>
+                
+                <div class="content-card">
+                    <h3 class="card-title">🎯 실제 업무 예시</h3>
+                    <table class="content-table">
+                        <thead>
+                            <tr>
+                                <th>상황</th>
+                                <th>요청 내용</th>
+                                <th>응답 결과</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>PDF 텍스트 추출</td>
+                                <td>"이 PDF에서 텍스트 추출"</td>
+                                <td>전체 텍스트 및 구조 정보</td>
+                            </tr>
+                            <tr>
+                                <td>문서 요약</td>
+                                <td>"이 문서를 요약해주세요"</td>
+                                <td>핵심 내용 3-5줄 요약</td>
+                            </tr>
+                            <tr>
+                                <td>언어 번역</td>
+                                <td>"한국어를 영어로 번역"</td>
+                                <td>번역된 텍스트</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- 슬라이드 4: GET vs POST -->
+        <section class="slide" id="slide-4">
+            <h2 class="header-2">📨 AI 서비스에게 문서 처리 요청하는 2가지 방법</h2>
+            <div class="message">문서 처리 요청 방식은 크게 정보 조회와 작업 처리 두 가지로 나뉩니다.</div>
+            
+            <div class="content-grid content-grid-2">
+                <div class="content-card">
+                    <h3 class="card-title">🔍 GET - "현재 상태 알려주세요"</h3>
+                    <ul class="checklist">
+                        <li>AI 서비스의 현재 상태나 정보 조회</li>
+                        <li>처리 상태 확인 전용</li>
+                        <li>API 제한량이나 사용량 조회</li>
+                    </ul>
+                    <div class="code-block">
+예시: "현재 크레딧이 얼마나 남았나요?"
+     "처리 중인 문서 상태는?"
+     "API 사용량을 알려주세요"
+                    </div>
+                </div>
+                
+                <div class="content-card">
+                    <h3 class="card-title">📝 POST - "이 문서를 처리해주세요"</h3>
+                    <ul class="checklist">
+                        <li>AI 서비스에 실제 문서 처리 작업 요청</li>
+                        <li>문서 분석/변환/추출 전용</li>
+                        <li>처리할 문서와 상세 옵션을 함께 전달</li>
+                    </ul>
+                    <div class="code-block">
+예시: "이 PDF에서 텍스트 추출해주세요"
+     "계약서에서 금액 정보 찾아주세요"
+     "문서를 한국어로 번역해주세요"
+                    </div>
+                </div>
+            </div>
+            
+            <div class="callout">
+                <strong>기억하세요:</strong> GET은 API 상태 조회(읽기), POST는 문서 처리 작업(분석/변환) 용도로 사용합니다.
+            </div>
+        </section>
+
+        <!-- 슬라이드 5: cURL과 HTTP 구조 -->
+        <section class="slide" id="slide-5">
+            <h2 class="header-2">🛠️ cURL 명령어와 HTTP 요청의 구조</h2>
+            <div class="message">터미널에서 사용하는 cURL 명령어가 바로 n8n HTTP Request 노드의 설정 방식과 동일합니다.</div>
+            
+            <div class="content-grid content-grid-2">
+                <div class="content-card">
+                    <h3 class="card-title">📤 GET 요청 구조</h3>
+                    <div class="code-block">
+curl -X GET "https://api.example.com/users?limit=10" \
+  -H "Authorization: Bearer your-token" \
+  -H "Accept: application/json"
+                    </div>
+                    <ul class="checklist">
+                        <li>-X GET: 조회 요청 방식</li>
+                        <li>URL: 요청할 주소</li>
+                        <li>-H: 헤더 정보 (인증, 데이터 형식)</li>
+                        <li>?limit=10: 추가 조건</li>
+                    </ul>
+                </div>
+                
+                <div class="content-card">
+                    <h3 class="card-title">📥 POST 요청 구조</h3>
+                    <div class="code-block">
+curl -X POST "https://api.example.com/users" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer your-token" \
+  -d '{"name": "홍길동", "email": "hong@example.com"}'
+                    </div>
+                    <ul class="checklist">
+                        <li>-X POST: 처리 요청 방식</li>
+                        <li>Content-Type: 보내는 데이터 형식</li>
+                        <li>-d: 실제 전송할 데이터</li>
+                        <li>JSON 형태로 상세 정보 전달</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- 슬라이드 6: HTTP Request 노드 -->
+        <section class="slide" id="slide-6">
+            <h2 class="header-2">🤖 우리 회사의 만능 외부 연락 담당자</h2>
+            <div class="message">HTTP Request 노드는 어떤 회사와도 소통할 수 있는 슈퍼 직원입니다.</div>
+            
+            <div class="content-grid content-grid-3">
+                <div class="content-card">
+                    <h3 class="card-title">⚙️ 기본 구성</h3>
+                    <ul class="checklist">
+                        <li><strong>Method:</strong> GET, POST</li>
+                        <li><strong>URL:</strong> 대상 API 주소</li>
+                        <li><strong>Headers:</strong> 인증 및 형식 정보</li>
+                        <li><strong>Body:</strong> 전송할 데이터 (POST용)</li>
+                    </ul>
+                </div>
+                
+                <div class="content-card">
+                    <h3 class="card-title">🔐 주요 인증 방식</h3>
+                    <div class="code-block">
+API Key:
+X-API-Key: your-api-key
+
+Bearer Token:
+Authorization: Bearer token
+
+Basic Auth:
+Authorization: Basic encoded-info
+                    </div>
+                </div>
+                
+                <div class="content-card">
+                    <h3 class="card-title">🌟 놀라운 능력</h3>
+                    <ul class="checklist">
+                        <li>전 세계 모든 API와 연결 가능</li>
+                        <li>24시간 자동 소통</li>
+                        <li>10개 국어 같은 범용성</li>
+                        <li>복잡한 인증도 자동 처리</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- 슬라이드 7: HTTP 상태 코드 -->
+        <section class="slide" id="slide-7">
+            <h2 class="header-2">📊 상대 회사의 처리 결과 이해하기</h2>
+            <div class="message">상대 회사가 우리 요청을 어떻게 처리했는지 상태 코드로 알려줍니다.</div>
+            
+            <div class="content-grid content-grid-2">
+                <div class="content-card">
+                    <h3 class="card-title">✅ 성공 코드 (2xx)</h3>
+                    <table class="content-table">
+                        <thead>
+                            <tr>
+                                <th>코드</th>
+                                <th>의미</th>
+                                <th>상황</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>200</td>
+                                <td>성공</td>
+                                <td>요청이 성공적으로 처리됨</td>
+                            </tr>
+                            <tr>
+                                <td>201</td>
+                                <td>생성됨</td>
+                                <td>새 데이터가 생성됨</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="content-card">
+                    <h3 class="card-title">❌ 오류 코드 (4xx, 5xx)</h3>
+                    <table class="content-table">
+                        <thead>
+                            <tr>
+                                <th>코드</th>
+                                <th>의미</th>
+                                <th>해결 방법</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>401</td>
+                                <td>인증 필요</td>
+                                <td>로그인 정보 확인</td>
+                            </tr>
+                            <tr>
+                                <td>403</td>
+                                <td>권한 없음</td>
+                                <td>접근 권한 요청</td>
+                            </tr>
+                            <tr>
+                                <td>404</td>
+                                <td>찾을 수 없음</td>
+                                <td>주소(URL) 확인</td>
+                            </tr>
+                            <tr>
+                                <td>500</td>
+                                <td>서버 오류</td>
+                                <td>잠시 후 다시 시도</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- 슬라이드 8: 업스테이지 API 실전 예시 -->
+        <section class="slide" id="slide-8">
+            <h2 class="header-2">🧠 업스테이지 Document Parse API 실전 예시</h2>
+            <div class="message">업스테이지 API를 활용한 문서 분석 자동화를 실제로 구축해보겠습니다.</div>
+            
+            <div class="content-grid content-grid-2">
+                <div class="content-card">
+                    <h3 class="card-title">🔧 HTTP Request 설정</h3>
+                    <table class="content-table">
+                        <thead>
+                            <tr>
+                                <th>설정 항목</th>
+                                <th>값</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Method</td>
+                                <td>POST</td>
+                            </tr>
+                            <tr>
+                                <td>URL</td>
+                                <td>https://api.upstage.ai/v1/document-ai/document-parse</td>
+                            </tr>
+                            <tr>
+                                <td>Authorization</td>
+                                <td>Bearer up_your-api-key</td>
+                            </tr>
+                            <tr>
+                                <td>Content-Type</td>
+                                <td>application/json</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="content-card">
+                    <h3 class="card-title">📝 요청 데이터 구조</h3>
+                    <div class="code-block">
+{
+  "document": "base64_encoded_pdf_data",
+  "ocr": true,
+  "output_formats": ["text", "html"],
+  "coordinates": true,
+  "extract_images": false
+}
+
+// 또는 파일 업로드 방식
+FormData:
+  file: contract.pdf
+  ocr: true
+  output_formats: ["text", "table"]
+                    </div>
+                </div>
+            </div>
+            
+            <div class="callout">
+                <strong>실전 팁:</strong> 업스테이지 API 연동으로 PDF 텍스트 추출, 문서 구조 분석, 테이블 데이터 추출 등 문서 처리 업무를 완전 자동화할 수 있습니다.
+            </div>
+        </section>
+
+        <!-- 슬라이드 9: 활용 사례와 가능성 -->
+        <section class="slide" id="slide-9">
+            <h2 class="header-2">🚀 HTTP Request로 가능한 무한한 연결</h2>
+            <div class="message">이제 어떤 외부 서비스와도 자동으로 연결해서 업무를 처리할 수 있습니다.</div>
+            
+            <div class="content-grid content-grid-3">
+                <div class="content-card">
+                    <h3 class="card-title">📄 문서 처리 자동화</h3>
+                    <ul class="checklist">
+                        <li>계약서 정보 추출</li>
+                        <li>영수증 데이터 정리</li>
+                        <li>이력서 자동 분석</li>
+                        <li>보고서 구조화</li>
+                    </ul>
+                </div>
+                
+                <div class="content-card">
+                    <h3 class="card-title">🔍 문서 분석 연동</h3>
+                    <ul class="checklist">
+                        <li>업스테이지 Document Parse</li>
+                        <li>업스테이지 Information Extract</li>
+                        <li>업스테이지 Classify</li>
+                        <li>OpenAI 문서 요약</li>
+                    </ul>
+                </div>
+                
+                <div class="content-card">
+                    <h3 class="card-title">🤖 통합 AI 서비스</h3>
+                    <ul class="checklist">
+                        <li>GPT 문서 요약</li>
+                        <li>Claude 장문 분석</li>
+                        <li>Google 문서 번역</li>
+                        <li>Azure 음성 변환</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="callout">
+                <strong>다음 단계:</strong> 문서에서 추출한 정보를 LLM이 이해할 수 있는 형태로 변환하여 지능형 문서 처리 시스템을 완성해보겠습니다.
+            </div>
+        </section>
+
+    </div>
+
+    <script>
+        // 스크롤 진행률 업데이트
+        function updateScrollProgress() {
+            const container = document.documentElement;
+            const scrolled = container.scrollTop;
+            const maxScroll = container.scrollHeight - container.clientHeight;
+            const progress = (scrolled / maxScroll) * 100;
+            
+            const progressBar = document.getElementById('progress-bar');
+            progressBar.style.width = `${Math.min(progress, 100)}%`;
+        }
+
+        // 현재 슬라이드 제목 업데이트
+        function updateCurrentSlide() {
+            const slides = document.querySelectorAll('.slide');
+            const scrollPosition = window.scrollY + 200; // 네비바 높이 고려
+            
+            slides.forEach((slide, index) => {
+                const slideTop = slide.offsetTop;
+                const slideBottom = slideTop + slide.offsetHeight;
+                
+                if (scrollPosition >= slideTop && scrollPosition < slideBottom) {
+                    const title = slide.querySelector('h1, h2');
+                    if (title) {
+                        document.querySelector('.current-topic').textContent = 
+                            title.textContent.replace(/[🌐📞🔄📨🛠️🤖📊🧠🚀]/g, '').trim();
+                    }
+                }
+            });
+        }
+
+        // 이벤트 리스너
+        window.addEventListener('scroll', () => {
+            updateScrollProgress();
+            updateCurrentSlide();
+        });
+
+        // 초기 실행
+        updateScrollProgress();
+        updateCurrentSlide();
+
+        // 키보드 네비게이션
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowDown' || e.key === ' ') {
+                e.preventDefault();
+                window.scrollBy(0, window.innerHeight * 0.8);
+            } else if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                window.scrollBy(0, -window.innerHeight * 0.8);
+            }
+        });
+    </script>
+    
+    <!-- Mermaid 초기화 스크립트 -->
+    <script>
+        // Mermaid 설정 및 초기화
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'neutral',
+            themeVariables: {
+                primaryColor: '#1B365D',
+                primaryTextColor: '#2D3748',
+                primaryBorderColor: '#E2E8F0',
+                lineColor: '#636E72',
+                backgroundColor: '#FFFFFF',
+                secondaryColor: '#F8F9FA',
+                tertiaryColor: '#E2E8F0'
+            },
+            flowchart: {
+                useMaxWidth: true,
+                htmlLabels: true
+            },
+            sequence: {
+                useMaxWidth: true,
+                wrap: true
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>01. 업무 자동화와 n8n 소개</title>
+    <style>
+        /* === Overflow-safe Global Reset (필수) === */
+        *, *::before, *::after { box-sizing: border-box; }
+        html, body { max-width: 100%; overflow-x: hidden; }
+        :root { scrollbar-gutter: stable both-edges; }
+
+        /* 미디어/테이블이 그리드 밖으로 넘치지 않도록 */
+        img, video, svg, canvas, iframe, table { max-width: 100%; height: auto; }
+        pre, code, .code-block { max-width: 100%; overflow: auto; }
+
+        /* 그리드 자식이 최소 폭 강제로 늘어나며 넘침을 만드는 문제 방지 */
+        .content-grid { min-width: 0; }
+        .content-grid > * { min-width: 0; overflow-wrap: anywhere; }
+
+        /* 긴 단어/URL 강제 줄바꿈 */
+        .basic-font, .card-title, .header-1, .header-2, .header-3 { overflow-wrap: anywhere; word-break: break-word; }
+
+        /* 컬러 팔레트 */
+        :root {
+            --upstage-deep-blue: #1B365D;
+            --upstage-electric-blue: rgb(135, 0, 232);
+            --upstage-dark-gray: #2D3748;
+            --pure-white: #FFFFFF;
+            --upstage-cyan: #00D9FF;
+            --success-teal: #00B894;
+            --growth-orange: #FDCB6E;
+            --alert-coral: #E17055;
+            --neutral-slate: #636E72;
+            --light-silver: #F8F9FA;
+            --border-normal: #E2E8F0;
+            --border-emphasis: rgb(93, 0, 232);
+        }
+
+        /* 네비게이션 바 */
+        .nav-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 70px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-normal);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 5vw;
+            box-shadow: 0 2px 10px rgba(27, 54, 93, 0.1);
+        }
+
+        .nav-logo {
+            height: 40px;
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--upstage-deep-blue);
+        }
+
+        .nav-progress {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 14px;
+            color: var(--neutral-slate);
+        }
+
+        .nav-progress .current-topic {
+            font-weight: 600;
+            color: var(--upstage-deep-blue);
+            max-width: 300px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .nav-progress .slide-counter {
+            background: var(--light-silver);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            color: var(--neutral-slate);
+        }
+
+        /* 스크롤 진행률 */
+        .scroll-progress {
+            position: fixed;
+            top: 70px;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--light-silver);
+            z-index: 999;
+        }
+
+        .scroll-progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--upstage-deep-blue) 0%, var(--upstage-electric-blue) 100%);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        /* 슬라이드 컨테이너 */
+        .slide-container {
+            width: 100%;
+            background: var(--pure-white);
+            padding-top: 100px;
+        }
+
+        .slide {
+            min-height: calc(100vh - 100px);
+            width: 100%;
+            padding: 32px 5vw 48px 5vw;
+            display: flex;
+            flex-direction: column;
+            text-align: left;
+            scroll-margin-top: 100px;
+            box-sizing: border-box;
+        }
+
+        .slide + .slide {
+            border-top: 2px solid var(--light-silver);
+        }
+
+        /* 타이포그래피 */
+        .basic-font {
+            font-size: 13pt;
+            color: var(--upstage-dark-gray);
+            line-height: 1.3;
+            margin-bottom: 8px;
+        }
+
+        .header-3 {
+            font-size: 15pt;
+            font-weight: 600;
+            color: var(--upstage-deep-blue);
+            margin-bottom: 6px;
+            line-height: 1.3;
+            text-align: left;
+        }
+
+        .header-2 {
+            font-size: 18pt;
+            font-weight: 600;
+            color: var(--upstage-deep-blue);
+            margin-bottom: 9px;
+            line-height: 1.3;
+        }
+
+        .header-1 {
+            font-size: 21pt;
+            font-weight: 700;
+            color: var(--upstage-deep-blue);
+            margin-bottom: 12px;
+            line-height: 1.2;
+        }
+
+        .message {
+            font-size: 15pt;
+            font-weight: 500;
+            color: rgb(115, 113, 113);
+            margin-bottom: 6px;
+            line-height: 1.3;
+            text-align: left;
+        }
+
+        /* 카드 시스템 */
+        .content-card {
+            background: var(--pure-white);
+            border: 1px solid rgb(235, 226, 240);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 8px;
+            box-shadow: 0 2px 8px rgba(27, 54, 93, 0.05);
+            transition: all 0.2s ease;
+            margin-top: 0px;
+        }
+
+        .content-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(27, 54, 93, 0.1);
+        }
+
+        .card-title {
+            font-size: 15pt;
+            font-weight: 600;
+            color: var(--upstage-deep-blue);
+            margin-bottom: 12px;
+            margin-top: 6px;
+            text-align: left;
+        }
+
+        /* 콜아웃 */
+        .callout-center {
+            --surface: #ffffff;
+            --border: rgba(27, 54, 93, 0.12);
+            --shadow: 0 4px 16px rgba(27, 54, 93, 0.08), 0 1px 3px rgba(27, 54, 93, 0.06);
+            text-align: left;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 20px 24px;
+            margin: 24px auto;
+            width: fit-content;
+            box-shadow: var(--shadow);
+            overflow-wrap: anywhere;
+            transition: box-shadow 0.25s ease, transform 0.25s ease;
+        }
+
+        .callout {
+            padding: 16px;
+            margin: 8px auto;
+            background: rgba(178, 73, 234, 0.04);
+            border: 0px;
+            text-align: left;
+            width: 100%;
+            border-radius: 8px;
+            font-size: 13pt;
+            line-height: 1.7;
+        }
+
+        /* 그리드 시스템 */
+        .content-grid {
+            display: grid;
+            gap: 8px;
+            margin: 12px 0;
+        }
+
+        .content-grid > * { min-width: 0; }
+
+        .content-grid-2 {
+            grid-template-columns: 1fr 1fr;
+        }
+
+        .content-grid-3 {
+            grid-template-columns: repeat(3, 1fr);
+        }
+
+        .content-grid-4 {
+            grid-template-columns: repeat(4, 1fr);
+        }
+
+        /* 테이블 */
+        .content-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 12px 0;
+            background: var(--pure-white);
+            border: 1px solid var(--border-normal);
+            border-radius: 8px;
+            overflow: hidden;
+            font-size: 12pt;
+        }
+
+        .content-table th {
+            background: var(--light-silver);
+            padding: 8px 8px;
+            font-size: 13pt;
+            font-weight: 600;
+            color: var(--upstage-deep-blue);
+            text-align: left;
+            border-bottom: 2px solid var(--border-normal);
+        }
+
+        .content-table td {
+            padding: 8px 8px;
+            color: var(--upstage-dark-gray);
+            border-bottom: 1.5px solid var(--light-silver);
+            text-align: left;
+            vertical-align: top;
+        }
+
+        .content-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .content-table tr:hover {
+            background: rgba(178, 73, 234, 0.05);
+        }
+
+        /* 리스트 */
+        .step-list {
+            list-style: none;
+            counter-reset: step-counter;
+            margin: 12px 0;
+            padding-left: 0;
+        }
+
+        .step-list > li {
+            counter-increment: step-counter;
+            margin-bottom: 10px;
+            padding-left: 36px;
+            position: relative;
+            line-height: 1.2;
+            font-size: 12pt;
+        }
+
+        .step-list > li::before {
+            content: counter(step-counter);
+            position: absolute;
+            left: 0;
+            top: 0;
+            background: rgba(114, 29, 171, 0.7);
+            color: white;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12pt;
+            font-weight: 600;
+        }
+
+        .checklist {
+            list-style: none;
+            margin: 12px 0;
+            padding-left: 0;
+        }
+
+        .checklist li {
+            padding: 4px 0 4px 26px;
+            position: relative;
+            margin-bottom: 0px;
+            line-height: 1.2;
+            font-size: 12pt;
+        }
+
+        .checklist li::before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: rgba(114, 29, 171, 0.7);
+            font-weight: bold;
+            font-size: 12pt;
+        }
+
+        /* 중첩 리스트 */
+        .step-list .checklist li { counter-increment: none; }
+        .step-list .checklist { margin-top: 6px; }
+
+        /* 부드러운 스크롤 */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* 중앙 정렬 인트로 슬라이드 */
+        .slide.intro {
+            text-align: center;
+            justify-content: center;
+        }
+
+        .slide.intro .header-1,
+        .slide.intro .header-2 {
+            text-align: center;
+        }
+
+        /* 반응형 */
+        @media (max-width: 768px) {
+            .content-grid-2,
+            .content-grid-3,
+            .content-grid-4 {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+
+            .nav-progress .current-topic {
+                display: none;
+            }
+
+            .slide {
+                padding: 16px 3vw 32px 3vw;
+            }
+
+            .header-1 { font-size: 22pt; }
+            .header-2 { font-size: 17pt; }
+            .header-3 { font-size: 15pt; }
+            .basic-font { font-size: 13pt; }
+        }
+
+        /* 코드 블록 전용 스타일 - 향상된 라인 브레이크 지원 */
+        .code-block {
+            background: #F8F9FA;
+            border: 1px solid #E2E8F0;
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin: 12px 0;
+            font-family: 'Monaco', 'Menlo', 'Consolas', 'Courier New', monospace;
+            font-size: 11pt;
+            color: #2D3748;
+            line-height: 1.5;
+            /* 향상된 라인 브레이크 기능 */
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            word-break: break-all;
+            overflow-x: auto;
+        }
+
+        /* 인라인 코드 스타일 */
+        .inline-code {
+            background: #F8F9FA;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Monaco', 'Menlo', 'Consolas', 'Courier New', monospace;
+            font-size: 0.9em;
+            color: #1B365D;
+            border: 1px solid #E2E8F0;
+        }
+
+        /* Mermaid 다이어그램 스타일 */
+        .mermaid {
+            background: #FFFFFF;
+            border: 1px solid #E2E8F0;
+            border-radius: 8px;
+            padding: 16px;
+            margin: 16px 0;
+            text-align: center;
+            overflow-x: auto;
+            overflow-y: hidden;
+        }
+
+        /* Mermaid 다이어그램 반응형 지원 */
+        .mermaid svg {
+            max-width: 100%;
+            height: auto;
+        }
+    </style>
+    <!-- Mermaid.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.0/dist/mermaid.min.js"></script>
+</head>
+<body>
+    <!-- 네비게이션 바 -->
+    <nav class="nav-bar">
+        <div class="nav-logo">📚 n8n 자동화 마스터</div>
+        <div class="nav-progress">
+            <span class="current-topic">업무 자동화와 n8n 소개</span>
+            <span class="slide-counter">1 / 7</span>
+        </div>
+    </nav>
+
+    <!-- 스크롤 진행률 -->
+    <div class="scroll-progress">
+        <div class="scroll-progress-bar" id="progress-bar"></div>
+    </div>
+
+    <!-- 슬라이드 컨테이너 -->
+    <div class="slide-container">
+        <!-- 슬라이드 1: 인트로 -->
+        <section class="slide intro" id="slide-1">
+            <h1 class="header-1">🎯 업무 자동화와 n8n 소개</h1>
+            <h2 class="header-2">미래의 똑똑한 사무실이 어떤 모습일까?</h2>
+            
+            <div class="callout-center">
+                <ol class="step-list">
+                    <li><strong>AI 시대 패러다임 변화</strong> - 단순 반복에서 지능형 의사결정으로</li>
+                    <li><strong>3가지 혁신 기술</strong> - Document AI, LLM 챗봇, Agent AI</li>
+                    <li><strong>n8n의 특별함</strong> - AI와 자동화의 완벽한 결합</li>
+                    <li><strong>실용적 비전</strong> - 왜 지금 n8n을 배워야 하는가</li>
+                </ol>
+            </div>
+        </section>
+
+        <!-- 슬라이드 2: AI 시대 패러다임 변화 -->
+        <section class="slide" id="slide-2">
+            <h2 class="header-2">🚀 AI 시대 자동화의 패러다임 변화</h2>
+            <div class="message">단순 반복 작업에서 지능형 의사결정 자동화로의 진화가 시작되었습니다</div>
+            
+            <table class="content-table">
+                <thead>
+                    <tr>
+                        <th>구분</th>
+                        <th>기존 자동화 (과거)</th>
+                        <th>AI 기반 자동화 (현재)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>🔄 작업 방식</strong></td>
+                        <td>정해진 규칙에 따른 단순 반복</td>
+                        <td><strong>상황 판단과 지능형 의사결정</strong></td>
+                    </tr>
+                    <tr>
+                        <td><strong>📄 문서 처리</strong></td>
+                        <td>파일 이동, 이름 변경만 가능</td>
+                        <td><strong>내용을 읽고 이해하여 분류</strong></td>
+                    </tr>
+                    <tr>
+                        <td><strong>🤖 고객 응답</strong></td>
+                        <td>미리 작성된 템플릿만 전송</td>
+                        <td><strong>맞춤형 답변을 실시간 생성</strong></td>
+                    </tr>
+                    <tr>
+                        <td><strong>📊 데이터 분석</strong></td>
+                        <td>단순 집계와 차트 생성</td>
+                        <td><strong>패턴 분석과 인사이트 도출</strong></td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <div class="callout">
+                ⚡ <strong>핵심 변화:</strong> AI가 단순한 도구가 아닌 "생각하는 동료"로 업무에 참여하기 시작했습니다.
+            </div>
+        </section>
+
+        <!-- 슬라이드 3: n8n + AI 결합의 3가지 혁신 -->
+        <section class="slide" id="slide-3">
+            <h2 class="header-2">🎯 n8n + AI 결합으로 실현되는 3가지 혁신</h2>
+            <div class="message">이 과정에서 구축하게 될 3가지 핵심 지능형 자동화 시스템입니다</div>
+            
+            <div class="content-grid content-grid-3">
+                <div class="content-card">
+                    <h3 class="card-title">📄 Document AI</h3>
+                    <div class="basic-font"><strong>문서를 읽고 이해하는 자동화</strong></div>
+                    <ul class="checklist">
+                        <li>PDF, DOCX 파일 자동 분류</li>
+                        <li>핵심 정보 지능형 추출</li>
+                        <li>계약서/견적서 처리</li>
+                        <li>한국어 특화 문서 이해</li>
+                    </ul>
+                    <div class="callout">
+                        <strong>효과:</strong> 서류 처리 업무 95% 단축
+                    </div>
+                </div>
+                
+                <div class="content-card">
+                    <h3 class="card-title">🧠 LLM 챗봇</h3>
+                    <div class="basic-font"><strong>회사 지식을 활용한 지능형 상담원</strong></div>
+                    <ul class="checklist">
+                        <li>RAG 시스템 기반 정확한 답변</li>
+                        <li>회사 매뉴얼 완전 학습</li>
+                        <li>24/7 무인 고객 상담</li>
+                        <li>개인화된 응답 생성</li>
+                    </ul>
+                    <div class="callout">
+                        <strong>효과:</strong> 고객 응답 시간 90% 단축
+                    </div>
+                </div>
+                
+                <div class="content-card">
+                    <h3 class="card-title">🤖 Agent AI</h3>
+                    <div class="basic-font"><strong>복잡한 업무를 스스로 처리하는 AI 직원</strong></div>
+                    <ul class="checklist">
+                        <li>목표 설정으로 자동 실행</li>
+                        <li>상황 판단 후 도구 선택</li>
+                        <li>에러 발생시 자동 해결</li>
+                        <li>업무 완료까지 끝까지</li>
+                    </ul>
+                    <div class="callout">
+                        <strong>효과:</strong> 복잡한 업무도 완전 무인화
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 슬라이드 4: n8n 선택 이유 -->
+        <section class="slide" id="slide-4">
+            <h2 class="header-2">🎯 왜 n8n을 선택하는가?</h2>
+            <div class="message">직접 요리 vs 배달음식처럼, 자동화 도구도 선택의 기준이 있습니다</div>
+            
+            <table class="content-table">
+                <thead>
+                    <tr>
+                        <th>비교 영역</th>
+                        <th>다른 도구들 (배달음식)</th>
+                        <th>n8n (직접 요리)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>💰 비용</strong></td>
+                        <td>매월 요금 지불 (사용량에 따라 증가)</td>
+                        <td><strong>완전 무료</strong> (오픈소스)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>🔒 데이터 보안</strong></td>
+                        <td>남의 주방(클라우드)에 맡김</td>
+                        <td><strong>내 주방(자체 서버)</strong>에서 요리</td>
+                    </tr>
+                    <tr>
+                        <td><strong>🎨 커스터마이징</strong></td>
+                        <td>메뉴가 정해져 있음</td>
+                        <td><strong>원하는 대로 레시피</strong> 수정 가능</td>
+                    </tr>
+                    <tr>
+                        <td><strong>🤖 AI 기능</strong></td>
+                        <td>기본적인 자동화만</td>
+                        <td><strong>ChatGPT 같은 지능형</strong> 자동화</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <div class="callout">
+                🎉 <strong>결론:</strong> n8n은 비용 걱정 없이 완전한 자유도로 나만의 자동화 시스템을 구축할 수 있습니다.
+            </div>
+        </section>
+
+        <!-- 슬라이드 5: 요리 비유로 설명하는 학습 과정 -->
+        <section class="slide" id="slide-5">
+            <h2 class="header-2">👨‍🍳 요리를 배우듯 단계별로 완성하는 자동화 여정</h2>
+            <div class="message">기본 재료 준비부터 최고급 요리까지 체계적으로 학습합니다</div>
+            
+            <div class="content-grid content-grid-3">
+                <div class="content-card">
+                    <h3 class="card-title">🥄 1부: 초반 개념 (9강)</h3>
+                    <div class="basic-font"><strong>자동화 요리의 기본 재료와 도구 준비</strong></div>
+                    <ul class="checklist">
+                        <li><strong>설치 둘러보기</strong> - 똑똑한 주방 만들기</li>
+                        <li><strong>워크플로우 개념</strong> - 레고 블록 조립법</li>
+                        <li><strong>노드와 연결</strong> - 요리 도구 사용법</li>
+                        <li><strong>데이터 매핑</strong> - 재료를 요리로</li>
+                    </ul>
+                </div>
+                
+                <div class="content-card">
+                    <h3 class="card-title">🍽️ 2부: 응용 부분 (13강)</h3>
+                    <div class="basic-font"><strong>3가지 대표 요리 완벽 마스터</strong></div>
+                    <ul class="checklist">
+                        <li><strong>문서 처리</strong> - 서류 정리 전문가</li>
+                        <li><strong>지식 챗봇</strong> - 모든 것을 아는 상담원</li>
+                        <li><strong>AI 에이전트</strong> - 만능 업무 매니저</li>
+                        <li><strong>통합 시스템</strong> - 완성된 자동화</li>
+                    </ul>
+                </div>
+                
+                <div class="content-card">
+                    <h3 class="card-title">🔧 3부: 유지보수 (3강)</h3>
+                    <div class="basic-font"><strong>완성된 요리를 계속 맛있게 유지</strong></div>
+                    <ul class="checklist">
+                        <li><strong>에러 디버깅</strong> - 문제 해결 전문의</li>
+                        <li><strong>템플릿 활용</strong> - 기존의 좋은 것 활용</li>
+                        <li><strong>종합 프로젝트</strong> - 나만의 자동화 왕국</li>
+                        <li><strong>졸업작품</strong> - 모든 배움의 결정체</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- 슬라이드 6: 기대 성과 -->
+        <section class="slide" id="slide-6">
+            <h2 class="header-2">🎯 학습 완료 후 기대 성과</h2>
+            <div class="message">단순한 자동화를 넘어 비즈니스 혁신을 만들어낼 수 있습니다</div>
+            
+            <div class="content-grid content-grid-2">
+                <div class="content-card">
+                    <h3 class="card-title">💻 기술적 역량</h3>
+                    <ul class="checklist">
+                        <li><strong>n8n 노코드 툴</strong> 완전 정복</li>
+                        <li><strong>AI Agent 구현</strong> 능력</li>
+                        <li><strong>RAG 시스템 구축</strong> 기술</li>
+                        <li><strong>자동화 시스템 설계</strong> 역량</li>
+                    </ul>
+                </div>
+                
+                <div class="content-card">
+                    <h3 class="card-title">💼 비즈니스 가치</h3>
+                    <ul class="checklist">
+                        <li><strong>생산성 향상</strong> - 창의적 업무 집중</li>
+                        <li><strong>무인 서비스 운영</strong> - 24시간 자동화</li>
+                        <li><strong>데이터 기반 의사결정</strong> - AI 인사이트</li>
+                        <li><strong>개발 효율성</strong> - 시간과 비용 절약</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="content-grid content-grid-3">
+                <div class="content-card">
+                    <h3 class="card-title">🔮 미래 대비</h3>
+                    <ul class="checklist">
+                        <li>AI 네이티브 사고방식</li>
+                        <li>노코드 개발 역량</li>
+                        <li>즉시 현업 적용 가능</li>
+                    </ul>
+                </div>
+                
+                <div class="content-card">
+                    <h3 class="card-title">🎨 창의적 활용</h3>
+                    <ul class="checklist">
+                        <li>아이디어 빠른 프로토타입</li>
+                        <li>맞춤형 솔루션 구축</li>
+                        <li>비즈니스 프로세스 혁신</li>
+                    </ul>
+                </div>
+                
+                <div class="content-card">
+                    <h3 class="card-title">🌟 성장 마인드셋</h3>
+                    <ul class="checklist">
+                        <li>문제 해결 중심 사고</li>
+                        <li>지속적 학습 능력</li>
+                        <li>커뮤니티 협업 정신</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- 슬라이드 7: 성공적인 학습을 위한 마인드셋 -->
+        <section class="slide" id="slide-7">
+            <h2 class="header-2">🧠 성공적인 학습을 위한 마인드셋</h2>
+            <div class="message">올바른 학습 접근법으로 효과를 극대화할 수 있습니다</div>
+            
+            <div class="content-grid content-grid-2">
+                <div class="content-card">
+                    <h3 class="card-title">✨ 학습 원칙</h3>
+                    <ol class="step-list">
+                        <li>
+                            <strong>완벽주의보다는 반복 개선</strong>
+                            <ul class="checklist">
+                                <li>처음에는 작동만 하면 충분</li>
+                                <li>점진적으로 개선해나가기</li>
+                            </ul>
+                        </li>
+                        <li>
+                            <strong>실험 정신 발휘</strong>
+                            <ul class="checklist">
+                                <li>다양한 설정 시도</li>
+                                <li>최적의 결과 탐색</li>
+                            </ul>
+                        </li>
+                    </ol>
+                </div>
+                
+                <div class="content-card">
+                    <h3 class="card-title">🚀 실행 전략</h3>
+                    <ol class="step-list">
+                        <li>
+                            <strong>문제 해결 중심 사고</strong>
+                            <ul class="checklist">
+                                <li>에러를 학습 기회로 활용</li>
+                                <li>디버깅 과정 완전 이해</li>
+                            </ul>
+                        </li>
+                        <li>
+                            <strong>커뮤니티 활용</strong>
+                            <ul class="checklist">
+                                <li>동기들과 활발한 소통</li>
+                                <li>지식 공유와 네트워킹</li>
+                            </ul>
+                        </li>
+                    </ol>
+                </div>
+            </div>
+            
+            <div class="callout">
+                👨‍🍳 <strong>다음 단계:</strong> 이제 내 컴퓨터에 똑똑한 비서 사무실을 차려보겠습니다 - n8n 설치와 환경 구성으로 시작!
+            </div>
+        </section>
+    </div>
+
+    <script>
+        // 스크롤 진행률 업데이트
+        function updateScrollProgress() {
+            const scrollTop = window.pageYOffset;
+            const docHeight = document.body.scrollHeight - window.innerHeight;
+            const scrollPercent = (scrollTop / docHeight) * 100;
+            
+            document.getElementById('progress-bar').style.width = scrollPercent + '%';
+            document.getElementById('progress-bar').setAttribute('data-progress', Math.round(scrollPercent));
+        }
+
+        // 현재 슬라이드 업데이트
+        function updateCurrentSlide() {
+            const slides = document.querySelectorAll('.slide');
+            const scrollTop = window.pageYOffset + 150;
+            
+            let currentSlide = 1;
+            slides.forEach((slide, index) => {
+                if (scrollTop >= slide.offsetTop) {
+                    currentSlide = index + 1;
+                }
+            });
+            
+            document.querySelector('.slide-counter').textContent = `${currentSlide} / ${slides.length}`;
+        }
+
+        // 이벤트 리스너
+        window.addEventListener('scroll', () => {
+            updateScrollProgress();
+            updateCurrentSlide();
+        });
+
+        // 키보드 네비게이션
+        document.addEventListener('keydown', (e) => {
+            const slides = document.querySelectorAll('.slide');
+            const currentSlideElement = Array.from(slides).find(slide => {
+                const rect = slide.getBoundingClientRect();
+                return rect.top <= 100 && rect.bottom > 100;
+            });
+            
+            if (!currentSlideElement) return;
+            
+            const currentIndex = Array.from(slides).indexOf(currentSlideElement);
+            
+            if (e.key === 'ArrowDown' || e.key === 'ArrowRight') {
+                if (currentIndex < slides.length - 1) {
+                    slides[currentIndex + 1].scrollIntoView({ behavior: 'smooth' });
+                }
+            } else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
+                if (currentIndex > 0) {
+                    slides[currentIndex - 1].scrollIntoView({ behavior: 'smooth' });
+                }
+            }
+        });
+
+        // 초기 로딩
+        document.addEventListener('DOMContentLoaded', () => {
+            updateScrollProgress();
+            updateCurrentSlide();
+        });
+    </script>
+    
+    <!-- Mermaid 초기화 스크립트 -->
+    <script>
+        // Mermaid 설정 및 초기화
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'neutral',
+            themeVariables: {
+                primaryColor: '#1B365D',
+                primaryTextColor: '#2D3748',
+                primaryBorderColor: '#E2E8F0',
+                lineColor: '#636E72',
+                backgroundColor: '#FFFFFF',
+                secondaryColor: '#F8F9FA',
+                tertiaryColor: '#E2E8F0'
+            },
+            flowchart: {
+                useMaxWidth: true,
+                htmlLabels: true
+            },
+            sequence: {
+                useMaxWidth: true,
+                wrap: true
+            }
+        });
+    </script>
+</body>
+</html>

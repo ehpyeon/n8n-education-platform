@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>03. N8N 에디터 UI 빠른 투어</title>
+    <style>
+        /* === Overflow-safe Global Reset (필수) === */
+        *, *::before, *::after { box-sizing: border-box; }
+        html, body { max-width: 100%; overflow-x: hidden; }
+        :root { scrollbar-gutter: stable both-edges; }
+
+        /* 미디어/테이블이 그리드 밖으로 넘치지 않도록 */
+        img, video, svg, canvas, iframe, table { max-width: 100%; height: auto; }
+        pre, code, .code-block { max-width: 100%; overflow: auto; }
+
+        /* 그리드 자식이 최소 폭 강제로 늘어나며 넘침을 만드는 문제 방지 */
+        .content-grid { min-width: 0; }
+        .content-grid > * { min-width: 0; overflow-wrap: anywhere; }
+
+        /* 긴 단어/URL 강제 줄바꿈 */
+        .basic-font, .card-title, .header-1, .header-2, .header-3 { overflow-wrap: anywhere; word-break: break-word; }
+
+        /* 컬러 팔레트 */
+        :root {
+            --upstage-deep-blue: #1B365D;
+            --upstage-electric-blue: rgb(135, 0, 232);
+            --upstage-dark-gray: #2D3748;
+            --pure-white: #FFFFFF;
+            --upstage-cyan: #00D9FF;
+            --success-teal: #00B894;
+            --growth-orange: #FDCB6E;
+            --alert-coral: #E17055;
+            --neutral-slate: #636E72;
+            --light-silver: #F8F9FA;
+            --border-normal: #E2E8F0;
+            --border-emphasis: rgb(93, 0, 232);
+        }
+
+        /* 네비게이션 바 */
+        .nav-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 70px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-normal);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 5vw;
+            box-shadow: 0 2px 10px rgba(27, 54, 93, 0.1);
+        }
+
+        .nav-logo {
+            height: 40px;
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--upstage-deep-blue);
+        }
+
+        .nav-progress {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 14px;
+            color: var(--neutral-slate);
+        }
+
+        .nav-progress .current-topic {
+            font-weight: 600;
+            color: var(--upstage-deep-blue);
+            max-width: 300px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .nav-progress .slide-counter {
+            background: var(--light-silver);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            color: var(--neutral-slate);
+        }
+
+        /* 스크롤 진행률 */
+        .scroll-progress {
+            position: fixed;
+            top: 70px;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--light-silver);
+            z-index: 999;
+        }
+
+        .scroll-progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--upstage-deep-blue) 0%, var(--upstage-electric-blue) 100%);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        /* 슬라이드 컨테이너 */
+        .slide-container {
+            width: 100%;
+            background: var(--pure-white);
+            padding-top: 100px;
+        }
+
+        .slide {
+            min-height: calc(100vh - 100px);
+            width: 100%;
+            padding: 32px 5vw 48px 5vw;
+            display: flex;
+            flex-direction: column;
+            text-align: left;
+            scroll-margin-top: 100px;
+            box-sizing: border-box;
+        }
+
+        .slide + .slide {
+            border-top: 2px solid var(--light-silver);
+        }
+
+        /* 타이포그래피 */
+        .basic-font {
+            font-size: 13pt;
+            color: var(--upstage-dark-gray);
+            line-height: 1.3;
+            margin-bottom: 8px;
+        }
+
+        .header-3 {
+            font-size: 15pt;
+            font-weight: 600;
+            color: var(--upstage-deep-blue);
+            margin-bottom: 6px;
+            line-height: 1.3;
+            text-align: left;
+        }
+
+        .header-2 {
+            font-size: 18pt;
+            font-weight: 600;
+            color: var(--upstage-deep-blue);
+            margin-bottom: 9px;
+            line-height: 1.3;
+        }
+
+        .header-1 {
+            font-size: 21pt;
+            font-weight: 700;
+            color: var(--upstage-deep-blue);
+            margin-bottom: 12px;
+            line-height: 1.2;
+        }
+
+        .message {
+            font-size: 15pt;
+            font-weight: 500;
+            color: rgb(115, 113, 113);
+            margin-bottom: 6px;
+            line-height: 1.3;
+            text-align: left;
+        }
+
+        /* 카드 시스템 */
+        .content-card {
+            background: var(--pure-white);
+            border: 1px solid rgb(235, 226, 240);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 8px;
+            box-shadow: 0 2px 8px rgba(27, 54, 93, 0.05);
+            transition: all 0.2s ease;
+            margin-top: 0px;
+        }
+
+        .content-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(27, 54, 93, 0.1);
+        }
+
+        .content-card.emphasized {
+            border: 2px solid var(--upstage-electric-blue);
+            box-shadow: 0 4px 16px rgba(135, 0, 232, 0.15);
+        }
+
+        .card-title {
+            font-size: 15pt;
+            font-weight: 600;
+            color: var(--upstage-deep-blue);
+            margin-bottom: 12px;
+            margin-top: 6px;
+            text-align: left;
+        }
+
+        /* 콜아웃 */
+        .callout-center {
+            --surface: #ffffff;
+            --border: rgba(27, 54, 93, 0.12);
+            --shadow: 0 4px 16px rgba(27, 54, 93, 0.08), 0 1px 3px rgba(27, 54, 93, 0.06);
+            text-align: left;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 20px 24px;
+            margin: 24px auto;
+            width: fit-content;
+            box-shadow: var(--shadow);
+            overflow-wrap: anywhere;
+            transition: box-shadow 0.25s ease, transform 0.25s ease;
+        }
+
+        .callout {
+            padding: 16px;
+            margin: 8px auto;
+            background: rgba(178, 73, 234, 0.04);
+            border: 0px;
+            text-align: left;
+            width: 100%;
+            border-radius: 8px;
+            font-size: 13pt;
+            line-height: 1.7;
+        }
+
+        /* 그리드 시스템 */
+        .content-grid {
+            display: grid;
+            gap: 8px;
+            margin: 12px 0;
+        }
+
+        .content-grid > * { min-width: 0; }
+
+        .content-grid-2 {
+            grid-template-columns: 1fr 1fr;
+        }
+
+        .content-grid-3 {
+            grid-template-columns: repeat(3, 1fr);
+        }
+
+        .content-grid-4 {
+            grid-template-columns: repeat(4, 1fr);
+        }
+
+        /* 테이블 */
+        .content-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 12px 0;
+            background: var(--pure-white);
+            border: 1px solid var(--border-normal);
+            border-radius: 8px;
+            overflow: hidden;
+            font-size: 12pt;
+        }
+
+        .content-table th {
+            background: var(--light-silver);
+            padding: 8px 8px;
+            font-size: 13pt;
+            font-weight: 600;
+            color: var(--upstage-deep-blue);
+            text-align: left;
+            border-bottom: 2px solid var(--border-normal);
+        }
+
+        .content-table td {
+            padding: 8px 8px;
+            color: var(--upstage-dark-gray);
+            border-bottom: 1.5px solid var(--light-silver);
+            text-align: left;
+            vertical-align: top;
+        }
+
+        .content-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .content-table tr:hover {
+            background: rgba(178, 73, 234, 0.05);
+        }
+
+        /* 리스트 */
+        .step-list {
+            list-style: none;
+            counter-reset: step-counter;
+            margin: 12px 0;
+            padding-left: 0;
+        }
+
+        .step-list > li {
+            counter-increment: step-counter;
+            margin-bottom: 10px;
+            padding-left: 36px;
+            position: relative;
+            line-height: 1.2;
+            font-size: 12pt;
+        }
+
+        .step-list > li::before {
+            content: counter(step-counter);
+            position: absolute;
+            left: 0;
+            top: 0;
+            background: rgba(114, 29, 171, 0.7);
+            color: white;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12pt;
+            font-weight: 600;
+        }
+
+        .checklist {
+            list-style: none;
+            margin: 12px 0;
+            padding-left: 0;
+        }
+
+        .checklist li {
+            padding: 4px 0 4px 26px;
+            position: relative;
+            margin-bottom: 0px;
+            line-height: 1.2;
+            font-size: 12pt;
+        }
+
+        .checklist li::before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: rgba(114, 29, 171, 0.7);
+            font-weight: bold;
+            font-size: 12pt;
+        }
+
+        /* 중첩 리스트 */
+        .step-list .checklist li { counter-increment: none; }
+        .step-list .checklist { margin-top: 6px; }
+
+        /* 키보드 단축키 스타일 */
+        .kbd {
+            background: var(--upstage-dark-gray);
+            color: white;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: inherit;
+            font-size: 0.85em;
+            font-weight: 600;
+        }
+
+        /* 부드러운 스크롤 */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* 중앙 정렬 인트로 슬라이드 */
+        .slide.intro {
+            text-align: center;
+            justify-content: center;
+        }
+
+        .slide.intro .header-1,
+        .slide.intro .header-2 {
+            text-align: center;
+        }
+
+        /* 반응형 */
+        @media (max-width: 768px) {
+            .content-grid-2,
+            .content-grid-3,
+            .content-grid-4 {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+
+            .nav-progress .current-topic {
+                display: none;
+            }
+
+            .slide {
+                padding: 16px 3vw 32px 3vw;
+            }
+
+            .header-1 { font-size: 22pt; }
+            .header-2 { font-size: 17pt; }
+            .header-3 { font-size: 15pt; }
+            .basic-font { font-size: 13pt; }
+        }
+
+        /* 코드 블록 전용 스타일 - 향상된 라인 브레이크 지원 */
+        .code-block {
+            background: #F8F9FA;
+            border: 1px solid #E2E8F0;
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin: 12px 0;
+            font-family: 'Monaco', 'Menlo', 'Consolas', 'Courier New', monospace;
+            font-size: 11pt;
+            color: #2D3748;
+            line-height: 1.5;
+            /* 향상된 라인 브레이크 기능 */
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            word-break: break-all;
+            overflow-x: auto;
+        }
+
+        /* 인라인 코드 스타일 */
+        .inline-code {
+            background: #F8F9FA;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Monaco', 'Menlo', 'Consolas', 'Courier New', monospace;
+            font-size: 0.9em;
+            color: #1B365D;
+            border: 1px solid #E2E8F0;
+        }
+
+        /* Mermaid 다이어그램 스타일 */
+        .mermaid {
+            background: #FFFFFF;
+            border: 1px solid #E2E8F0;
+            border-radius: 8px;
+            padding: 16px;
+            margin: 16px 0;
+            text-align: center;
+            overflow-x: auto;
+            overflow-y: hidden;
+        }
+
+        /* Mermaid 다이어그램 반응형 지원 */
+        .mermaid svg {
+            max-width: 100%;
+            height: auto;
+        }
+    </style>
+    <!-- Mermaid.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.0/dist/mermaid.min.js"></script>
+</head>
+<body>
+    <!-- 네비게이션 바 -->
+    <nav class="nav-bar">
+        <div class="nav-logo">🖥️ n8n UI 가이드</div>
+        <div class="nav-progress">
+            <span class="current-topic">N8N 에디터 UI 빠른 투어</span>
+            <span class="slide-counter">1 / 10</span>
+        </div>
+    </nav>
+
+    <!-- 스크롤 진행률 -->
+    <div class="scroll-progress">
+        <div class="scroll-progress-bar" id="progress-bar"></div>
+    </div>
+
+    <!-- 슬라이드 컨테이너 -->
+    <div class="slide-container">
+        <!-- 슬라이드 1: 인트로 -->
+        <section class="slide intro" id="slide-1">
+            <h1 class="header-1">🖥️ N8N 에디터 UI 빠른 투어</h1>
+            <h2 class="header-2">작업실 둘러보기 - 어디에 뭐가 있는지 알아보자</h2>
+            
+            <div class="callout-center">
+                <ol class="step-list">
+                    <li><strong>왼쪽 메뉴</strong> - 내 작업실의 정리된 서랍장</li>
+                    <li><strong>중앙 캔버스</strong> - 자동화를 그림 그리듯 만드는 작업판</li>
+                    <li><strong>노드 패널</strong> - 다양한 업무 도구들의 보관함</li>
+                    <li><strong>첫 자동화</strong> - "Hello World" 워크플로우 만들기</li>
+                </ol>
+            </div>
+        </section>
+
+        <!-- 슬라이드 2: 작업 공간 개요 -->
+        <section class="slide" id="slide-2">
+            <h2 class="header-2">🏢 작업 공간 둘러보기</h2>
+            <div class="message">정리정돈된 작업실의 서랍장처럼 필요한 것들이 체계적으로 배치되어 있습니다</div>
+            
+            <table class="content-table">
+                <thead>
+                    <tr>
+                        <th>메뉴</th>
+                        <th>역할</th>
+                        <th>일상 비유</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>📊 Overview</strong></td>
+                        <td>모든 자동화 시스템 한눈에 보기</td>
+                        <td>작업실 전체를 한눈에 보는 감시실</td>
+                    </tr>
+                    <tr>
+                        <td><strong>👤 Personal</strong></td>
+                        <td>내 개인 작업 공간</td>
+                        <td>내 개인 책상과 서랍</td>
+                    </tr>
+                    <tr>
+                        <td><strong>📁 Projects</strong></td>
+                        <td>프로젝트별로 정리된 공간</td>
+                        <td>프로젝트별로 나눈 파일함</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- 슬라이드 3: 첫 워크플로우 생성 -->
+        <section class="slide" id="slide-3">
+            <h2 class="header-2">✨ 첫 번째 자동화 시작하기</h2>
+            <div class="message">새 워드 문서를 만드는 것처럼 쉽게 첫 워크플로우를 생성합니다</div>
+            
+            <ol class="step-list">
+                <li>
+                    <strong>새 자동화 만들기</strong>
+                    <ul class="checklist">
+                        <li>Overview 클릭 후 <strong>Create Workflow</strong> 버튼 클릭</li>
+                        <li>새 워드 문서 만들기와 동일한 개념</li>
+                    </ul>
+                </li>
+                <li>
+                    <strong>이름 지어주기</strong>
+                    <ul class="checklist">
+                        <li>"첫 번째 자동화" 같은 알아볼 수 있는 이름으로 저장</li>
+                        <li>단축키: <span class="kbd">Ctrl + S</span> (윈도우) / <span class="kbd">Cmd + S</span> (맥)</li>
+                    </ul>
+                </li>
+                <li>
+                    <strong>템플릿 활용하기</strong>
+                    <ul class="checklist">
+                        <li>다른 사람이 만든 자동화를 복사해서 내 것으로 만들기</li>
+                        <li>Workflows → Duplicate로 복제 (요리 레시피 복사하기)</li>
+                    </ul>
+                </li>
+                <li>
+                    <strong>내 상황에 맞게 수정하기</strong>
+                    <ul class="checklist">
+                        <li>복제한 자동화의 설정을 내 회사/상황에 맞게 변경</li>
+                        <li>History 탭에서 이전 버전 확인 및 복원 가능</li>
+                    </ul>
+                </li>
+            </ol>
+        </section>
+
+        <!-- 슬라이드 4: 메인 캔버스 -->
+        <section class="slide" id="slide-4">
+            <h2 class="header-2">🎨 메인 캔버스 (작업 영역)</h2>
+            <div class="message">실제 워크플로우를 그려나가는 디지털 화이트보드입니다</div>
+            
+            <div class="content-grid content-grid-2">
+                <div class="content-card">
+                    <h3 class="card-title">🔧 캔버스 구성 요소</h3>
+                    <ul class="checklist">
+                        <li><strong>점선 격자 배경</strong> - 워크플로우 편집 공간</li>
+                        <li><strong>"Add first step" 점선 사각형</strong> - 첫 번째 노드 추가 위치</li>
+                        <li><strong>Execute workflow 버튼</strong> - 모든 노드 순차적 실행</li>
+                        <li><strong>+ 아이콘 버튼</strong> - 노드 패널 열기</li>
+                        <li><strong>노트 아이콘</strong> - 캔버스에 스티키 노트 추가</li>
+                        <li><strong>Ask Assistant 버튼</strong> - AI 워크플로우 구축 도움</li>
+                    </ul>
+                </div>
+                
+                <div class="content-card">
+                    <h3 class="card-title">🎮 캔버스 제어 기능</h3>
+                    <ul class="checklist">
+                        <li><strong>줌 조절</strong> - 화면에 맞게 줌 조절</li>
+                        <li><strong>줌 인/아웃</strong> - 세부 편집 및 전체 보기</li>
+                        <li><strong>줌 리셋</strong> - 기본 크기로 복원</li>
+                        <li><strong>화면 정리</strong> - 노드 자동 정렬</li>
+                    </ul>
+                    
+                    <h3 class="card-title">🖱️ 캔버스 네비게이션</h3>
+                    <ul class="checklist">
+                        <li><span class="kbd">Ctrl + 좌클릭</span>으로 드래그 이동</li>
+                        <li>마우스 중간 버튼으로 드래그 이동</li>
+                        <li>터치패드에서 두 손가락으로 슬라이드</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- 슬라이드 5: 노드 패널 -->
+        <section class="slide" id="slide-5">
+            <h2 class="header-2">🧩 노드 패널 (우측)</h2>
+            <div class="message">레고 블록을 선택하는 것처럼 필요한 기능 노드를 골라 사용합니다</div>
+            
+            <div class="content-grid content-grid-2">
+                <div class="content-card">
+                    <h3 class="card-title">🔑 노드 패널 열기 방법</h3>
+                    <ul class="checklist">
+                        <li>캔버스 우상단 <strong>+ 아이콘</strong> 클릭</li>
+                        <li>기존 노드 우측 <strong>+ 아이콘</strong> 클릭</li>
+                        <li>키보드 <span class="kbd">Tab 키</span> 누르기</li>
+                    </ul>
+                </div>
+                
+                <div class="content-card">
+                    <h3 class="card-title">📦 노드 분류</h3>
+                    <ul class="checklist">
+                        <li><strong>첫 번째 노드</strong> - 다양한 트리거 노드 카테고리</li>
+                        <li><strong>Advanced AI</strong> - AI 기능 노드들</li>
+                        <li><strong>Actions in an App</strong> - 앱 연동 액션</li>
+                        <li><strong>Data transformation</strong> - 데이터 변환</li>
+                        <li><strong>Flow</strong> - 흐름 제어</li>
+                        <li><strong>Core</strong> - 핵심 기능</li>
+                        <li><strong>Human in the loop</strong> - 사람 개입 기능</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- 슬라이드 6: 노드 관리 -->
+        <section class="slide" id="slide-6">
+            <h2 class="header-2">⚙️ 노드 관리 기능</h2>
+            <div class="message">각 노드를 효율적으로 제어하고 편집하는 방법을 익힙니다</div>
+            
+            <div class="content-grid content-grid-2">
+                <div class="content-card">
+                    <h3 class="card-title">🎛️ 노드 제어 (마우스 호버 시)</h3>
+                    <ul class="checklist">
+                        <li><strong>Execute step</strong> - 해당 노드만 실행</li>
+                        <li><strong>Deactivate</strong> - 노드 비활성화</li>
+                        <li><strong>Delete</strong> - 노드 삭제</li>
+                        <li><strong>Node context menu</strong> - 노드 액션 메뉴</li>
+                    </ul>
+                </div>
+                
+                <div class="content-card">
+                    <h3 class="card-title">✏️ 노드 이름 변경</h3>
+                    <ul class="checklist">
+                        <li>노드 선택 후 <span class="kbd">F2 키</span></li>
+                        <li>노드 더블클릭 → 좌상단 이름 클릭 → Rename</li>
+                        <li>노드 우클릭 → Rename 옵션 선택</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- 슬라이드 7: 실행 관리 -->
+        <section class="slide" id="slide-7">
+            <h2 class="header-2">▶️ 실행 관리</h2>
+            <div class="message">워크플로우를 테스트하고 모니터링하는 핵심 기능입니다</div>
+            
+            <div class="content-grid content-grid-2">
+                <div class="content-card">
+                    <h3 class="card-title">📊 실행 로그 접근 방법</h3>
+                    <h4 class="header-3">특정 워크플로우 실행:</h4>
+                    <ul class="checklist">
+                        <li>워크플로우 캔버스에서 <strong>Executions 탭</strong> 선택</li>
+                        <li><strong>Editor 탭</strong>으로 노드 에디터 복귀</li>
+                    </ul>
+                    
+                    <h4 class="header-3">전체 실행 로그:</h4>
+                    <ul class="checklist">
+                        <li>에디터 UI에서 <strong>Overview</strong> 선택</li>
+                        <li>메인 패널의 <strong>Executions 탭</strong> 선택</li>
+                    </ul>
+                </div>
+                
+                <div class="content-card">
+                    <h3 class="card-title">🔄 워크플로우 활성화</h3>
+                    <ul class="checklist">
+                        <li>상단 내비게이션의 <strong>Inactive</strong> 토글을 <strong>Activated</strong>로 설정</li>
+                        <li>우상단 점 3개 메뉴에서 <strong>Settings</strong> 접근</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- 슬라이드 8: 실행 설정 -->
+        <section class="slide" id="slide-8">
+            <h2 class="header-2">⚙️ 실행 설정 옵션</h2>
+            <div class="message">워크플로우 실행을 최적화하고 문제를 추적하는 설정들입니다</div>
+            
+            <div class="content-grid content-grid-2">
+                <div class="content-card">
+                    <h3 class="card-title">⏱️ 타임아웃 설정</h3>
+                    <ul class="checklist">
+                        <li><strong>EXECUTIONS_TIMEOUT</strong> - 최대 실행 시간(초) 설정</li>
+                        <li>무한 실행 방지 및 리소스 소비 제어</li>
+                    </ul>
+                </div>
+                
+                <div class="content-card">
+                    <h3 class="card-title">💾 실행 데이터 저장</h3>
+                    <ul class="checklist">
+                        <li><strong>Save failed executions</strong> - 실패한 실행 데이터 저장 (기본: 저장)</li>
+                        <li><strong>Save successful executions</strong> - 성공한 실행 데이터 저장 (기본: 저장)</li>
+                        <li><strong>Save manual executions</strong> - 수동 실행 데이터 저장 (기본: 저장)</li>
+                        <li><strong>Save execution progress</strong> - 각 노드 실행 데이터 저장 (에러 지점 재개 가능, 기본: 저장 안 함)</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- 슬라이드 9: 크레덴셜 관리 개요 -->
+        <section class="slide" id="slide-9">
+            <h2 class="header-2">🔐 크레덴셜 관리</h2>
+            <div class="message">외부 서비스와 안전하게 연결하기 위한 인증 정보를 관리합니다</div>
+            
+            <div class="content-grid content-grid-3">
+                <div class="content-card">
+                    <h3 class="card-title">🔑 크레덴셜 개요</h3>
+                    <ul class="checklist">
+                        <li>앱과 서비스 인증을 위한 개인 정보</li>
+                        <li>n8n과 외부 서비스 간 연결 브리지</li>
+                        <li>암호화되어 안전하게 저장됨</li>
+                    </ul>
+                </div>
+                
+                <div class="content-card">
+                    <h3 class="card-title">📁 인터페이스 접근</h3>
+                    <ul class="checklist">
+                        <li>좌측 메뉴에서 <strong>"Credentials"</strong> 선택</li>
+                        <li><strong>My credentials</strong> - 내가 생성한 크레덴셜</li>
+                        <li><strong>All credentials</strong> - 공유된 크레덴셜 포함</li>
+                    </ul>
+                </div>
+                
+                <div class="content-card">
+                    <h3 class="card-title">🛡️ 보안 기능</h3>
+                    <ul class="checklist">
+                        <li><strong>암호화 저장</strong> - 민감한 정보 보호</li>
+                        <li><strong>OAuth 인증</strong> - "connect" 버튼으로 간편 로그인</li>
+                        <li><strong>필드 숨김</strong> - 민감한 정보 자동 숨김</li>
+                        <li><strong>접근 제어</strong> - 노드별 권한 관리</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- 슬라이드 10: 효율적인 워크플로우 개발 -->
+        <section class="slide" id="slide-10">
+            <h2 class="header-2">🚀 효율적인 워크플로우 개발 순서</h2>
+            <div class="message">UI 요소들을 조합하여 체계적으로 자동화를 구축하는 방법입니다</div>
+            
+            <ol class="step-list">
+                <li>
+                    <strong>좌측 패널에서 프로젝트 선택</strong>
+                    <ul class="checklist">
+                        <li><strong>Overview</strong> 또는 <strong>Personal</strong> 선택</li>
+                        <li><strong>Create Workflow</strong> 클릭하여 새 워크플로우 시작</li>
+                    </ul>
+                </li>
+                <li>
+                    <strong>노드 패널에서 트리거 선택</strong>
+                    <ul class="checklist">
+                        <li><span class="kbd">Tab 키</span> 또는 <strong>+ 아이콘</strong> 클릭으로 노드 패널 열기</li>
+                        <li>트리거 노드 카테고리에서 적절한 노드 선택</li>
+                    </ul>
+                </li>
+                <li>
+                    <strong>노드 설정 및 크레덴셜 연결</strong>
+                    <ul class="checklist">
+                        <li>노드 더블클릭으로 설정 패널 열기</li>
+                        <li>필요한 크레덴셜 선택 또는 새로 생성</li>
+                    </ul>
+                </li>
+                <li>
+                    <strong>워크플로우 확장 및 연결</strong>
+                    <ul class="checklist">
+                        <li>노드 우측 <strong>+ 아이콘</strong>으로 다음 노드 추가</li>
+                        <li>Advanced AI, Actions, Data transformation 등에서 선택</li>
+                    </ul>
+                </li>
+                <li>
+                    <strong>테스트 및 활성화</strong>
+                    <ul class="checklist">
+                        <li><strong>Execute workflow</strong> 또는 개별 노드 <strong>Execute step</strong>으로 테스트</li>
+                        <li>상단 토글을 <strong>Activated</strong>로 설정하여 자동 실행 활성화</li>
+                    </ul>
+                </li>
+            </ol>
+            
+            <div class="callout">
+                🎉 <strong>마스터 완료!</strong> n8n 에디터 UI를 완전히 이해했습니다. 다음은 크레덴셜 발급과 노드 속성값 설정을 자세히 배워보겠습니다!
+            </div>
+        </section>
+    </div>
+
+    <script>
+        // 스크롤 진행률 업데이트
+        function updateScrollProgress() {
+            const scrollTop = window.pageYOffset;
+            const docHeight = document.body.scrollHeight - window.innerHeight;
+            const scrollPercent = (scrollTop / docHeight) * 100;
+            
+            document.getElementById('progress-bar').style.width = scrollPercent + '%';
+            document.getElementById('progress-bar').setAttribute('data-progress', Math.round(scrollPercent));
+        }
+
+        // 현재 슬라이드 업데이트
+        function updateCurrentSlide() {
+            const slides = document.querySelectorAll('.slide');
+            const scrollTop = window.pageYOffset + 150;
+            
+            let currentSlide = 1;
+            slides.forEach((slide, index) => {
+                if (scrollTop >= slide.offsetTop) {
+                    currentSlide = index + 1;
+                }
+            });
+            
+            document.querySelector('.slide-counter').textContent = `${currentSlide} / ${slides.length}`;
+        }
+
+        // 이벤트 리스너
+        window.addEventListener('scroll', () => {
+            updateScrollProgress();
+            updateCurrentSlide();
+        });
+
+        // 키보드 네비게이션
+        document.addEventListener('keydown', (e) => {
+            const slides = document.querySelectorAll('.slide');
+            const currentSlideElement = Array.from(slides).find(slide => {
+                const rect = slide.getBoundingClientRect();
+                return rect.top <= 100 && rect.bottom > 100;
+            });
+            
+            if (!currentSlideElement) return;
+            
+            const currentIndex = Array.from(slides).indexOf(currentSlideElement);
+            
+            if (e.key === 'ArrowDown' || e.key === 'ArrowRight') {
+                if (currentIndex < slides.length - 1) {
+                    slides[currentIndex + 1].scrollIntoView({ behavior: 'smooth' });
+                }
+            } else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
+                if (currentIndex > 0) {
+                    slides[currentIndex - 1].scrollIntoView({ behavior: 'smooth' });
+                }
+            }
+        });
+
+        // 초기 로딩
+        document.addEventListener('DOMContentLoaded', () => {
+            updateScrollProgress();
+            updateCurrentSlide();
+        });
+    </script>
+    
+    <!-- Mermaid 초기화 스크립트 -->
+    <script>
+        // Mermaid 설정 및 초기화
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'neutral',
+            themeVariables: {
+                primaryColor: '#1B365D',
+                primaryTextColor: '#2D3748',
+                primaryBorderColor: '#E2E8F0',
+                lineColor: '#636E72',
+                backgroundColor: '#FFFFFF',
+                secondaryColor: '#F8F9FA',
+                tertiaryColor: '#E2E8F0'
+            },
+            flowchart: {
+                useMaxWidth: true,
+                htmlLabels: true
+            },
+            sequence: {
+                useMaxWidth: true,
+                wrap: true
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>n8n 자동화 교육 플랫폼</title>
+    <style>
+        /* Global Reset */
+        *, *::before, *::after { box-sizing: border-box; }
+        html, body { margin: 0; padding: 0; height: 100%; overflow: hidden; }
+        
+        /* Color Variables */
+        :root {
+            --upstage-deep-blue: #1B365D;
+            --upstage-electric-blue: rgb(135, 0, 232);
+            --upstage-dark-gray: #2D3748;
+            --pure-white: #FFFFFF;
+            --light-silver: #F8F9FA;
+            --border-normal: #E2E8F0;
+            --hover-bg: rgba(135, 0, 232, 0.1);
+            --sidebar-width: 320px;
+        }
+
+        /* Layout */
+        .platform-container {
+            display: flex;
+            height: 100vh;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: var(--pure-white);
+            border-right: 2px solid var(--border-normal);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: 2px 0 10px rgba(27, 54, 93, 0.1);
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            background: linear-gradient(135deg, var(--upstage-deep-blue), var(--upstage-electric-blue));
+            color: var(--pure-white);
+            text-align: center;
+        }
+
+        .sidebar-header h1 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .sidebar-header p {
+            margin: 8px 0 0 0;
+            font-size: 12px;
+            opacity: 0.9;
+        }
+
+        /* Navigation */
+        .nav-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 12px 0;
+        }
+
+        .nav-section {
+            margin-bottom: 24px;
+        }
+
+        .nav-section-title {
+            padding: 8px 20px;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--upstage-dark-gray);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid var(--border-normal);
+            margin-bottom: 8px;
+        }
+
+        .nav-item {
+            display: block;
+            padding: 12px 20px;
+            color: var(--upstage-dark-gray);
+            text-decoration: none;
+            font-size: 13px;
+            line-height: 1.3;
+            border-left: 3px solid transparent;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        .nav-item:hover {
+            background: var(--hover-bg);
+            border-left-color: var(--upstage-electric-blue);
+            color: var(--upstage-deep-blue);
+        }
+
+        .nav-item.active {
+            background: var(--hover-bg);
+            border-left-color: var(--upstage-electric-blue);
+            color: var(--upstage-deep-blue);
+            font-weight: 600;
+        }
+
+        .nav-item-number {
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            background: var(--light-silver);
+            color: var(--upstage-dark-gray);
+            border-radius: 50%;
+            text-align: center;
+            line-height: 24px;
+            font-size: 11px;
+            font-weight: 600;
+            margin-right: 12px;
+            transition: all 0.2s ease;
+        }
+
+        .nav-item:hover .nav-item-number,
+        .nav-item.active .nav-item-number {
+            background: var(--upstage-electric-blue);
+            color: var(--pure-white);
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            position: relative;
+            background: var(--pure-white);
+        }
+
+        /* Floating Controls */
+        .floating-controls {
+            position: absolute;
+            top: 12px;
+            left: 16px;
+            display: flex;
+            gap: 6px;
+            z-index: 100;
+            opacity: 0;
+            transition: opacity 0.1s ease;
+        }
+
+        .main-content:hover .floating-controls {
+            opacity: 1;
+        }
+
+        .floating-btn {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.95);
+            border: none;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .floating-btn {
+            position: relative;
+        }
+
+        .floating-btn:hover {
+            background: var(--upstage-electric-blue);
+            color: var(--pure-white);
+            transform: scale(1.1);
+        }
+
+        .floating-btn:hover::after {
+            content: "전체화면";
+            position: absolute;
+            left: 50px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0, 0, 0, 0.8);
+            color: #ccc;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            white-space: nowrap;
+            z-index: 1000;
+        }
+
+        .slide-frame {
+            width: 100%;
+            height: 100vh;
+            border: none;
+            background: var(--pure-white);
+        }
+
+        .welcome-screen {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .welcome-screen h2 {
+            font-size: 32px;
+            color: var(--upstage-deep-blue);
+            margin-bottom: 16px;
+        }
+
+        .welcome-screen p {
+            font-size: 16px;
+            color: var(--upstage-dark-gray);
+            margin-bottom: 32px;
+            max-width: 500px;
+            line-height: 1.6;
+        }
+
+        .start-btn {
+            padding: 16px 32px;
+            background: linear-gradient(135deg, var(--upstage-deep-blue), var(--upstage-electric-blue));
+            color: var(--pure-white);
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .start-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        /* Loading State */
+        .loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid var(--light-silver);
+            border-top: 4px solid var(--upstage-electric-blue);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .platform-container {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                height: 200px;
+                border-right: none;
+                border-bottom: 2px solid var(--border-normal);
+            }
+            
+            .nav-container {
+                display: flex;
+                overflow-x: auto;
+                overflow-y: hidden;
+                padding: 8px;
+            }
+            
+            .nav-section {
+                min-width: 300px;
+                margin-right: 16px;
+                margin-bottom: 0;
+            }
+            
+            .main-content {
+                height: calc(100vh - 200px);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="platform-container">
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h1>🚀 n8n 자동화 교육</h1>
+                <p>노코드로 업무 혁신하기</p>
+            </div>
+            
+            <div class="nav-container">
+                <!-- 초기 세팅 -->
+                <div class="nav-section">
+                    <div class="nav-section-title">초기 세팅</div>
+                    <a class="nav-item" data-slide="01-업무-자동화와-n8n-소개-slides.html">
+                        <span class="nav-item-number">1</span>
+                        n8n 소개
+                    </a>
+                    <a class="nav-item" data-slide="02-n8n-설치-및-환경-구성-slides.html">
+                        <span class="nav-item-number">2</span>
+                        n8n 설치
+                    </a>
+                    <a class="nav-item" data-slide="03-N8N-에디터-UI-빠른-투어-slides.html">
+                        <span class="nav-item-number">3</span>
+                        n8n 투어
+                    </a>
+                    <a class="nav-item" data-slide="04-Credential-발급-및-관리-slides.html">
+                        <span class="nav-item-number">4</span>
+                        크레덴셜 발급 및 관리
+                    </a>
+                </div>
+
+                <!-- 워크플로우 이해 -->
+                <div class="nav-section">
+                    <div class="nav-section-title">워크플로우 이해</div>
+                    <a class="nav-item" data-slide="05-노드와-연결-이해-slides.html">
+                        <span class="nav-item-number">5</span>
+                        노드와 연결 이해
+                    </a>
+                    <a class="nav-item" data-slide="06-트리거-노드-이해-slides.html">
+                        <span class="nav-item-number">6</span>
+                        트리거 노드 이해
+                    </a>
+                    <a class="nav-item" data-slide="07-액션-노드들의-구분-slides.html">
+                        <span class="nav-item-number">7</span>
+                        액션 노드 이해
+                    </a>
+                    <a class="nav-item" data-slide="08-기본-워크플로우-제작-실습-slides.html">
+                        <span class="nav-item-number">8</span>
+                        기본 워크플로우 제작 실습
+                    </a>
+                </div>
+
+                <!-- 문서처리 자동화 -->
+                <div class="nav-section">
+                    <div class="nav-section-title">문서처리 자동화</div>
+                    <a class="nav-item" data-slide="09-문서-가져오기와-저장하기-slides.html">
+                        <span class="nav-item-number">9</span>
+                        문서 가져오기와 저장하기
+                    </a>
+                    <a class="nav-item" data-slide="10-구조화된-데이터와-DB-저장하기-slides.html">
+                        <span class="nav-item-number">10</span>
+                        구조화된 데이터와 DB에 저장하기
+                    </a>
+                    <a class="nav-item" data-slide="11-업스테이지-노드-설치-및-문서-처리-모듈-이해-slides.html">
+                        <span class="nav-item-number">11</span>
+                        업스테이지 노드 설치 및 문서 처리 모듈 이해
+                    </a>
+                    <a class="nav-item" data-slide="12-문서-처리-자동화-실습-slides.html">
+                        <span class="nav-item-number">12</span>
+                        문서 처리 자동화 실습
+                    </a>
+                </div>
+
+                <!-- 언어모델 활용과 의미 검색 -->
+                <div class="nav-section">
+                    <div class="nav-section-title">언어모델 활용과 의미 검색</div>
+                    <a class="nav-item" data-slide="13-언어모델-이해와-프롬프팅-기법-slides.html">
+                        <span class="nav-item-number">13</span>
+                        언어모델 이해화 프롬프팅 기법
+                    </a>
+                    <a class="nav-item" data-slide="14-보고서-작성-자동화-실습-slides.html">
+                        <span class="nav-item-number">14</span>
+                        보고서 작성 자동화 실습
+                    </a>
+                    <a class="nav-item" data-slide="15-RAG-시스템-이해와-실습-slides.html">
+                        <span class="nav-item-number">15</span>
+                        RAG 시스템 이해와 실습
+                    </a>
+                    <a class="nav-item" data-slide="16-FAQ봇-제작-및-대응-자동화-slides.html">
+                        <span class="nav-item-number">16</span>
+                        FAQ봇 제작 및 대응 자동화
+                    </a>
+                </div>
+
+                <!-- 에이전트 활용 -->
+                <div class="nav-section">
+                    <div class="nav-section-title">에이전트 활용</div>
+                    <a class="nav-item" data-slide="17-에이전트-노드의-이해-slides.html">
+                        <span class="nav-item-number">17</span>
+                        에이전트 노드의 이해
+                    </a>
+                    <a class="nav-item" data-slide="18-서브워크플로우와-MCP-활용-slides.html">
+                        <span class="nav-item-number">18</span>
+                        서브노드의 이해와 MCP
+                    </a>
+                    <a class="nav-item" data-slide="19-API-개념과-HTTP-Request-slides.html">
+                        <span class="nav-item-number">19</span>
+                        API 개념과 HTTP Request
+                    </a>
+                    <a class="nav-item" data-slide="20-나만의-Agent-봇-제작-slides.html">
+                        <span class="nav-item-number">20</span>
+                        나만의 Agent 봇 제작
+                    </a>
+                </div>
+
+                <!-- 최종 관리 및 고도화 -->
+                <div class="nav-section">
+                    <div class="nav-section-title">최종 관리 및 고도화</div>
+                    <a class="nav-item" data-slide="21-디버깅-팁-및-유지보수-slides.html">
+                        <span class="nav-item-number">21</span>
+                        디버깅 팁 및 유지보수
+                    </a>
+                    <a class="nav-item" data-slide="22-템플릿-검색-및-활용-slides.html">
+                        <span class="nav-item-number">22</span>
+                        템플릿 검색 및 활용
+                    </a>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Floating Controls -->
+            <div class="floating-controls">
+                <button class="floating-btn" onclick="toggleFullscreen()" title="전체화면">⛶</button>
+            </div>
+            
+            <div id="slide-container" class="slide-frame">
+                <div class="welcome-screen">
+                    <h2>🚀 n8n 자동화 교육에 오신 것을 환영합니다!</h2>
+                    <p>왼쪽 사이드바에서 학습하고 싶은 강의를 선택하세요. 각 강의는 실무에 바로 적용할 수 있는 노코드 자동화 기술을 다룹니다.</p>
+                    <button class="start-btn" onclick="loadSlide('01-업무-자동화와-n8n-소개-slides.html')">첫 번째 강의 시작하기</button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        let currentSlide = null;
+        
+        // Initialize navigation
+        document.addEventListener('DOMContentLoaded', function() {
+            const navItems = document.querySelectorAll('.nav-item');
+            navItems.forEach(item => {
+                item.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const slideFile = this.getAttribute('data-slide');
+                    loadSlide(slideFile);
+                    setActiveNavItem(this);
+                });
+            });
+        });
+
+        function loadSlide(slideFile) {
+            const container = document.getElementById('slide-container');
+            
+            // Show loading state
+            container.innerHTML = '<div class="loading"><div class="spinner"></div></div>';
+            
+            // Create iframe
+            const iframe = document.createElement('iframe');
+            iframe.src = slideFile;
+            iframe.className = 'slide-frame';
+            iframe.style.width = '100%';
+            iframe.style.height = '100%';
+            iframe.style.border = 'none';
+            
+            iframe.onerror = function() {
+                container.innerHTML = `
+                    <div class="welcome-screen">
+                        <h2>❌ 슬라이드를 불러올 수 없습니다</h2>
+                        <p>파일 경로: ${slideFile}</p>
+                        <button class="start-btn" onclick="location.reload()">다시 시도</button>
+                    </div>
+                `;
+            };
+            
+            // Replace content
+            setTimeout(() => {
+                container.innerHTML = '';
+                container.appendChild(iframe);
+            }, 300);
+            
+            currentSlide = slideFile;
+        }
+
+        function setActiveNavItem(activeItem) {
+            // Remove active class from all items
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // Add active class to clicked item
+            activeItem.classList.add('active');
+        }
+
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen();
+            } else {
+                document.exitFullscreen();
+            }
+        }
+
+
+        // Keyboard navigation
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && document.fullscreenElement) {
+                document.exitFullscreen();
+            }
+        });
+    </script>
+</body>
+</html>

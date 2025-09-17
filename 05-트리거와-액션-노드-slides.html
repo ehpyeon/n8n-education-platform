@@ -1,0 +1,1335 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>05강: 트리거와 액션 노드 + 흐름제어와 데이터조작</title>
+    <style>
+        /* Global Reset and Base Styles */
+        *, *::before, *::after { box-sizing: border-box; }
+        html, body { max-width: 100%; overflow-x: hidden; margin: 0; padding: 0; }
+        :root { scrollbar-gutter: stable both-edges; }
+        
+        img, video, svg, canvas, iframe, table { max-width: 100%; height: auto; }
+        pre, code, .code-block { max-width: 100%; overflow: auto; }
+        
+        .content-grid { min-width: 0; }
+        .content-grid > * { min-width: 0; overflow-wrap: anywhere; }
+        
+        .basic-font, .card-title, .header-1, .header-2, .header-3 { overflow-wrap: anywhere; word-break: break-word; }
+
+        /* Typography */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #2D3748;
+            background: #FFFFFF;
+        }
+
+        .basic-font {
+            font-size: 13pt;
+            color: #2D3748;
+            line-height: 1.3;
+            margin-bottom: 8px;
+        }
+
+        .header-3 {
+            font-size: 15pt;
+            font-weight: 600;
+            color: #1B365D;
+            margin-bottom: 6px;
+            line-height: 1.3;
+            text-align: left;
+        }
+
+        .header-2 {
+            font-size: 18pt;
+            font-weight: 600;
+            color: #1B365D;
+            margin-bottom: 9px;
+            line-height: 1.3;
+        }
+
+        .header-1 {
+            font-size: 21pt;
+            font-weight: 700;
+            color: #1B365D;
+            margin-bottom: 12px;
+            line-height: 1.2;
+        }
+
+        .message {
+            font-size: 15pt;
+            font-weight: 500;
+            color: rgb(115, 113, 113);
+            margin-bottom: 6px;
+            line-height: 1.3;
+            text-align: left;
+        }
+
+        /* Navigation */
+        .nav-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 70px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid #E2E8F0;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 5vw;
+            box-shadow: 0 2px 10px rgba(27, 54, 93, 0.1);
+        }
+
+        .nav-logo {
+            height: 40px;
+            font-size: 24px;
+            font-weight: 700;
+            color: #1B365D;
+        }
+
+        .nav-progress {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 14px;
+            color: #636E72;
+        }
+
+        .nav-progress .current-topic {
+            font-weight: 600;
+            color: #1B365D;
+            max-width: 300px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .nav-progress .slide-counter {
+            background: #F8F9FA;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            color: #636E72;
+        }
+
+        /* Progress Bar */
+        .scroll-progress {
+            position: fixed;
+            top: 70px;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: #F8F9FA;
+            z-index: 999;
+        }
+
+        .scroll-progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #1B365D 0%, rgb(135, 0, 232) 100%);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        /* Layout */
+        .slide-container {
+            width: 100%;
+            background: #FFFFFF;
+            padding-top: 100px;
+        }
+
+        .slide {
+            min-height: calc(100vh - 100px);
+            width: 100%;
+            padding: 32px 5vw 48px 5vw;
+            display: flex;
+            flex-direction: column;
+            text-align: left;
+            scroll-margin-top: 100px;
+            box-sizing: border-box;
+        }
+
+        .slide + .slide {
+            border-top: 2px solid #F8F9FA;
+        }
+
+        /* Content Layout */
+        .content-grid {
+            display: grid;
+            gap: 8px;
+            margin: 12px 0;
+        }
+
+        .content-grid-2 {
+            grid-template-columns: 1fr 1fr;
+        }
+
+        .content-grid-3 {
+            grid-template-columns: repeat(3, 1fr);
+        }
+
+        /* Cards */
+        .content-card {
+            background: #FFFFFF;
+            border: 1px solid rgb(235, 226, 240);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 8px;
+            box-shadow: 0 2px 8px rgba(27, 54, 93, 0.05);
+            transition: all 0.2s ease;
+            margin-top: 0px;
+        }
+
+        .content-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(27, 54, 93, 0.1);
+        }
+
+        .card-title {
+            font-size: 15pt;
+            font-weight: 600;
+            color: #1B365D;
+            margin-bottom: 12px;
+            margin-top: 6px;
+            text-align: left;
+        }
+
+        /* Callouts */
+        .callout-center {
+            background: #ffffff;
+            border: 1px solid rgba(27, 54, 93, 0.12);
+            border-radius: 14px;
+            padding: 20px 24px;
+            margin: 24px auto;
+            width: fit-content;
+            box-shadow: 0 4px 16px rgba(27, 54, 93, 0.08), 0 1px 3px rgba(27, 54, 93, 0.06);
+            text-align: left;
+        }
+
+        .callout {
+            padding: 16px;
+            margin: 8px auto;
+            background: rgba(178, 73, 234, 0.04);
+            border: 0px;
+            text-align: left;
+            width: 100%;
+            border-radius: 8px;
+            font-size: 13pt;
+            line-height: 1.7;
+        }
+
+        /* Lists */
+        .step-list {
+            list-style: none;
+            counter-reset: step-counter;
+            margin: 12px 0;
+            padding-left: 0;
+        }
+
+        .step-list > li {
+            counter-increment: step-counter;
+            margin-bottom: 10px;
+            padding-left: 36px;
+            position: relative;
+            line-height: 1.2;
+            font-size: 12pt;
+        }
+
+        .step-list > li::before {
+            content: counter(step-counter);
+            position: absolute;
+            left: 0;
+            top: 0;
+            background: rgba(114, 29, 171, 0.7);
+            color: white;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12pt;
+            font-weight: 600;
+        }
+
+        .checklist {
+            list-style: none;
+            margin: 12px 0;
+            padding-left: 0;
+        }
+
+        .checklist li {
+            padding: 4px 0 4px 26px;
+            position: relative;
+            margin-bottom: 0px;
+            line-height: 1.2;
+            font-size: 12pt;
+        }
+
+        .checklist li::before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: rgba(114, 29, 171, 0.7);
+            font-weight: bold;
+            font-size: 12pt;
+        }
+
+        /* Tables */
+        .content-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 12px 0;
+            background: #FFFFFF;
+            border: 1px solid #E2E8F0;
+            border-radius: 8px;
+            overflow: hidden;
+            font-size: 12pt;
+        }
+
+        .content-table th {
+            background: #F8F9FA;
+            padding: 8px 8px;
+            font-size: 13pt;
+            font-weight: 600;
+            color: #1B365D;
+            text-align: left;
+            border-bottom: 2px solid #E2E8F0;
+        }
+
+        .content-table td {
+            padding: 8px 8px;
+            color: #2D3748;
+            border-bottom: 1.5px solid #F8F9FA;
+            text-align: left;
+            vertical-align: top;
+        }
+
+        .content-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .content-table tr:hover {
+            background: rgba(178, 73, 234, 0.05);
+        }
+
+        /* Code Blocks */
+        .code-block {
+            background: #F8F9FA;
+            border: 1px solid #E2E8F0;
+            border-radius: 8px;
+            padding: 8px 12px;
+            margin: 8px 0;
+            font-family: 'Monaco', 'Menlo', 'Consolas', monospace;
+            font-size: 10pt;
+            color: #2D3748;
+            overflow-x: auto;
+            line-height: 1.4;
+        }
+
+        /* Center alignment for intro slide */
+        .slide.intro {
+            text-align: center;
+            justify-content: center;
+        }
+
+        .slide.intro .header-1,
+        .slide.intro .header-2 {
+            text-align: center;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .content-grid-2,
+            .content-grid-3 {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+            
+            .slide {
+                padding: 16px 3vw 32px 3vw;
+                min-height: calc(100vh - 80px);
+            }
+            
+            .nav-bar {
+                height: 60px;
+                padding: 0 3vw;
+            }
+            
+            .slide-container {
+                padding-top: 80px;
+            }
+            
+            .header-1 { font-size: 22pt; }
+            .header-2 { font-size: 17pt; }
+            .header-3 { font-size: 15pt; }
+            .basic-font { font-size: 13pt; }
+            
+            .content-card {
+                padding: 16px;
+                margin-bottom: 4px;
+            }
+        }
+
+        /* Smooth scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* 코드 블록 전용 스타일 - 향상된 라인 브레이크 지원 */
+        .code-block {
+            background: #F8F9FA;
+            border: 1px solid #E2E8F0;
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin: 12px 0;
+            font-family: 'Monaco', 'Menlo', 'Consolas', 'Courier New', monospace;
+            font-size: 11pt;
+            color: #2D3748;
+            line-height: 1.5;
+            /* 향상된 라인 브레이크 기능 */
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            word-break: break-all;
+            overflow-x: auto;
+        }
+
+        /* 인라인 코드 스타일 */
+        .inline-code {
+            background: #F8F9FA;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Monaco', 'Menlo', 'Consolas', 'Courier New', monospace;
+            font-size: 0.9em;
+            color: #1B365D;
+            border: 1px solid #E2E8F0;
+        }
+
+        /* Mermaid 다이어그램 스타일 */
+        .mermaid {
+            background: #FFFFFF;
+            border: 1px solid #E2E8F0;
+            border-radius: 8px;
+            padding: 16px;
+            margin: 16px 0;
+            text-align: center;
+            overflow-x: auto;
+            overflow-y: hidden;
+        }
+
+        /* Mermaid 다이어그램 반응형 지원 */
+        .mermaid svg {
+            max-width: 100%;
+            height: auto;
+        }
+    </style>
+    <!-- Mermaid.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.0/dist/mermaid.min.js"></script>
+</head>
+<body>
+    <nav class="nav-bar">
+        <div class="nav-logo">🚀 n8n 마스터</div>
+        <div class="nav-progress">
+            <span class="current-topic">트리거와 액션 노드</span>
+            <span class="slide-counter">1 / 14</span>
+        </div>
+    </nav>
+
+    <div class="scroll-progress">
+        <div class="scroll-progress-bar"></div>
+    </div>
+
+    <div class="slide-container">
+        <!-- Slide 1: Intro -->
+        <section class="slide intro" id="slide-1">
+            <h1 class="header-1">🚀 트리거와 액션 노드</h1>
+            <h2 class="header-2">자동화의 시작부터 완성까지</h2>
+            <div class="callout-center">
+                <div class="content-grid content-grid-2">
+                    <div>
+                        <div class="header-3">🔔 트리거 노드 (시작점)</div>
+                        <ol class="step-list">
+                            <li><strong>Manual Trigger</strong> - 수동 실행</li>
+                            <li><strong>Schedule</strong> - 시간 기반</li>
+                            <li><strong>Webhook</strong> - 이벤트 기반</li>
+                            <li><strong>앱 연동</strong> - 서비스 기반</li>
+                        </ol>
+                    </div>
+                    <div>
+                        <div class="header-3">⚙️ 액션 노드 (처리부)</div>
+                        <ol class="step-list">
+                            <li><strong>데이터 수집</strong> - HTTP, DB</li>
+                            <li><strong>데이터 가공</strong> - Set, Function</li>
+                            <li><strong>데이터 저장</strong> - DB, 클라우드</li>
+                            <li><strong>소통 도구</strong> - Gmail, Slack</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 2: 트리거 개념 -->
+        <section class="slide" id="slide-2">
+            <h2 class="header-2">🏠 집 안의 자동화 시스템처럼</h2>
+            <div class="message">트리거는 집 안의 센서들처럼 특정 상황을 감지해서 자동화를 시작합니다</div>
+            
+            <div class="content-grid content-grid-3">
+                <div class="content-card">
+                    <div class="card-title">⚡ 즉시 반응형 (이벤트)</div>
+                    <table class="content-table">
+                        <tr>
+                            <th>집 안 예시</th>
+                            <th>n8n 트리거</th>
+                        </tr>
+                        <tr>
+                            <td>현관문 열리면 불 켜짐</td>
+                            <td>Webhook</td>
+                        </tr>
+                        <tr>
+                            <td>우편함 편지 도착</td>
+                            <td>Email Trigger</td>
+                        </tr>
+                        <tr>
+                            <td>냉장고 문 열림 감지</td>
+                            <td>File Trigger</td>
+                        </tr>
+                        <tr>
+                            <td>벨 누르면 인터폰</td>
+                            <td>App 기반</td>
+                        </tr>
+                    </table>
+                </div>
+                
+                <div class="content-card">
+                    <div class="card-title">⏰ 시간 타이머형</div>
+                    <table class="content-table">
+                        <tr>
+                            <th>집 안 예시</th>
+                            <th>n8n 트리거</th>
+                        </tr>
+                        <tr>
+                            <td>7시 커피머신 작동</td>
+                            <td>Schedule</td>
+                        </tr>
+                        <tr>
+                            <td>30분마다 공기청정기</td>
+                            <td>Interval</td>
+                        </tr>
+                        <tr>
+                            <td>일요일 로봇청소기</td>
+                            <td>Cron</td>
+                        </tr>
+                    </table>
+                </div>
+                
+                <div class="content-card">
+                    <div class="card-title">👆 수동 스위치형</div>
+                    <table class="content-table">
+                        <tr>
+                            <th>집 안 예시</th>
+                            <th>n8n 트리거</th>
+                        </tr>
+                        <tr>
+                            <td>전등 스위치</td>
+                            <td>Manual</td>
+                        </tr>
+                        <tr>
+                            <td>TV 리모콘</td>
+                            <td>Chat Trigger</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 3: Webhook 개념 -->
+        <section class="slide" id="slide-3">
+            <h2 class="header-2">🚪 Webhook - 나만의 똑똑한 대문</h2>
+            <div class="message">우리 집에 들어올 수 있는 특별한 대문을 만들어서 허가받은 사람만 "띵동!" 할 수 있게 하기</div>
+            
+            <div class="content-grid content-grid-2">
+                <div class="content-card">
+                    <div class="card-title">🏠 우리 집 대문 만들기</div>
+                    <div class="basic-font"><strong>Webhook = 내 서비스로 들어오는 전용 대문</strong></div>
+                    
+                    <table class="content-table">
+                        <tr>
+                            <th>일상의 대문</th>
+                            <th>Webhook 대문</th>
+                        </tr>
+                        <tr>
+                            <td>우리 집 주소: 서울시 강남구...</td>
+                            <td>내 서비스 주소: https://n8n.com/webhook/abc123</td>
+                        </tr>
+                        <tr>
+                            <td>문패에 "김철수" 적혀있음</td>
+                            <td>URL에 내 서비스 이름 포함</td>
+                        </tr>
+                        <tr>
+                            <td>택배기사가 벨 누르면 즉시 알림</td>
+                            <td>다른 서비스가 신호 보내면 즉시 반응</td>
+                        </tr>
+                        <tr>
+                            <td>24시간 언제든 방문 가능</td>
+                            <td>24시간 언제든 신호 수신 가능</td>
+                        </tr>
+                    </table>
+                </div>
+                
+                <div class="content-card">
+                    <div class="card-title">🔐 허가받은 사람만 들어오게 하기</div>
+                    <div class="basic-font"><strong>보안 = API Key / Auth 인증</strong></div>
+                    
+                    <table class="content-table">
+                        <tr>
+                            <th>집 보안</th>
+                            <th>Webhook 보안</th>
+                        </tr>
+                        <tr>
+                            <td>현관문 비밀번호</td>
+                            <td>API Key 입력</td>
+                        </tr>
+                        <tr>
+                            <td>출입증 확인</td>
+                            <td>Auth 토큰 검증</td>
+                        </tr>
+                        <tr>
+                            <td>아는 사람만 우리 집 주소 알려줌</td>
+                            <td>신뢰하는 서비스만 Webhook URL 공유</td>
+                        </tr>
+                        <tr>
+                            <td>수상한 사람은 차단</td>
+                            <td>잘못된 인증은 자동 거부</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Webhook 설정 이미지 -->
+            <div style="margin-top: 20px; text-align: center;">
+                <div class="content-card">
+                    <div class="card-title">🔔 n8n Webhook 설정 화면</div>
+                    <img src="https://clip.pss.so/0Df6NvhM+" alt="n8n Webhook 노드 설정 화면" style="width: 100%; max-width: 800px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 4: Webhook 활용 -->
+        <section class="slide" id="slide-4">
+            <h2 class="header-2">🛠️ Webhook 실제 활용 사례</h2>
+            <div class="message">웹사이트 문의부터 주문 처리까지 즉시 자동화</div>
+            
+            <div class="content-card">
+                <div class="card-title">🏃‍♂️ 고객 문의 즉시 대응 시스템</div>
+                <div class="code-block">고객이 홈페이지에서 문의 작성 
+↓ (즉시 Webhook 신호!)
+"새 문의 도착!" n8n이 바로 인식
+↓
+문의 내용을 업스테이지 AI가 분석 ("배송 문의네요!")
+↓  
+배송팀 이영희 과장에게 즉시 Slack 알림
+↓
+고객에게 "확인 중입니다" 자동 답장</div>
+            </div>
+            
+            <div class="content-grid content-grid-3">
+                <div class="content-card">
+                    <div class="card-title">🛒 온라인 주문</div>
+                    <div class="basic-font">결제 시스템 → Webhook → 재고확인 → 포장팀 알림</div>
+                </div>
+                
+                <div class="content-card">
+                    <div class="card-title">👋 새 회원가입</div>
+                    <div class="basic-font">가입 완료 → Webhook → 환영 이메일 → 쿠폰 발송</div>
+                </div>
+                
+                <div class="content-card">
+                    <div class="card-title">⭐ 제품 리뷰</div>
+                    <div class="basic-font">리뷰 작성 → Webhook → 감정분석 → SNS 공유</div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- Slide 5: 스케줄 트리거 -->
+        <section class="slide" id="slide-5">
+            <h2 class="header-2">⏰ 스케줄 트리거 - 정확한 알람시계</h2>
+            <div class="message">매일 오전 7시 알람처럼 정확한 시간에 자동 실행</div>
+            
+            <div class="content-grid content-grid-2">
+                <div class="content-card">
+                    <div class="card-title">📅 일상 vs 비즈니스 스케줄</div>
+                    <table class="content-table">
+                        <tr>
+                            <th>일상 속 스케줄</th>
+                            <th>비즈니스 스케줄</th>
+                        </tr>
+                        <tr>
+                            <td>매일 오전 7시 알람</td>
+                            <td>매일 오전 9시 매출 리포트</td>
+                        </tr>
+                        <tr>
+                            <td>매주 일요일 쓰레기 배출</td>
+                            <td>매주 월요일 고객 만족도 조사</td>
+                        </tr>
+                        <tr>
+                            <td>매달 1일 월세</td>
+                            <td>매월 1일 정산 보고서</td>
+                        </tr>
+                        <tr>
+                            <td>1년에 한 번 건강검진</td>
+                            <td>1년에 한 번 시스템 백업</td>
+                        </tr>
+                    </table>
+                </div>
+                
+                <div class="content-card">
+                    <div class="card-title">⚙️ Schedule Trigger 설정</div>
+                    <div class="basic-font"><strong>특정 시간에 정보를 받아서 Slack 전송</strong></div>
+                    <img src="https://clip.pss.so/wT64xfVs+" alt="Schedule Trigger로 특정 시간에 정보를 Slack으로 전송하는 워크플로우" style="width: 100%; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); margin-top: 10px;">
+                    <div class="basic-font" style="margin-top: 10px; font-size: 11pt; color: #666;">
+                        💡 시점/구간 선택으로 원하는 스케줄 설정 가능
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+
+        <!-- Slide 6: 메뉴얼 트리거 -->
+        <section class="slide" id="slide-6">
+            <h2 class="header-2">👆 메뉴얼 트리거 - 워크플로우 테스트 버튼</h2>
+            <div class="message">의도적으로 워크플로우 동작을 촉발시켜 당장 결과를 확인할 때 사용하는 테스트 도구</div>
+            
+            <div class="content-grid content-grid-2">
+                <div class="content-card">
+                    <div class="card-title">🧪 테스트 목적의 Manual Trigger</div>
+                    <table class="content-table">
+                        <tr>
+                            <th>일상 테스트</th>
+                            <th>워크플로우 테스트</th>
+                        </tr>
+                        <tr>
+                            <td>새 전자제품 버튼 눌러보기</td>
+                            <td>새 워크플로우 동작 확인</td>
+                        </tr>
+                        <tr>
+                            <td>요리 중간에 맛 보기</td>
+                            <td>중간 단계 결과 확인</td>
+                        </tr>
+                        <tr>
+                            <td>드라이브 코스 미리 가보기</td>
+                            <td>실제 서비스 전 테스트</td>
+                        </tr>
+                        <tr>
+                            <td>새 앱 기능 체험해보기</td>
+                            <td>데이터 흐름 점검</td>
+                        </tr>
+                    </table>
+                </div>
+                
+                <div class="content-card">
+                    <div class="card-title">🚀 실제 테스트 시나리오</div>
+                    <div class="basic-font"><strong>Schedule 대신 Manual 사용:</strong></div>
+                    <div class="code-block">원래: 매일 오전 9시 자동 실행
+↓
+테스트: Manual Trigger로 지금 당장 실행
+↓
+결과: 기다리지 않고 즉시 동작 확인!</div>
+                    
+                    <div class="basic-font"><strong>개발 과정에서 활용:</strong></div>
+                    <ul class="checklist">
+                        <li>워크플로우 로직 검증</li>
+                        <li>데이터 변환 결과 확인</li>
+                        <li>API 연결 상태 점검</li>
+                        <li>오류 발생 지점 파악</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Manual Trigger 테스트 이미지 -->
+            <div style="margin-top: 20px;">
+                <div class="content-grid content-grid-2">
+                    <div style="text-align: center;">
+                        <img src="https://clip.pss.so/S0dLKcBK+" alt="Manual Trigger로 워크플로우 테스트 실행" style="width: 100%; max-width: 500px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+                    </div>
+                    <div class="content-card">
+                        <div class="card-title">💡 테스트 실행 방법</div>
+                        <div class="basic-font"><strong>Schedule 워크플로우도 Manual로 테스트:</strong></div>
+                        <ul class="checklist">
+                            <li>원래는 정해진 시간에만 실행</li>
+                            <li>Manual Trigger로 즉시 테스트 가능</li>
+                            <li>결과를 바로 확인해서 수정</li>
+                            <li>완성 후 Schedule로 변경</li>
+                        </ul>
+                        <div class="basic-font" style="margin-top: 10px; font-size: 11pt; color: #666;">
+                            ⚡ 시간을 기다리지 말고 바로 테스트해보세요!
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 7: Chat Trigger -->
+        <section class="slide" id="slide-7">
+            <h2 class="header-2">💬 Chat Trigger - AI 대화 테스트 도구</h2>
+            <div class="message">Webhook 없이 바로 AI 시스템과 대화하며 테스트할 수 있는 간편한 도구</div>
+            
+            <div class="content-grid content-grid-2">
+                <div class="content-card">
+                    <div class="card-title">🖥️ Chat Trigger 화면</div>
+                    
+                    <!-- Chat Trigger 테스트 이미지 -->
+                    <div style="text-align: center;">
+                        <img src="https://clip.pss.so/jQQwP4dK+" alt="Chat Trigger를 사용한 AI 대화 테스트 화면" style="width: 100%; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+                        
+                        <!-- 채팅창 연결 설명 -->
+                        <div style="margin-top: 10px; padding: 12px; background: rgba(178, 73, 234, 0.04); border-radius: 8px; border-left: 4px solid rgb(135, 0, 232);">
+                            <div class="basic-font" style="font-size: 12pt; color: rgb(135, 0, 232);">
+                                💬 <strong>화면 하단 채팅창을 통해서 대화하면서 테스트 가능함</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="content-card">
+                    <div class="card-title">⚡ Webhook 없이 바로 테스트하기</div>
+                    <div class="basic-font"><strong>복잡한 설정 없이 즉시 시작</strong></div>
+                    
+                    <div class="basic-font">원래는 Webhook으로 외부에서 메시지를 받아야 하지만, Chat Trigger를 사용하면:</div>
+                    
+                    <ul class="checklist">
+                        <li><strong>즉시 테스트:</strong> 웹훅 설정 없이 바로 대화 가능</li>
+                        <li><strong>채팅창 제공:</strong> 화면 하단에서 직접 입력</li>
+                        <li><strong>실시간 확인:</strong> AI 응답과 워크플로우 진행 상황 즉시 확인</li>
+                        <li><strong>반복 테스트:</strong> 다양한 문장으로 여러 번 테스트</li>
+                    </ul>
+                    
+                    <div class="basic-font"><strong>💡 실제 활용 방법:</strong></div>
+                    <ul class="checklist">
+                        <li>고객 문의 시나리오 테스트</li>
+                        <li>AI 응답 품질 검증</li>
+                        <li>워크플로우 각 단계 확인</li>
+                        <li>오류 발생 지점 실시간 파악</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 8: 트리거에서 액션으로 전환 -->
+        <section class="slide" id="slide-8">
+            <h2 class="header-2">🔄 트리거에서 액션으로 - 신호에서 실행으로</h2>
+            <div class="message">트리거가 "시작!" 신호를 보내면 이제 실제 일을 처리하는 액션 노드들의 차례입니다</div>
+            
+            <div class="content-grid content-grid-2">
+                <div class="content-card">
+                    <div class="card-title">🚀 지금까지 배운 트리거들</div>
+                    <ul class="checklist">
+                        <li><strong>Manual:</strong> 수동 실행 버튼</li>
+                        <li><strong>Schedule:</strong> 정해진 시간 자동 실행</li>
+                        <li><strong>Webhook:</strong> 즉시 반응 시스템</li>
+                        <li><strong>앱 연동:</strong> 서비스 이벤트 감지</li>
+                    </ul>
+                </div>
+                
+                <div class="content-card">
+                    <div class="card-title">⚙️ 이제 배울 액션 노드들</div>
+                    <ul class="checklist">
+                        <li><strong>데이터 수집:</strong> HTTP, 데이터베이스에서 정보 가져오기</li>
+                        <li><strong>데이터 가공:</strong> Set, Function으로 정보 변형</li>
+                        <li><strong>데이터 저장:</strong> 처리된 정보를 안전하게 보관</li>
+                        <li><strong>결과 전달:</strong> 완성된 결과를 사람들에게</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="callout">
+                🎯 <strong>액션 노드의 핵심:</strong> 요리하듯 3단계로 데이터를 처리합니다 - ①재료 준비 ②손질 가공 ③완성품 서빙
+            </div>
+        </section>
+
+        <!-- Slide 9: 액션 노드 소개 -->
+        <section class="slide" id="slide-9">
+            <h1 class="header-1">⚙️ 액션 노드들의 분류</h1>
+            <h2 class="header-2">자동화의 실제 작업을 담당하는 전문 직원들</h2>
+            <div class="callout-center">
+                <div class="content-grid content-grid-2">
+                    <div>
+                        <div class="header-3">🔧 작업 수행 노드</div>
+                        <ol class="step-list">
+                            <li><strong>데이터 처리</strong> - Set, Function</li>
+                            <li><strong>외부 서비스 연동</strong> - CRM, 파일저장, SNS</li>
+                        </ol>
+                    </div>
+                    <div>
+                        <div class="header-3">🎛️ 흐름 제어 노드</div>
+                        <ol class="step-list">
+                            <li><strong>조건부 실행</strong> - IF, Switch, Filter</li>
+                            <li><strong>대기/중단</strong> - Wait, Stop and Error</li>
+                            <li><strong>병합 및 나누기</strong> - Merge, Split, Aggregate</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="callout">
+                🎯 <strong>액션 노드의 핵심:</strong> 작업 수행 노드는 실제 데이터를 처리하고 외부와 연동하며, 흐름 제어 노드는 워크플로우의 실행 순서와 조건을 관리합니다.
+            </div>
+        </section>
+
+        <!-- Slide 10: Set 노드 - 데이터 처리 -->
+        <section class="slide" id="slide-10">
+            <h2 class="header-2">🔧 Set 노드 - 데이터 필드 조작의 스위스 칼</h2>
+            <div class="message">레고 블록을 조립하듯 데이터 필드를 자유자재로 추가, 수정, 삭제하는 만능 도구</div>
+            
+            <div class="content-grid content-grid-2">
+                <div class="content-card">
+                    <div class="card-title">🛠️ Set 노드의 주요 기능</div>
+                    <table class="content-table">
+                        <tr>
+                            <th>기능</th>
+                            <th>설명</th>
+                            <th>예시</th>
+                        </tr>
+                        <tr>
+                            <td>필드 추가</td>
+                            <td>새로운 데이터 항목 생성</td>
+                            <td>현재 시간, 계산값 추가</td>
+                        </tr>
+                        <tr>
+                            <td>필드 수정</td>
+                            <td>기존 데이터 값 변경</td>
+                            <td>이름 형식 통일, 단위 변환</td>
+                        </tr>
+                        <tr>
+                            <td>필드 삭제</td>
+                            <td>불필요한 데이터 제거</td>
+                            <td>개인정보, 임시 데이터 삭제</td>
+                        </tr>
+                        <tr>
+                            <td>필드 이름 변경</td>
+                            <td>데이터 키 이름 수정</td>
+                            <td>한글명을 영문명으로</td>
+                        </tr>
+                    </table>
+                </div>
+                
+                <div class="content-card">
+                    <div class="card-title">💡 Set 노드 활용 예시</div>
+                    <div class="basic-font"><strong>🔹 Before (입력 데이터):</strong></div>
+                    <div class="code-block">{
+  "name": "김철수",
+  "age": 30,
+  "raw_email": "KIM.CHEOLSU@COMPANY.COM"
+}</div>
+                    
+                    <div class="basic-font"><strong>🔹 After (Set 노드 처리 후):</strong></div>
+                    <div class="code-block">{
+  "name": "김철수",
+  "age": 30,
+  "email": "kim.cheolsu@company.com",
+  "created_date": "2024-01-15",
+  "status": "active",
+  "age_group": "30대"
+}</div>
+                    
+                    <ul class="checklist">
+                        <li>이메일을 소문자로 변환</li>
+                        <li>생성일자와 상태 추가</li>
+                        <li>나이를 바탕으로 연령대 계산</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="callout">
+                💡 <strong>Set 노드 핵심:</strong> 데이터를 '있는 그대로' 사용하지 말고, 필요에 맞게 가공해서 사용하세요! 단순 복사가 아닌 지능적 변환이 핵심입니다.
+            </div>
+        </section>
+
+        <!-- Slide 11: Function 노드 - 고급 데이터 처리 -->
+        <section class="slide" id="slide-11">
+            <h2 class="header-2">⚡ Function 노드 - 프로그래밍의 힘</h2>
+            <div class="message">Set 노드로 해결하기 어려운 복잡한 데이터 처리를 JavaScript/Python 코드로 자유자재로</div>
+            
+            <div class="content-grid content-grid-2">
+                <div class="content-card">
+                    <div class="card-title">🚀 Function 노드의 강력함</div>
+                    <table class="content-table">
+                        <tr>
+                            <th>기능</th>
+                            <th>Set 노드</th>
+                            <th>Function 노드</th>
+                        </tr>
+                        <tr>
+                            <td>필드 추가</td>
+                            <td>✅ 가능</td>
+                            <td>✅ 가능</td>
+                        </tr>
+                        <tr>
+                            <td>조건부 처리</td>
+                            <td>❌ 제한적</td>
+                            <td>✅ if/else 자유자재</td>
+                        </tr>
+                        <tr>
+                            <td>반복 처리</td>
+                            <td>❌ 불가능</td>
+                            <td>✅ for/while 반복</td>
+                        </tr>
+                        <tr>
+                            <td>복잡한 계산</td>
+                            <td>❌ 제한적</td>
+                            <td>✅ 수학 함수 활용</td>
+                        </tr>
+                        <tr>
+                            <td>API 호출</td>
+                            <td>❌ 불가능</td>
+                            <td>✅ fetch() 사용</td>
+                        </tr>
+                        <tr>
+                            <td>외부 라이브러리</td>
+                            <td>❌ 불가능</td>
+                            <td>✅ npm 패키지</td>
+                        </tr>
+                    </table>
+                </div>
+                
+                <div class="content-card">
+                    <div class="card-title">💡 Function 노드 활용 예시</div>
+                    <div class="basic-font"><strong>🔹 복잡한 데이터 변환:</strong></div>
+                    <div class="code-block">// 고객 등급 자동 계산
+const customerData = items[0].json;
+const purchaseHistory = customerData.purchases;
+
+let grade = 'Bronze';
+let totalAmount = 0;
+
+// 구매 금액 합계 계산
+for(const purchase of purchaseHistory) {
+  totalAmount += purchase.amount;
+}
+
+// 등급 결정 로직
+if(totalAmount >= 1000000) {
+  grade = 'Diamond';
+} else if(totalAmount >= 500000) {
+  grade = 'Gold';
+} else if(totalAmount >= 100000) {
+  grade = 'Silver';
+}
+
+return {
+  ...customerData,
+  grade: grade,
+  totalPurchase: totalAmount,
+  nextGradeAmount: getNextGradeAmount(totalAmount)
+};</div>
+                    
+                    <ul class="checklist">
+                        <li>구매 이력을 반복문으로 처리</li>
+                        <li>조건문으로 등급 자동 계산</li>
+                        <li>복잡한 비즈니스 로직 구현</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="callout">
+                💡 <strong>Function 노드 사용 팁:</strong> Set 노드로 80% 해결하고, 정말 복잡한 로직만 Function 노드로! 코드는 간단하게, 주석은 상세하게 작성하세요.
+            </div>
+        </section>
+
+        <!-- Slide 12: 외부 서비스 연동 노드 -->
+        <section class="slide" id="slide-12">
+            <h2 class="header-2">🔗 외부 서비스 연동 노드 - 디지털 비서의 네트워킹</h2>
+            <div class="message">업무에 필요한 모든 서비스들과 자동으로 소통하는 만능 커넥터</div>
+            
+            <div class="content-grid content-grid-2">
+                <div class="content-card">
+                    <div class="card-title">🏢 CRM & 고객 관리</div>
+                    <table class="content-table">
+                        <tr>
+                            <th>서비스</th>
+                            <th>주요 기능</th>
+                            <th>활용 예시</th>
+                        </tr>
+                        <tr>
+                            <td><strong>Hubspot</strong></td>
+                            <td>고객 정보, 딜 관리</td>
+                            <td>신규 고객 자동 등록</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Salesforce</strong></td>
+                            <td>영업 파이프라인</td>
+                            <td>계약 완료시 Slack 알림</td>
+                        </tr>
+                    </table>
+                    
+                    <div class="basic-font"><strong>💼 프로젝트 관리 도구</strong></div>
+                    <table class="content-table" style="margin-top: 10px;">
+                        <tr>
+                            <th>서비스</th>
+                            <th>특징</th>
+                        </tr>
+                        <tr>
+                            <td><strong>Jira</strong></td>
+                            <td>이슈 트래킹, 버그 관리</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Linear</strong></td>
+                            <td>모던한 프로젝트 관리</td>
+                        </tr>
+                    </table>
+                </div>
+                
+                <div class="content-card">
+                    <div class="card-title">💾 파일 저장 & 데이터베이스</div>
+                    
+                    <div class="basic-font"><strong>☁️ 클라우드 드라이브</strong></div>
+                    <ul class="checklist">
+                        <li><strong>Google Drive:</strong> 문서 공유 및 협업</li>
+                        <li><strong>Dropbox:</strong> 대용량 파일 저장</li>
+                    </ul>
+                    
+                    <div class="basic-font"><strong>📊 NoCode 데이터베이스</strong></div>
+                    <ul class="checklist">
+                        <li><strong>Airtable:</strong> 스프레드시트 + 데이터베이스</li>
+                        <li><strong>Google Sheets:</strong> 실시간 협업 스프레드시트</li>
+                    </ul>
+                    
+                    <div class="basic-font"><strong>📱 소셜 미디어</strong></div>
+                    <ul class="checklist">
+                        <li><strong>Facebook:</strong> 포스팅 자동화</li>
+                        <li><strong>LinkedIn:</strong> 비즈니스 네트워킹</li>
+                        <li><strong>YouTube:</strong> 영상 업로드 관리</li>
+                        <li><strong>X (Twitter):</strong> 실시간 소통</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="callout-center">
+                💡 <strong>외부 서비스 연동의 핵심:</strong> API Key 한 번 설정으로 수십 개 서비스를 자유자재로! 마치 스마트폰 하나로 모든 앱을 제어하는 것과 같습니다.
+            </div>
+        </section>
+
+        <!-- Slide 13: 흐름 제어 노드 - 조건부 실행 -->
+        <section class="slide" id="slide-13">
+            <h2 class="header-2">🎛️ 흐름 제어 노드 - 조건부 실행</h2>
+            <div class="message">사람이 판단하는 것처럼 상황에 따라 다른 길로 안내하는 교통 제어소</div>
+            
+            <div class="content-grid content-grid-2">
+                <div class="content-card">
+                    <div class="card-title">🚦 IF 노드 - 스마트한 교차로</div>
+                    <table class="content-table">
+                        <tr>
+                            <th>조건</th>
+                            <th>True (참) 동작</th>
+                            <th>False (거짓) 동작</th>
+                        </tr>
+                        <tr>
+                            <td>구매액 ≥ 10만원</td>
+                            <td>VIP 고객으로 분류</td>
+                            <td>일반 고객으로 분류</td>
+                        </tr>
+                        <tr>
+                            <td>시간이 오전 9시 전</td>
+                            <td>긴급 알림 발송</td>
+                            <td>일반 알림 발송</td>
+                        </tr>
+                        <tr>
+                            <td>파일 크기 > 5MB</td>
+                            <td>압축 후 저장</td>
+                            <td>그대로 저장</td>
+                        </tr>
+                    </table>
+                    
+                    <div class="basic-font"><strong>🌟 활용 예시:</strong></div>
+                    <div class="code-block">고객 정보 입력 
+→ IF 노드: "나이가 30세 이상인가?" 
+→ True: 성인 대상 마케팅 메일
+→ False: 청년층 대상 이벤트 정보</div>
+                </div>
+                
+                <div class="content-card">
+                    <div class="card-title">🔀 Switch & Filter 노드</div>
+                    
+                    <div class="basic-font"><strong>🚌 Switch 노드 - 터미널 안내센터</strong></div>
+                    <ul class="checklist">
+                        <li><strong>목적:</strong> 여러 조건 중 하나 선택</li>
+                        <li><strong>예시:</strong> 지역별 담당자 배정</li>
+                        <li><strong>서울 → 김과장, 부산 → 이대리</strong></li>
+                    </ul>
+                    
+                    <div class="basic-font"><strong>🔍 Filter 노드 - 엄격한 보안 검색대</strong></div>
+                    <ul class="checklist">
+                        <li><strong>목적:</strong> 조건에 맞는 데이터만 통과</li>
+                        <li><strong>예시:</strong> 미납 고객만 걸러내기</li>
+                        <li><strong>조건:</strong> 결제상태 = "미납"</li>
+                    </ul>
+                    
+                    <div class="basic-font"><strong>🔄 Loop 노드 - 반복 작업 자동화</strong></div>
+                    <ul class="checklist">
+                        <li><strong>목적:</strong> 같은 작업 여러 번 반복</li>
+                        <li><strong>예시:</strong> 고객 목록 전체에 메일 발송</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="callout-center">
+                💡 <strong>조건부 실행의 핵심:</strong> "만약~라면" 하는 인간의 사고를 자동화에 적용! 복잡한 비즈니스 로직도 단순한 조건 조합으로 해결 가능합니다.
+            </div>
+        </section>
+
+        <!-- Slide 14: 흐름 제어 노드 - 대기/중단 & 병합/나누기 -->
+        <section class="slide" id="slide-14">
+            <h2 class="header-2">⏸️ 흐름 제어 노드 - 대기/중단 & 병합/나누기</h2>
+            <div class="message">타이밍과 데이터 흐름을 완벽하게 제어하는 마에스트로의 지휘봉</div>
+            
+            <div class="content-grid content-grid-2">
+                <div class="content-card">
+                    <div class="card-title">⏰ 대기/중단 제어 노드</div>
+                    
+                    <div class="basic-font"><strong>⏸️ Wait 노드 - 똑똑한 대기실</strong></div>
+                    <table class="content-table">
+                        <tr>
+                            <th>대기 타입</th>
+                            <th>활용 예시</th>
+                        </tr>
+                        <tr>
+                            <td>시간 대기</td>
+                            <td>이메일 발송 후 5분 대기</td>
+                        </tr>
+                        <tr>
+                            <td>조건 대기</td>
+                            <td>결제 완료까지 대기</td>
+                        </tr>
+                        <tr>
+                            <td>외부 신호 대기</td>
+                            <td>승인 완료 신호 대기</td>
+                        </tr>
+                    </table>
+                    
+                    <div class="basic-font"><strong>🛑 Stop and Error 노드</strong></div>
+                    <ul class="checklist">
+                        <li><strong>정상 중단:</strong> 작업 완료 후 안전하게 종료</li>
+                        <li><strong>에러 중단:</strong> 문제 발생 시 즉시 정지</li>
+                        <li><strong>알림 전송:</strong> 관리자에게 중단 이유 보고</li>
+                    </ul>
+                    
+                    <div class="code-block">📧 고객 문의 메일 도착
+→ 내용 분석 중 욕설 감지
+→ Stop and Error: "부적절한 내용 감지"
+→ 관리자에게 즉시 알림 발송</div>
+                </div>
+                
+                <div class="content-card">
+                    <div class="card-title">🔀 병합/나누기 제어 노드</div>
+                    
+                    <div class="basic-font"><strong>✂️ Split 노드 - 데이터 분배기</strong></div>
+                    <ul class="checklist">
+                        <li><strong>목적:</strong> 하나의 데이터를 여러 경로로</li>
+                        <li><strong>예시:</strong> 고객 목록을 지역별로 분할</li>
+                        <li><strong>활용:</strong> 병렬 처리로 속도 향상</li>
+                    </ul>
+                    
+                    <div class="basic-font"><strong>🔗 Merge 노드 - 데이터 합류점</strong></div>
+                    <ul class="checklist">
+                        <li><strong>목적:</strong> 여러 경로의 데이터를 하나로</li>
+                        <li><strong>예시:</strong> A팀, B팀 결과를 최종 보고서로</li>
+                        <li><strong>활용:</strong> 분산 작업 결과 통합</li>
+                    </ul>
+                    
+                    <div class="basic-font"><strong>📊 Aggregate 노드 - 데이터 요약 전문가</strong></div>
+                    <ul class="checklist">
+                        <li><strong>합계:</strong> 월별 매출 총합</li>
+                        <li><strong>평균:</strong> 고객 만족도 평균</li>
+                        <li><strong>최대/최소:</strong> 최고/최저 판매량</li>
+                        <li><strong>개수:</strong> 신규 고객 수</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="callout-center">
+                🎯 <strong>흐름 제어의 마스터키:</strong> Wait으로 타이밍 제어, Split/Merge로 병렬 처리, Aggregate로 데이터 요약! 복잡한 비즈니스 프로세스도 이것만 있으면 완벽 제어 가능합니다.
+            </div>
+        </section>
+
+    </div>
+
+    <script>
+        // Progress bar functionality
+        function updateProgressBar() {
+            const scrollTop = window.pageYOffset;
+            const docHeight = document.body.offsetHeight - window.innerHeight;
+            const scrollPercent = (scrollTop / docHeight) * 100;
+            document.querySelector('.progress-bar').style.width = scrollPercent + '%';
+        }
+
+        function updateSlideCounter() {
+            const slides = document.querySelectorAll('.slide');
+            const scrollTop = window.pageYOffset;
+            const slideHeight = window.innerHeight;
+            const currentSlideIndex = Math.round(scrollTop / slideHeight);
+            const currentSlideNumber = Math.min(Math.max(currentSlideIndex + 1, 1), slides.length);
+            
+            document.querySelector('.slide-counter').textContent = `${currentSlideNumber} / ${slides.length}`;
+        }
+
+        // Update on scroll
+        window.addEventListener('scroll', () => {
+            updateProgressBar();
+            updateSlideCounter();
+        });
+
+        // Initialize
+        updateProgressBar();
+        updateSlideCounter();
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowDown' || e.key === 'ArrowRight') {
+                const slides = document.querySelectorAll('.slide');
+                const current = Math.floor(window.pageYOffset / window.innerHeight);
+                if (current < slides.length - 1) {
+                    slides[current + 1].scrollIntoView({ behavior: 'smooth' });
+                }
+            } else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
+                const slides = document.querySelectorAll('.slide');
+                const current = Math.floor(window.pageYOffset / window.innerHeight);
+                if (current > 0) {
+                    slides[current - 1].scrollIntoView({ behavior: 'smooth' });
+                }
+            }
+        });
+    </script>
+    
+    <!-- Mermaid 초기화 스크립트 -->
+    <script>
+        // Mermaid 설정 및 초기화
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'neutral',
+            themeVariables: {
+                primaryColor: '#1B365D',
+                primaryTextColor: '#2D3748',
+                primaryBorderColor: '#E2E8F0',
+                lineColor: '#636E72',
+                backgroundColor: '#FFFFFF',
+                secondaryColor: '#F8F9FA',
+                tertiaryColor: '#E2E8F0'
+            },
+            flowchart: {
+                useMaxWidth: true,
+                htmlLabels: true
+            },
+            sequence: {
+                useMaxWidth: true,
+                wrap: true
+            }
+        });
+    </script>
+</body>
+</html>

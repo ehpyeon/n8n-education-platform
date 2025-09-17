@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>18강: 고객 문의 접수 및 대응 자동화</title>
+    <title>12강: 사내 정보 기반 FAQ 리포트 봇 제작</title>
     <style>
         /* Global Reset and Base Styles */
         *, *::before, *::after { box-sizing: border-box; }
@@ -433,10 +433,10 @@
 </head>
 <body>
     <nav class="nav-bar">
-        <div class="nav-logo">📞 고객 서비스</div>
+        <div class="nav-logo">🤖 FAQ 리포트 봇</div>
         <div class="nav-progress">
-            <span class="current-topic">고객 문의 접수 및 대응 자동화</span>
-            <span class="slide-counter">18강</span>
+            <span class="current-topic">사내 정보 기반 FAQ 리포트 봇 제작</span>
+            <span class="slide-counter">16강</span>
         </div>
     </nav>
 
@@ -447,14 +447,13 @@
     <div class="slide-container">
         <!-- Slide 1: Intro -->
         <section class="slide intro" id="slide-1">
-            <h1 class="header-1">📞 고객 문의 접수 및 대응 자동화</h1>
-            <h2 class="header-2">24시간 쉬지 않는 똑똑한 고객 서비스 비서 만들기</h2>
+            <h1 class="header-1">🤖 사내 정보 기반 FAQ 리포트 봇 제작</h1>
+            <h2 class="header-2">회사 문서를 기반으로 상세 리포트까지 작성하는 똑똑한 AI 봇</h2>
             <div class="callout-center">
                 <ol class="step-list">
-                    <li>고객 문의 자동 접수 시스템</li>
-                    <li>AI 기반 문의 분류 및 분석</li>
-                    <li>담당자 자동 배정 및 알림</li>
-                    <li>완전 자동화된 고객 응답</li>
+                    <li><strong>언어모델 이해와 프롬프팅 기법</strong> - 효과적인 AI 대화법</li>
+                    <li><strong>RAG 시스템 구축</strong> - 회사 지식 검색 엔진</li>
+                    <li><strong>FAQ 리포트 봇 제작</strong> - 자동 분석 및 보고서 생성</li>
                 </ol>
             </div>
         </section>
@@ -591,89 +590,138 @@
             </div>
         </section>
 
-        <!-- Slide 5: AI 분석 -->
+        <!-- Slide 5: RAG 기반 지능형 분석 -->
         <section class="slide" id="slide-5">
-            <h2 class="header-2">🤖 2단계: AI로 문의 내용 자동 분석</h2>
-            <div class="message">경험 많은 접수 담당자처럼 문의를 읽고 적절한 부서로 자동 배정</div>
+            <h2 class="header-2">🧠 2단계: RAG 시스템으로 문의 내용 지능 분석</h2>
+            <div class="message">회사 내부 지식 창고에서 관련 정보를 찾아 정확한 분류와 초기 답변을 자동 생성</div>
             
             <div class="content-grid content-grid-2">
                 <div class="content-card">
-                    <div class="card-title">🧠 Upstage Chat 노드 활용</div>
+                    <div class="card-title">🗃️ Vector DB에서 관련 정보 검색</div>
+                    <div class="basic-font"><strong>저장된 회사 데이터:</strong></div>
                     <ul class="checklist">
-                        <li>문의 유형 자동 판단</li>
-                        <li>긴급도 자동 평가</li>
-                        <li>필요한 정보 추출</li>
-                        <li>한국어 뉘앙스 완벽 이해</li>
+                        <li><strong>구조화된 데이터:</strong> 고객 이력, 제품 정보, 정책 규정</li>
+                        <li><strong>비구조화된 데이터:</strong> FAQ, 매뉴얼, 해결 사례</li>
+                        <li><strong>과거 대화 데이터:</strong> 성공적인 문제 해결 패턴</li>
+                        <li><strong>실시간 업데이트:</strong> 최신 제품 정보, 정책 변경</li>
                     </ul>
                     
-                    <div class="basic-font"><strong>분석 예시:</strong></div>
-                    <div class="code-block">"로그인이 안돼요" → 기술지원팀
-"서비스가 멈췄어요" → 높은 긴급도
-"배송 언제 되나요" → 배송팀</div>
+                    <div class="basic-font"><strong>의미 기반 검색 과정:</strong></div>
+                    <div class="code-block">고객: "로그인이 안돼요"
+↓ Vector 변환
+↓ DB에서 유사한 문제 검색
+→ 찾은 정보: 로그인 오류 FAQ, 해결 사례 5건
+→ 관련 매뉴얼: 계정 복구 가이드</div>
                 </div>
                 
                 <div class="content-card">
-                    <div class="card-title">👩‍💼 경험 많은 직원처럼</div>
-                    <div class="basic-font">마치 10년 경력의 고객 서비스 담당자가 문의를 듣고 즉시 판단하는 것과 같습니다.</div>
+                    <div class="card-title">🤖 LLM + RAG 통합 분석</div>
+                    <div class="basic-font">RAG로 찾은 회사 지식을 바탕으로 정확한 분석 수행</div>
                     
-                    <div class="basic-font"><strong>AI가 파악하는 것들:</strong></div>
+                    <div class="basic-font"><strong>분석 결과 예시:</strong></div>
+                    <div class="code-block">문의: "로그인이 안돼요"
+
+🔍 RAG 검색 결과:
+- 유사 사례 3건 발견
+- 해결 성공률 95%
+- 평균 해결 시간 5분
+
+📋 AI 분석:
+- 유형: 계정 관련 기술 문의
+- 긴급도: 보통 (업무 차단)
+- 담당팀: IT 지원팀
+- 예상 원인: 비밀번호 오류 or 계정 잠김</div>
+                    
+                    <div class="basic-font"><strong>기존 시스템 대비 장점:</strong></div>
                     <ul class="checklist">
-                        <li>고객의 감정 상태 (화남/궁금함/만족)</li>
-                        <li>문제의 심각도</li>
-                        <li>필요한 대응 방식</li>
-                        <li>예상 처리 시간</li>
+                        <li>회사 고유 데이터 기반 정확한 판단</li>
+                        <li>과거 해결 사례로 성공률 예측</li>
+                        <li>맞춤형 해결책 우선 제안</li>
+                        <li>지속적 학습으로 정확도 향상</li>
                     </ul>
                 </div>
             </div>
         </section>
 
-        <!-- Slide 6: 데이터 저장 -->
+        <!-- Slide 6: Vector DB 기반 지식 축적 -->
         <section class="slide" id="slide-6">
-            <h2 class="header-2">📂 3단계: 고객 정보 저장 및 관리</h2>
-            <div class="message">병원 접수처럼 모든 문의와 고객 정보를 체계적으로 보관</div>
+            <h2 class="header-2">🗃️ 3단계: Vector DB로 지식과 정보 체계적 관리</h2>
+            <div class="message">모든 문의와 해결 과정을 Vector DB에 저장하여 미래 유사 상황에서 즉시 활용</div>
             
             <div class="content-grid content-grid-2">
                 <div class="content-card">
-                    <div class="card-title">🏥 병원 접수 시스템과 비교</div>
-                    <table class="content-table">
-                        <tr>
-                            <th>병원 접수</th>
-                            <th>문의 관리</th>
-                        </tr>
-                        <tr>
-                            <td>환자 차트 기본정보</td>
-                            <td>고객 정보 저장</td>
-                        </tr>
-                        <tr>
-                            <td>진료과별 대기 명단</td>
-                            <td>부서별 문의 분류</td>
-                        </tr>
-                        <tr>
-                            <td>응급도별 우선순위</td>
-                            <td>긴급도별 처리 순서</td>
-                        </tr>
-                        <tr>
-                            <td>진료 완료 차트 정리</td>
-                            <td>처리 완료 상태 업데이트</td>
-                        </tr>
-                    </table>
+                    <div class="card-title">📊 기업 데이터의 Vector 변환 과정</div>
+                    
+                    <div class="mermaid">
+graph TB
+    A["📄 기업 원본 데이터"] --> B{"데이터 유형 분류"}
+    
+    B --> C["구조화된 데이터"]
+    B --> D["비구조화된 데이터"]
+    
+    C --> C1["고객 정보 DB<br/>주문 이력<br/>제품 스펙"]
+    C --> C2["✂️ 청킹 처리<br/>레코드별 분할"]
+    
+    D --> D1["PDF 매뉴얼<br/>FAQ 문서<br/>이메일 이력"]
+    D --> D2["✂️ 청킹 처리<br/>500-1000자 단위"]
+    
+    C2 --> E["🔤 Upstage Embedding<br/>의미 벡터 변환"]
+    D2 --> E
+    
+    E --> F["🗃️ Vector Database<br/>Qdrant/Supabase"]
+    
+    F --> G["🔍 의미 기반 검색<br/>실시간 답변 생성"]
+    
+    style C fill:#e3f2fd
+    style D fill:#fff3e0
+    style F fill:#f3e5f5
+    style G fill:#e8f5e8
+                    </div>
                 </div>
                 
                 <div class="content-card">
-                    <div class="card-title">💾 저장하는 정보들</div>
-                    <div class="basic-font"><strong>고객 정보:</strong></div>
+                    <div class="card-title">💾 통합 데이터 관리 체계</div>
+                    
+                    <div class="basic-font"><strong>저장되는 정보 유형:</strong></div>
+                    <table class="content-table">
+                        <tr>
+                            <th>데이터 유형</th>
+                            <th>저장 방식</th>
+                            <th>활용 목적</th>
+                        </tr>
+                        <tr>
+                            <td>고객 문의 내역</td>
+                            <td>Vector + 메타데이터</td>
+                            <td>유사 문의 패턴 분석</td>
+                        </tr>
+                        <tr>
+                            <td>해결 과정 및 결과</td>
+                            <td>Vector + 성공/실패 태그</td>
+                            <td>최적 해결책 제안</td>
+                        </tr>
+                        <tr>
+                            <td>제품/서비스 정보</td>
+                            <td>Vector + 카테고리</td>
+                            <td>정확한 기술 답변</td>
+                        </tr>
+                        <tr>
+                            <td>정책 및 규정</td>
+                            <td>Vector + 버전 관리</td>
+                            <td>최신 규정 기반 안내</td>
+                        </tr>
+                    </table>
+                    
+                    <div class="basic-font"><strong>지속적 학습 구조:</strong></div>
                     <ul class="checklist">
-                        <li>이름, 연락처, 이메일</li>
-                        <li>문의 이력 및 패턴</li>
+                        <li><strong>실시간 업데이트:</strong> 새로운 해결 사례 자동 추가</li>
+                        <li><strong>피드백 반영:</strong> 만족도 낮은 답변 개선</li>
+                        <li><strong>패턴 분석:</strong> 자주 묻는 질문 우선 최적화</li>
+                        <li><strong>성능 모니터링:</strong> 검색 정확도 지속 개선</li>
                     </ul>
                     
-                    <div class="basic-font"><strong>문의 내역:</strong></div>
-                    <ul class="checklist">
-                        <li>언제, 무엇을, 얼마나 급하게</li>
-                        <li>처리 상태와 담당자</li>
-                    </ul>
-                    
-                    <div class="basic-font"><strong>사용 도구:</strong> Google Sheets, Airtable, Supabase</div>
+                    <div class="callout">
+                        🎯 <strong>Vector DB 핵심 장점:</strong> 단순 키워드 매칭이 아닌 의미 이해를 통해 "고장났어요"와 "작동 안 해요"를 같은 문제로 인식하여 정확한 해결책 제공
+                    </div>
                 </div>
             </div>
         </section>
@@ -727,46 +775,71 @@
             </div>
         </section>
 
-        <!-- Slide 8: 자동 답변 -->
+        <!-- Slide 8: RAG 기반 상세 리포트 자동 생성 -->
         <section class="slide" id="slide-8">
-            <h2 class="header-2">✉️ 5단계: 고객 자동 답변 시스템</h2>
-            <div class="message">"잘 받았어요, 곧 연락드릴게요" 자동 확인 메일로 고객 안심시키기</div>
+            <h2 class="header-2">📊 5단계: RAG 기반 FAQ 상세 리포트 자동 생성</h2>
+            <div class="message">단순 답변이 아닌 회사 데이터를 종합 분석한 상세한 리포트까지 자동 작성</div>
             
             <div class="content-grid content-grid-2">
                 <div class="content-card">
-                    <div class="card-title">📧 자동 답변 이메일 내용</div>
-                    <div class="code-block">안녕하세요, 김철수님!
-
-소중한 문의를 보내주셔서 감사합니다.
-문의가 정상적으로 접수되었으며, 
-다음과 같이 처리됩니다:
-
-• 문의 번호: INQ-2024-001
-• 접수 일시: 2024년 3월 15일 오후 2:30
-• 문의 유형: 기술지원
-• 예상 답변 시간: 4시간 이내
-• 담당자: 김기술팀장
-
-추가 문의사항이 있으시면 언제든 연락주세요.
-감사합니다.</div>
+                    <div class="card-title">📋 RAG 리포트 생성 과정</div>
+                    
+                    <div class="mermaid">
+graph TD
+    A["❓ 고객 문의<br/>제품 A 성능 문제"] --> B["🔍 Vector 검색<br/>관련 데이터 수집"]
+    
+    B --> C["📊 구조화된 데이터"]
+    B --> D["📄 비구조화된 데이터"]
+    
+    C --> C1["• 제품 A 판매 이력<br/>• 성능 테스트 결과<br/>• 고객 만족도 데이터"]
+    D --> D1["• 유사 문의 해결 사례<br/>• 기술 매뉴얼<br/>• 업데이트 로그"]
+    
+    C1 --> E["🤖 LLM 종합 분석<br/>상세 리포트 생성"]
+    D1 --> E
+    
+    E --> F["📧 맞춤형 리포트<br/>고객에게 발송"]
+    
+    style A fill:#e3f2fd
+    style C fill:#fff3e0
+    style D fill:#e8f5e8
+    style F fill:#f3e5f5
+                    </div>
                 </div>
                 
                 <div class="content-card">
-                    <div class="card-title">🤖 24시간 자동 상담원</div>
-                    <div class="basic-font"><strong>밤 11시 문의 상황:</strong></div>
-                    <div class="code-block">고객: "반품하고 싶은데 어떻게 해야 하나요?"
+                    <div class="card-title">📊 생성되는 리포트 예시</div>
+                    <div class="code-block">📋 제품 A 성능 문제 종합 분석 리포트
 
-기존: "내일 오전에 답변드리겠습니다" 👎
+안녕하세요, 김철수님!
 
-AI 적용 후:
-"안녕하세요! 반품은 구매일로부터 7일 이내... 
-자세한 절차를 안내해드릴게요" ✅</div>
+🔍 문의 분석 결과:
+• 유사 문의 8건 분석 완료
+• 해결 성공률: 92%
+• 평균 해결 시간: 2시간
+
+📊 제품 현황:
+• 전체 만족도: 4.2/5.0
+• 해당 이슈 발생률: 3.2%
+• 최신 펌웨어 적용률: 89%
+
+💡 권장 해결책:
+1. 펌웨어 업데이트 (성공률 85%)
+2. 캐시 초기화 (성공률 78%)
+3. 설정 재구성 (성공률 95%)
+
+📈 추가 정보:
+• 관련 FAQ 3건 첨부
+• 동영상 가이드 링크
+• 전문가 직통 연결 (필요시)
+
+[출처: 제품 DB, 고객 이력, 기술 문서 종합]</div>
                     
-                    <div class="basic-font"><strong>결과:</strong></div>
+                    <div class="basic-font"><strong>리포트의 특별한 가치:</strong></div>
                     <ul class="checklist">
-                        <li>고객 만족도 대폭 상승</li>
-                        <li>직원은 중요한 문의만 처리</li>
-                        <li>24시간 고객 서비스 완성</li>
+                        <li><strong>데이터 기반 신뢰성:</strong> 추측이 아닌 실제 데이터</li>
+                        <li><strong>맞춤형 해결책:</strong> 고객 상황에 최적화</li>
+                        <li><strong>사전 예방 정보:</strong> 향후 문제 방지 팁</li>
+                        <li><strong>투명한 근거:</strong> 답변 출처 명시</li>
                     </ul>
                 </div>
             </div>
@@ -855,8 +928,204 @@ AI 적용 후:
                 </div>
             </div>
             
+        <!-- Slide 11: 실제 구현 사례 -->
+        <section class="slide" id="slide-11">
+            <h2 class="header-2">🏢 실제 구현 사례: HR 정책 문의 시스템</h2>
+            <div class="message">인사팀의 반복적인 정책 문의를 AI가 대신 처리하는 실제 사례를 살펴봅시다</div>
+            
+            <div class="content-grid content-grid-2">
+                <div class="content-card">
+                    <div class="card-title">⚙️ 시스템 구성</div>
+                    <ol class="step-list">
+                        <li><strong>문서 수집</strong>
+                            <ul class="checklist">
+                                <li>취업규칙, 인사규정 PDF</li>
+                                <li>복리후생 가이드</li>
+                                <li>각종 신청서 양식</li>
+                            </ul>
+                        </li>
+                        <li><strong>질문 처리</strong>
+                            <ul class="checklist">
+                                <li>Slack 슬래시 커맨드</li>
+                                <li>웹 질문 폼</li>
+                                <li>이메일 자동 분석</li>
+                            </ul>
+                        </li>
+                        <li><strong>답변 생성</strong>
+                            <ul class="checklist">
+                                <li>관련 규정 인용</li>
+                                <li>신청 절차 안내</li>
+                                <li>담당자 연결</li>
+                            </ul>
+                        </li>
+                    </ol>
+                </div>
+                
+                <div class="content-card">
+                    <div class="card-title">📊 도입 효과</div>
+                    <table class="content-table">
+                        <tr>
+                            <th>지표</th>
+                            <th>도입 전</th>
+                            <th>도입 후</th>
+                        </tr>
+                        <tr>
+                            <td>일일 문의 처리</td>
+                            <td>15건/일</td>
+                            <td>45건/일</td>
+                        </tr>
+                        <tr>
+                            <td>평균 응답 시간</td>
+                            <td>4시간</td>
+                            <td>2분</td>
+                        </tr>
+                        <tr>
+                            <td>인사팀 업무 부담</td>
+                            <td>40% 시간 소모</td>
+                            <td>5% 시간 소모</td>
+                        </tr>
+                        <tr>
+                            <td>직원 만족도</td>
+                            <td>65점</td>
+                            <td>88점</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            
             <div class="callout">
-                🎯 <strong>완성!</strong> 이제 여러분도 24시간 쉬지 않는 똑똑한 비서를 갖게 되었습니다. 다음 강의에서는 더 다양한 액션 노드들을 활용한 고급 자동화를 알아보겠습니다!
+                💡 <strong>성공 요인:</strong> 정확한 문서 분류, 지속적인 피드백 반영, 사용자 교육이 핵심이었습니다.
+            </div>
+        </section>
+
+        <!-- Slide 12: 고급 기능과 확장 가능성 -->
+        <section class="slide" id="slide-12">
+            <h2 class="header-2">🚀 고급 기능과 확장 가능성</h2>
+            <div class="message">기본 FAQ 시스템을 넘어 더욱 스마트하고 종합적인 업무 지원 시스템으로 발전시킬 수 있습니다</div>
+            
+            <div class="content-grid content-grid-3">
+                <div class="content-card">
+                    <div class="card-title">🤖 AI 에이전트 기능</div>
+                    <ul class="checklist">
+                        <li>복잡한 업무 프로세스 안내</li>
+                        <li>단계별 체크리스트 제공</li>
+                        <li>연관 업무 자동 제안</li>
+                        <li>개인화된 맞춤 답변</li>
+                    </ul>
+                </div>
+                
+                <div class="content-card">
+                    <div class="card-title">📈 분석 및 인사이트</div>
+                    <ul class="checklist">
+                        <li>질문 트렌드 분석</li>
+                        <li>부서별 문의 패턴</li>
+                        <li>정책 개선 제안</li>
+                        <li>교육 필요 영역 식별</li>
+                    </ul>
+                </div>
+                
+                <div class="content-card">
+                    <div class="card-title">🔗 시스템 통합</div>
+                    <ul class="checklist">
+                        <li>HR 시스템 연동</li>
+                        <li>ERP 데이터 활용</li>
+                        <li>일정 관리 자동화</li>
+                        <li>결재 프로세스 연결</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="content-grid content-grid-2">
+                <div class="content-card">
+                    <div class="card-title">🎯 음성 AI 연동</div>
+                    <div class="basic-font">다음 강의에서 다룰 음성 AI와 연결하면:</div>
+                    <ul class="checklist">
+                        <li>"HR봇, 연차 신청 방법 알려줘"</li>
+                        <li>"퇴사 절차 음성으로 안내해줘"</li>
+                        <li>전화 상담처럼 자연스러운 대화</li>
+                    </ul>
+                </div>
+                
+                <div class="content-card">
+                    <div class="card-title">📱 모바일 앱 확장</div>
+                    <div class="basic-font">모바일 환경에서도 활용 가능:</div>
+                    <ul class="checklist">
+                        <li>사진으로 서류 자동 인식</li>
+                        <li>위치 기반 정보 제공</li>
+                        <li>푸시 알림으로 업무 리마인더</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 13: 성과 및 마무리 -->
+        <section class="slide" id="slide-13">
+            <h2 class="header-2">🎉 FAQ 리포트 봇으로 달성하는 디지털 혁신</h2>
+            <div class="message">단순한 문의 처리를 넘어 조직 전체의 지식 관리와 업무 효율성을 혁신적으로 개선했습니다</div>
+            
+            <div class="content-grid content-grid-2">
+                <div class="content-card">
+                    <div class="card-title">📊 정량적 성과</div>
+                    <table class="content-table">
+                        <tr>
+                            <th>영역</th>
+                            <th>개선 효과</th>
+                        </tr>
+                        <tr>
+                            <td>응답 속도</td>
+                            <td>4시간 → 2분 (99% 단축)</td>
+                        </tr>
+                        <tr>
+                            <td>처리 정확도</td>
+                            <td>75% → 95% (20%p 향상)</td>
+                        </tr>
+                        <tr>
+                            <td>업무 부담 감소</td>
+                            <td>주 15시간 → 2시간</td>
+                        </tr>
+                        <tr>
+                            <td>직원 만족도</td>
+                            <td>65점 → 88점 (35% 향상)</td>
+                        </tr>
+                    </table>
+                </div>
+                
+                <div class="content-card">
+                    <div class="card-title">🌟 정성적 변화</div>
+                    <ul class="checklist">
+                        <li><strong>업무 집중도 향상</strong> - 반복 업무에서 해방</li>
+                        <li><strong>지식 접근성 개선</strong> - 언제 어디서나 정확한 정보</li>
+                        <li><strong>일관된 서비스</strong> - 담당자별 편차 해소</li>
+                        <li><strong>학습 조직 구현</strong> - 지속적인 지식 축적</li>
+                        <li><strong>디지털 역량 강화</strong> - AI 활용 경험 확산</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="content-grid content-grid-2">
+                <div class="content-card">
+                    <div class="card-title">🔮 미래 발전 방향</div>
+                    <ul class="checklist">
+                        <li>다국어 지원으로 글로벌 확장</li>
+                        <li>업무 자동화와 연계한 통합 시스템</li>
+                        <li>예측 분석으로 사전 문제 해결</li>
+                        <li>개인 맞춤형 업무 어시스턴트</li>
+                    </ul>
+                </div>
+                
+                <div class="content-card">
+                    <div class="card-title">🎯 다음 단계</div>
+                    <ul class="checklist">
+                        <li>음성 AI와 연동한 대화형 시스템</li>
+                        <li>마케팅 자동화 고도화</li>
+                        <li>데이터 분석 자동화</li>
+                        <li>전사 통합 자동화 플랫폼</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="callout">
+                🚀 <strong>혁신 완성!</strong> 이제 여러분은 AI와 자동화를 활용해 조직의 지식과 업무 처리 능력을 획기적으로 향상시킬 수 있습니다. 다음 강의에서는 이러한 시스템들을 음성 AI와 결합하여 더욱 자연스럽고 접근성 높은 서비스로 발전시켜보겠습니다!
             </div>
         </section>
     </div>

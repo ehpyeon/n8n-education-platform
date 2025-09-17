@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>노드와 연결 이해 - n8n 워크플로우 설계</title>
+    <title>04강: 노드와 연결 이해</title>
     <style>
         /* Global Reset and Base Styles */
         *, *::before, *::after { box-sizing: border-box; }
@@ -436,7 +436,7 @@
         <div class="nav-logo">🔗 n8n 마스터</div>
         <div class="nav-progress">
             <span class="current-topic">노드와 연결 이해</span>
-            <span class="slide-counter">1 / 11</span>
+            <span class="slide-counter">1 / 12</span>
         </div>
     </nav>
 
@@ -459,8 +459,87 @@
             </div>
         </section>
 
-        <!-- Slide 2: 노드 개념 -->
+        <!-- Slide 2: 워크플로우 개념 -->
         <section class="slide" id="slide-2">
+            <h2 class="header-2">🔄 워크플로우란? - 전체 프로세스 자동화</h2>
+            <div class="message">단순한 태스크가 아닌 업무 전체 과정을 연결한 자동화 시스템입니다</div>
+            
+            <!-- 상단 가로 방향 도식도 -->
+            <div style="margin-bottom: 20px; padding: 15px; background: #f8f9fa; border-radius: 8px;">
+                <div class="mermaid">
+graph LR
+    A[🚀 트리거<br/>시작점] --> B[⚙️ 액션 1<br/>데이터 수집]
+    B --> C[🔧 액션 2<br/>데이터 처리]
+    C --> D[💾 액션 3<br/>결과 저장]
+    D --> E[📧 액션 4<br/>알림 발송]
+    
+    style A fill:#e1f5fe
+    style B fill:#f3e5f5
+    style C fill:#f3e5f5
+    style D fill:#f3e5f5
+    style E fill:#e8f5e8
+                </div>
+            </div>
+            
+            <!-- 하단 좌우 블록 -->
+            <div class="content-grid content-grid-2">
+                <div class="content-card">
+                    <div class="card-title">🎯 단순 태스크 vs 워크플로우</div>
+                    <table class="content-table">
+                        <tr>
+                            <th>구분</th>
+                            <th>단순 태스크</th>
+                            <th>워크플로우</th>
+                        </tr>
+                        <tr>
+                            <td>범위</td>
+                            <td>개별 작업</td>
+                            <td>전체 프로세스</td>
+                        </tr>
+                        <tr>
+                            <td>예시</td>
+                            <td>번역, 요약, 생성</td>
+                            <td>데이터 수집→처리→저장</td>
+                        </tr>
+                        <tr>
+                            <td>특징</td>
+                            <td>일회성 처리</td>
+                            <td>연속적 흐름</td>
+                        </tr>
+                        <tr>
+                            <td>가치</td>
+                            <td>효율성 향상</td>
+                            <td>전체 업무 자동화</td>
+                        </tr>
+                    </table>
+                </div>
+                
+                <div class="content-card">
+                    <div class="card-title">🏗️ 워크플로우의 핵심 구성 요소</div>
+                    <div class="checklist">
+                        <h4 style="color: #1B365D; margin: 0 0 10px 0;">📌 노드 (Node)</h4>
+                        <ul style="margin-bottom: 15px;">
+                            <li><strong>트리거</strong>: 워크플로우를 시작하는 신호</li>
+                            <li><strong>액션</strong>: 실제 작업을 수행하는 처리 블록</li>
+                        </ul>
+                        
+                        <h4 style="color: #1B365D; margin: 0 0 10px 0;">🔗 연결 (Connection)</h4>
+                        <ul>
+                            <li>노드 간 데이터 전달 통로</li>
+                            <li>순서 보장 및 실행 흐름 제어</li>
+                            <li>JSON 형태로 정보 전송</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="callout">
+                🎯 <strong>핵심 포인트:</strong> 워크플로우는 개별 작업들을 트리거-액션-연결선으로 엮어 전체 업무 프로세스를 자동화하는 시스템입니다.
+            </div>
+        </section>
+
+        <!-- Slide 3: 노드 개념 -->
+        <section class="slide" id="slide-3">
             <h2 class="header-2">🧩 노드란? - 워크플로우의 핵심 블록</h2>
             <div class="message">노드는 특정 작업을 수행하는 독립적인 단위입니다</div>
             
@@ -487,8 +566,8 @@ JSON 형태로 다음 노드에 전달
             </div>
         </section>
 
-        <!-- Slide 3: 트리거 노드 -->
-        <section class="slide" id="slide-3">
+        <!-- Slide 4: 트리거 노드 -->
+        <section class="slide" id="slide-4">
             <h2 class="header-2">🚀 트리거 노드 - 워크플로우의 시작점</h2>
             <div class="message">워크플로우를 시작하는 다양한 신호와 방법들</div>
             
@@ -520,11 +599,19 @@ JSON 형태로 다음 노드에 전달
                     </ul>
                 </div>
             </div>
+            
+            <!-- 트리거 노드 그루핑 스크린샷 -->
+            <div style="margin-top: 20px; text-align: center;">
+                <div class="content-card">
+                    <div class="card-title">📋 n8n 트리거 노드 분류</div>
+                    <img src="https://clip.pss.so/F6lC0CZT+" alt="n8n 트리거 노드 분류 화면" style="width: 100%; max-width: 800px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+                </div>
+            </div>
         </section>
 
-        <!-- Slide 4: 액션 노드 -->
-        <section class="slide" id="slide-4">
-            <h2 class="header-2">⚙️ 액션 노드 - 실제 작업 수행</h2>
+        <!-- Slide 5: 액션 노드 -->
+        <section class="slide" id="slide-5">
+            <h2 class="header-2">⚙️ 액션 노드 - 작업 수행</h2>
             <div class="message">트리거 이후 실제 비즈니스 로직을 처리하는 작업 노드들</div>
             
             <div class="content-grid content-grid-2">
@@ -576,88 +663,64 @@ JSON 형태로 다음 노드에 전달
                     </table>
                 </div>
             </div>
+            
+            <!-- 액션 노드 분류 스크린샷 -->
+            <div style="margin-top: 20px; text-align: center;">
+                <div class="content-card">
+                    <div class="card-title">📋 데이터 처리 & 외부 서비스 연동 노드</div>
+                    <img src="https://clip.pss.so/lWMyV1MK+" alt="데이터 처리 노드(파란색)와 외부 서비스 연동 노드(초록색) 분류 화면" style="width: 100%; max-width: 800px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+                    <div style="margin-top: 10px; font-size: 12pt; color: #666;">
+                        <span style="background: #e3f2fd; padding: 2px 8px; border-radius: 4px; margin-right: 10px;">파란색: 데이터 처리 노드</span>
+                        <span style="background: #e8f5e8; padding: 2px 8px; border-radius: 4px;">초록색: 외부 서비스 연동 노드</span>
+                    </div>
+                </div>
+            </div>
         </section>
 
-        <!-- Slide 5: AI 서비스 노드 -->
-        <section class="slide" id="slide-5">
-            <h2 class="header-2">🤖 AI/ML 서비스 노드 - 지능형 처리</h2>
-            <div class="message">인공지능을 활용한 고급 데이터 처리와 분석</div>
-            
-            <div class="content-grid content-grid-2">
-                <div class="content-card">
-                    <div class="card-title">🧠 대화형 AI</div>
-                    <ul class="checklist">
-                        <li>Agent: AI 에이전트 통합 관리</li>
-                        <li>OpenAI: GPT 모델 활용</li>
-                        <li>Upstage: 한국어 AI 서비스</li>
-                    </ul>
-                </div>
-                
-                <div class="content-card">
-                    <div class="card-title">☁️ 클라우드 AI</div>
-                    <ul class="checklist">
-                        <li>Google Cloud AI: 번역, 이미지 분석</li>
-                        <li>AWS AI: 음성 인식, 텍스트 분석</li>
-                        <li>Azure AI: 언어 이해, 비전 서비스</li>
-                    </ul>
-                </div>
-            </div>
-            
-            <div class="callout">
-                💡 <strong>AI 노드 활용 팁:</strong> 비즈니스 요구사항에 맞는 AI 서비스를 선택하여 데이터 분석, 자동 분류, 고객 응답 등을 자동화할 수 있습니다.
-            </div>
-        </section>
 
         <!-- Slide 6: 컨트롤 노드 -->
         <section class="slide" id="slide-6">
-            <h2 class="header-2">🎛️ 컨트롤 노드 - 흐름 제어</h2>
+            <h2 class="header-2">🎛️ 액션 노드 - 흐름 제어</h2>
             <div class="message">워크플로우의 실행 흐름을 제어하고 조건부 처리를 담당</div>
             
-            <div class="content-grid content-grid-2">
+            <div class="content-grid content-grid-3">
                 <div class="content-card">
                     <div class="card-title">🔀 조건부 실행</div>
-                    <table class="content-table">
-                        <tr>
-                            <th>노드</th>
-                            <th>용도</th>
-                        </tr>
-                        <tr>
-                            <td>IF</td>
-                            <td>참/거짓 조건 분기</td>
-                        </tr>
-                        <tr>
-                            <td>Switch</td>
-                            <td>다중 조건 분기</td>
-                        </tr>
-                        <tr>
-                            <td>Wait</td>
-                            <td>지연 시간 설정</td>
-                        </tr>
-                    </table>
+                    <ul class="checklist">
+                        <li>IF: 참/거짓 조건 분기</li>
+                        <li>Switch: 다중 조건 분기</li>
+                        <li>Filter: 조건에 맞는 데이터 필터링</li>
+                    </ul>
                 </div>
                 
                 <div class="content-card">
-                    <div class="card-title">📊 데이터 흐름 제어</div>
-                    <table class="content-table">
-                        <tr>
-                            <th>노드</th>
-                            <th>용도</th>
-                        </tr>
-                        <tr>
-                            <td>Merge</td>
-                            <td>여러 데이터 스트림 병합</td>
-                        </tr>
-                        <tr>
-                            <td>Split In Batches</td>
-                            <td>대용량 데이터 배치 처리</td>
-                        </tr>
-                        <tr>
-                            <td>Stop and Error</td>
-                            <td>워크플로우 중단</td>
-                        </tr>
-                    </table>
+                    <div class="card-title">⏸️ 일시중지/중단</div>
+                    <ul class="checklist">
+                        <li>Wait: 지연 시간 설정</li>
+                        <li>Stop and Error: 워크플로우 중단</li>
+                        <li>No Operation: 빈 처리 단계</li>
+                    </ul>
+                </div>
+                
+                <div class="content-card">
+                    <div class="card-title">🔄 병합 및 나누기</div>
+                    <ul class="checklist">
+                        <li>Merge: 여러 데이터 스트림 병합</li>
+                        <li>Split In Batches: 대용량 데이터 배치 처리</li>
+                        <li>Item Lists: 배열 데이터 분할/결합</li>
+                    </ul>
                 </div>
             </div>
+            
+            <!-- 컨트롤 노드 분류 스크린샷 -->
+            <div style="margin-top: 20px; text-align: center;">
+                <div class="content-card">
+                    <div class="card-title">📋 컨트롤 노드 분류</div>
+                    <img src="https://clip.pss.so/Fwk21mtz+" alt="조건부 실행, 일시중지/중단, 병합 및 나누기 컨트롤 노드들" style="width: 100%; max-width: 800px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+                </div>
+            </div>
+        </section>
+
         </section>
 
         <!-- Slide 7: 연결 유형 -->
@@ -696,6 +759,22 @@ JSON 형태로 다음 노드에 전달
                     </ul>
                 </div>
             </div>
+            
+            <!-- 연결 유형과 에러 처리 설정 스크린샷을 좌우로 배치 -->
+            <div class="content-grid content-grid-2" style="margin-top: 20px;">
+                <div class="content-card">
+                    <div class="card-title">🔗 연결 유형별 데이터 흐름</div>
+                    <img src="https://clip.pss.so/zX5tCyMq+" alt="Main Connection, Error Connection, 조건부 Connection 종류" style="width: 100%; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+                </div>
+                
+                <div class="content-card" style="height: fit-content;">
+                    <div class="card-title">⚙️ 에러 발생 시 처리 방식 설정</div>
+                    <img src="https://clip.pss.so/cJqYlbSG+" alt="에러 처리 방식 설정 - 에러 분기 생성 또는 중단/계속 선택" style="width: 100%; height: 20%; object-fit: contain; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+                    <div style="margin-top: 10px; font-size: 11pt; color: #666;">
+                        에러 발생 시 워크플로우 중단, 계속 진행, 또는 에러 분기 생성 선택 가능
+                    </div>
+                </div>
+            </div>
         </section>
 
         <!-- Slide 8: 분기 패턴 -->
@@ -706,7 +785,19 @@ JSON 형태로 다음 노드에 전달
             <div class="content-grid content-grid-2">
                 <div class="content-card">
                     <div class="card-title">📝 Sequential Flow (순차적)</div>
-                    <div class="code-block">Trigger → Process A → Process B → Process C → End</div>
+                    <div class="mermaid">
+graph LR
+    A[🚀 Trigger] --> B[⚙️ Process A]
+    B --> C[🔧 Process B]
+    C --> D[💾 Process C]
+    D --> E[✅ End]
+    
+    style A fill:#e1f5fe
+    style B fill:#f3e5f5
+    style C fill:#f3e5f5
+    style D fill:#f3e5f5
+    style E fill:#e8f5e8
+                    </div>
                     <div class="basic-font"><strong>활용 사례:</strong></div>
                     <ul class="checklist">
                         <li>데이터 검증 → 변환 → 저장</li>
@@ -717,7 +808,25 @@ JSON 형태로 다음 노드에 전달
                 
                 <div class="content-card">
                     <div class="card-title">⚡ Parallel Flow (병렬)</div>
-                    <div class="code-block">Trigger → Split → [A, B, C] → Merge → End</div>
+                    <div class="mermaid">
+graph TD
+    A[🚀 Trigger] --> B[🔀 Split]
+    B --> C[⚙️ Process A]
+    B --> D[🔧 Process B]
+    B --> E[💾 Process C]
+    C --> F[🔗 Merge]
+    D --> F
+    E --> F
+    F --> G[✅ End]
+    
+    style A fill:#e1f5fe
+    style B fill:#fff3e0
+    style C fill:#f3e5f5
+    style D fill:#f3e5f5
+    style E fill:#f3e5f5
+    style F fill:#fff3e0
+    style G fill:#e8f5e8
+                    </div>
                     <div class="basic-font"><strong>활용 사례:</strong></div>
                     <ul class="checklist">
                         <li>다중 API 동시 호출</li>
@@ -730,7 +839,20 @@ JSON 형태로 다음 노드에 전달
             <div class="content-grid content-grid-2">
                 <div class="content-card">
                     <div class="card-title">🔄 Conditional Flow (조건부)</div>
-                    <div class="code-block">Trigger → IF → [True Path, False Path] → End</div>
+                    <div class="mermaid">
+graph TD
+    A[🚀 Trigger] --> B{🔍 IF 조건}
+    B -->|True| C[✅ True Path]
+    B -->|False| D[❌ False Path]
+    C --> E[✅ End]
+    D --> E
+    
+    style A fill:#e1f5fe
+    style B fill:#fff3e0
+    style C fill:#e8f5e8
+    style D fill:#ffebee
+    style E fill:#f8f9fa
+                    </div>
                     <div class="basic-font"><strong>활용 사례:</strong></div>
                     <ul class="checklist">
                         <li>사용자 권한별 다른 처리</li>
@@ -741,7 +863,31 @@ JSON 형태로 다음 노드에 전달
                 
                 <div class="content-card">
                     <div class="card-title">🔁 Loop Flow (반복)</div>
-                    <div class="code-block">Start → Process → Decision → [Continue, Exit]</div>
+                    <div class="mermaid">
+graph LR
+    A[🚀 Start] --> C{🔍 Decision}
+    C -->|Continue| B[⚙️ Action 1]
+    B --> F[🔧 Action 2]
+    F --> G[💾 Action 3]
+    G --> D[🔄 Loop Back]
+    D --> C
+    C -->|Exit| E[✅ End]
+    
+    subgraph Loop["반복 구간"]
+        B
+        F
+        G
+        D
+    end
+    
+    style A fill:#e1f5fe
+    style B fill:#f3e5f5
+    style F fill:#f3e5f5
+    style G fill:#f3e5f5
+    style C fill:#fff3e0
+    style D fill:#e3f2fd
+    style E fill:#e8f5e8
+                    </div>
                     <div class="basic-font"><strong>활용 사례:</strong></div>
                     <ul class="checklist">
                         <li>대용량 데이터 배치 처리</li>
@@ -749,6 +895,10 @@ JSON 형태로 다음 노드에 전달
                         <li>재시도 로직 구현</li>
                     </ul>
                 </div>
+            </div>
+            
+            <div class="callout">
+                🎯 <strong>패턴 선택 가이드:</strong> Sequential은 단순한 작업 체인, Parallel은 독립적 작업 병렬화, Conditional은 상황별 분기, Loop는 반복 처리에 최적화되어 있습니다.
             </div>
         </section>
 
@@ -774,25 +924,30 @@ JSON 형태로 다음 노드에 전달
                 </div>
                 
                 <div class="content-card">
-                    <div class="card-title">🔍 노드 참조 방법</div>
-                    <table class="content-table">
-                        <tr>
-                            <th>참조 방식</th>
-                            <th>문법</th>
-                        </tr>
-                        <tr>
-                            <td>노드명 참조</td>
-                            <td>{{ $node["노드명"].json }}</td>
-                        </tr>
-                        <tr>
-                            <td>인덱스 참조</td>
-                            <td>{{ $node["노드명"].json[0] }}</td>
-                        </tr>
-                        <tr>
-                            <td>필드 참조</td>
-                            <td>{{ $node["노드명"].json.field_name }}</td>
-                        </tr>
-                    </table>
+                    <div class="card-title">💡 데이터 참조 방식</div>
+                    
+                    <h4 style="color: #1B365D; margin: 15px 0 10px 0;">🔗 직전 노드 참조</h4>
+                    <div class="code-block">
+// Expression 모드에서 직전 노드의 데이터 참조
+{{ $json.name }}
+{{ $json.email }}
+{{ $json.items[0].title }}
+                    </div>
+                    
+                    <h4 style="color: #1B365D; margin: 15px 0 10px 0;">📍 특정 노드 참조</h4>
+                    <div class="code-block">
+// 노드명을 지정하여 특정 노드의 데이터 참조
+{{ $('Edit Fields5').item.json.name }}
+{{ $('HTTP Request').item.json.response }}
+{{ $('Set Data').item.json.user_id }}
+                    </div>
+                    
+                    <div class="basic-font" style="margin-top: 15px;">
+                        <strong>💡 핵심 원리:</strong><br>
+                        • <strong>직전 노드:</strong> 이미 아이템이 결정된 상태 → <code>${{json.키}}</code><br>
+                        • <strong>특정 노드:</strong> 노드명으로 지정 필요 → <code>${{$('노드명').item.json.키}}</code><br>
+                        • <strong>설정 위치:</strong> Fixed가 아닌 Expression 모드에서 사용
+                    </div>
                 </div>
             </div>
             
@@ -801,8 +956,48 @@ JSON 형태로 다음 노드에 전달
             </div>
         </section>
 
-        <!-- Slide 10: Best Practices -->
+        <!-- Slide 10: Agentic 노드 -->
         <section class="slide" id="slide-10">
+            <h2 class="header-2">🤖 Agentic 노드 - 지능형 처리</h2>
+            <div class="message">인공지능을 활용한 고급 데이터 처리와 분석</div>
+            
+            <div class="content-grid content-grid-2">
+                <div class="content-card">
+                    <div class="card-title">🤖 Agent 형</div>
+                    <ul class="checklist">
+                        <li>LLM이 판단하여 적합한 도구 선택</li>
+                        <li>Agent 노드: AI 에이전트 통합 관리</li>
+                        <li>OpenAI, Upstage 등 LLM 연동</li>
+                        <li>복잡한 작업 수행을 위한 도구 활용</li>
+                    </ul>
+                </div>
+                
+                <div class="content-card">
+                    <div class="card-title">🔍 Retrieval 형</div>
+                    <ul class="checklist">
+                        <li>자연어를 임베딩으로 변환하여 처리</li>
+                        <li>Vector Store: 벡터 데이터 저장/검색</li>
+                        <li>Document Loader: 문서 내용 추출</li>
+                        <li>텍스트 유사도 기반 정보 검색</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- 에이전틱 노드 분류 스크린샷 -->
+            <div style="margin-top: 20px; text-align: center;">
+                <div class="content-card">
+                    <div class="card-title">📋 AI 에이전틱 워크플로우 노드</div>
+                    <img src="https://clip.pss.so/KGgXKk1b+" alt="Agent형과 Retrieval형 AI 노드 분류 화면" style="width: 100%; max-width: 800px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+                </div>
+            </div>
+            
+            <div class="callout">
+                💡 <strong>에이전틱 워크플로우 특징:</strong> AI 모델이 노드에 직접 관여하여 판단·생성 역할을 수행하며, 필요에 따라 추가 도구들과 연계되는 지능형 워크플로우입니다.
+            </div>
+        </section>
+
+        <!-- Slide 11: Best Practices -->
+        <section class="slide" id="slide-11">
             <h2 class="header-2">🎯 워크플로우 설계 Best Practices</h2>
             <div class="message">효과적이고 확장 가능한 워크플로우 구축을 위한 실무 가이드</div>
             
@@ -835,8 +1030,8 @@ JSON 형태로 다음 노드에 전달
             </div>
         </section>
 
-        <!-- Slide 11: 마무리 -->
-        <section class="slide" id="slide-11">
+        <!-- Slide 12: 마무리 -->
+        <section class="slide" id="slide-12">
             <h2 class="header-2">🎉 마무리 - 노드와 연결 마스터!</h2>
             <div class="message">이제 어떤 복잡한 비즈니스 요구사항도 직관적인 워크플로우로 구현할 수 있습니다</div>
             
@@ -853,7 +1048,7 @@ JSON 형태로 다음 노드에 전달
                 
                 <div class="content-card">
                     <div class="card-title">🚀 다음 단계</div>
-                    <div class="basic-font">다음 강의에서는 이러한 노드들을 안전하게 외부 서비스와 연결하는 <strong>Credential 관리</strong>에 대해 알아보겠습니다.</div>
+                    <div class="basic-font">다음 강의에서는 <strong>주요 트리거와 액션 노드들</strong>에 대해 더 자세히 알아보고 실제 활용 방법을 익혀보겠습니다.</div>
                 </div>
             </div>
             

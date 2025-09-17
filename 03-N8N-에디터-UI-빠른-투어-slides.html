@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>03. N8N 에디터 UI 빠른 투어</title>
+    <title>03. N8N 에디터 UI 완전 가이드 - 5개 핵심 화면</title>
     <style>
         /* === Overflow-safe Global Reset (필수) === */
         *, *::before, *::after { box-sizing: border-box; }
@@ -455,8 +455,8 @@
     <nav class="nav-bar">
         <div class="nav-logo">🖥️ n8n UI 가이드</div>
         <div class="nav-progress">
-            <span class="current-topic">N8N 에디터 UI 빠른 투어</span>
-            <span class="slide-counter">1 / 10</span>
+            <span class="current-topic">N8N 에디터 UI 완전 가이드</span>
+            <span class="slide-counter">1 / 15</span>
         </div>
     </nav>
 
@@ -469,321 +469,726 @@
     <div class="slide-container">
         <!-- 슬라이드 1: 인트로 -->
         <section class="slide intro" id="slide-1">
-            <h1 class="header-1">🖥️ N8N 에디터 UI 빠른 투어</h1>
-            <h2 class="header-2">작업실 둘러보기 - 어디에 뭐가 있는지 알아보자</h2>
+            <h1 class="header-1">🖥️ N8N 에디터 UI 완전 가이드</h1>
+            <h2 class="header-2">회사 사무실처럼 체계적으로 구성된 5개 핵심 화면을 마스터하자</h2>
             
             <div class="callout-center">
                 <ol class="step-list">
-                    <li><strong>왼쪽 메뉴</strong> - 내 작업실의 정리된 서랍장</li>
-                    <li><strong>중앙 캔버스</strong> - 자동화를 그림 그리듯 만드는 작업판</li>
-                    <li><strong>노드 패널</strong> - 다양한 업무 도구들의 보관함</li>
-                    <li><strong>첫 자동화</strong> - "Hello World" 워크플로우 만들기</li>
+                    <li><strong>메인 워크플로우 관리 화면</strong> - 사장실에서 전체 프로젝트 관리</li>
+                    <li><strong>크레덴셜 관리 화면</strong> - 출입카드와 열쇠 보관함</li>
+                    <li><strong>Execution 관리 화면</strong> - 작업 진행 상황 모니터링실</li>
+                    <li><strong>세팅 화면</strong> - 사무실 환경 설정 및 도구 추가</li>
+                    <li><strong>워크플로우 제작 화면</strong> - 실제 작업을 수행하는 작업실</li>
                 </ol>
             </div>
         </section>
 
-        <!-- 슬라이드 2: 작업 공간 개요 -->
+        <!-- 슬라이드 2: 메인 워크플로우 관리 화면 개요 -->
         <section class="slide" id="slide-2">
-            <h2 class="header-2">🏢 작업 공간 둘러보기</h2>
-            <div class="message">정리정돈된 작업실의 서랍장처럼 필요한 것들이 체계적으로 배치되어 있습니다</div>
+            <h2 class="header-2">🏢 메인 워크플로우 관리 화면</h2>
+            <div class="message">회사의 사장실처럼 모든 프로젝트와 자동화를 한눈에 관리하는 중앙 통제실입니다</div>
             
-            <table class="content-table">
-                <thead>
-                    <tr>
-                        <th>메뉴</th>
-                        <th>역할</th>
-                        <th>일상 비유</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><strong>📊 Overview</strong></td>
-                        <td>모든 자동화 시스템 한눈에 보기</td>
-                        <td>작업실 전체를 한눈에 보는 감시실</td>
-                    </tr>
-                    <tr>
-                        <td><strong>👤 Personal</strong></td>
-                        <td>내 개인 작업 공간</td>
-                        <td>내 개인 책상과 서랍</td>
-                    </tr>
-                    <tr>
-                        <td><strong>📁 Projects</strong></td>
-                        <td>프로젝트별로 정리된 공간</td>
-                        <td>프로젝트별로 나눈 파일함</td>
-                    </tr>
-                </tbody>
-            </table>
+            <!-- 메인 워크플로우 관리화면 이미지 -->
+            <div style="text-align: center; margin: 20px 0;">
+                <img src="https://clip.pss.so/JLyhFNJG+" alt="n8n 메인 워크플로우 관리화면" style="max-width: 80%; height: auto; border: 1px solid #E2E8F0; border-radius: 8px; box-shadow: 0 2px 8px rgba(27, 54, 93, 0.1);">
+            </div>
+            
+            <div class="content-grid content-grid-2">
+                <div class="content-card">
+                    <h3 class="card-title">📊 Overview vs Personal 작업공간</h3>
+                    <table class="content-table">
+                        <thead>
+                            <tr>
+                                <th>구분</th>
+                                <th>Overview</th>
+                                <th>Personal</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>역할</strong></td>
+                                <td>전체 팀 프로젝트 관리</td>
+                                <td>개인 작업 공간</td>
+                            </tr>
+                            <tr>
+                                <td><strong>비유</strong></td>
+                                <td>회사 전체 관리실</td>
+                                <td>내 개인 책상</td>
+                            </tr>
+                            <tr>
+                                <td><strong>주요 기능</strong></td>
+                                <td>모든 워크플로우 조회</td>
+                                <td>내 워크플로우만 관리</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="content-card">
+                    <h3 class="card-title">🎛️ 워크플로우 관리 기능</h3>
+                    <ul class="checklist">
+                        <li><strong>워크플로우 목록</strong> - 파일 탐색기처럼 정리된 리스트</li>
+                        <li><strong>Active 상태 제어</strong> - 자동화 ON/OFF 스위치</li>
+                        <li><strong>공유하기</strong> - 동료에게 워크플로우 전달</li>
+                        <li><strong>복제하기</strong> - 템플릿으로 새 워크플로우 생성</li>
+                        <li><strong>보관하기</strong> - 사용하지 않는 워크플로우 정리</li>
+                        <li><strong>검색 필터</strong> - 이름, 상태별 빠른 찾기</li>
+                    </ul>
+                </div>
+            </div>
         </section>
 
-        <!-- 슬라이드 3: 첫 워크플로우 생성 -->
+        <!-- 슬라이드 3: 워크플로우 생성과 관리 -->
         <section class="slide" id="slide-3">
-            <h2 class="header-2">✨ 첫 번째 자동화 시작하기</h2>
-            <div class="message">새 워드 문서를 만드는 것처럼 쉽게 첫 워크플로우를 생성합니다</div>
+            <h2 class="header-2">✨ 워크플로우 생성과 라이프사이클 관리</h2>
+            <div class="message">프로젝트 폴더를 만들고 관리하는 것처럼 체계적으로 워크플로우를 운영합니다</div>
             
-            <ol class="step-list">
-                <li>
-                    <strong>새 자동화 만들기</strong>
+            <div class="content-grid content-grid-2">
+                <div class="content-card">
+                    <h3 class="card-title">📁 새 워크플로우 생성</h3>
+                    <ol class="step-list">
+                        <li>
+                            <strong>생성하기</strong>
+                            <ul class="checklist">
+                                <li>Overview/Personal에서 <strong>Create Workflow</strong> 클릭</li>
+                                <li>새 폴더 만들기와 동일한 개념</li>
+                            </ul>
+                        </li>
+                        <li>
+                            <strong>명명규칙</strong>
+                            <ul class="checklist">
+                                <li>"고객문의-자동응답-v1" 같은 의미있는 이름</li>
+                                <li><span class="kbd">Ctrl + S</span>로 저장</li>
+                            </ul>
+                        </li>
+                        <li>
+                            <strong>복제 활용</strong>
+                            <ul class="checklist">
+                                <li>기존 워크플로우를 템플릿으로 복제</li>
+                                <li>Duplicate → 이름 변경 → 수정</li>
+                            </ul>
+                        </li>
+                    </ol>
+                </div>
+                
+                <div class="content-card">
+                    <h3 class="card-title">🔄 Active 상태 관리</h3>
                     <ul class="checklist">
-                        <li>Overview 클릭 후 <strong>Create Workflow</strong> 버튼 클릭</li>
-                        <li>새 워드 문서 만들기와 동일한 개념</li>
+                        <li><strong>Inactive (비활성)</strong> - 테스트 중이거나 개발 단계</li>
+                        <li><strong>Active (활성)</strong> - 실제 운영 중인 자동화</li>
+                        <li><strong>상태 전환</strong> - 우상단 토글 스위치로 간편 제어</li>
+                        <li><strong>주의사항</strong> - Active 상태에서만 트리거 동작</li>
                     </ul>
-                </li>
-                <li>
-                    <strong>이름 지어주기</strong>
+                    
+                    <h3 class="card-title">📤 공유 및 백업</h3>
                     <ul class="checklist">
-                        <li>"첫 번째 자동화" 같은 알아볼 수 있는 이름으로 저장</li>
-                        <li>단축키: <span class="kbd">Ctrl + S</span> (윈도우) / <span class="kbd">Cmd + S</span> (맥)</li>
+                        <li><strong>Share</strong> - 팀원에게 읽기 전용 공유</li>
+                        <li><strong>Duplicate</strong> - 완전 복사본 생성</li>
+                        <li><strong>Archive</strong> - 사용하지 않는 워크플로우 보관</li>
+                        <li><strong>History</strong> - 버전 관리 및 복원</li>
                     </ul>
-                </li>
-                <li>
-                    <strong>템플릿 활용하기</strong>
-                    <ul class="checklist">
-                        <li>다른 사람이 만든 자동화를 복사해서 내 것으로 만들기</li>
-                        <li>Workflows → Duplicate로 복제 (요리 레시피 복사하기)</li>
-                    </ul>
-                </li>
-                <li>
-                    <strong>내 상황에 맞게 수정하기</strong>
-                    <ul class="checklist">
-                        <li>복제한 자동화의 설정을 내 회사/상황에 맞게 변경</li>
-                        <li>History 탭에서 이전 버전 확인 및 복원 가능</li>
-                    </ul>
-                </li>
-            </ol>
+                </div>
+            </div>
+            
+            <div style="text-align: center; margin: 24px 0;">
+                <img src="https://clip.pss.so/9lqdDQHJ+" alt="워크플로우 생성, 복제 및 폴더 생성 화면" style="max-width: 80%; height: auto; border: 1px solid #E2E8F0; border-radius: 8px; box-shadow: 0 2px 8px rgba(27, 54, 93, 0.1); margin: 8px 0; display: block; margin-left: auto; margin-right: auto;">
+            </div>
         </section>
 
-        <!-- 슬라이드 4: 메인 캔버스 -->
+        <!-- 슬라이드 4: 크레덴셜 관리 화면 개요 -->
         <section class="slide" id="slide-4">
-            <h2 class="header-2">🎨 메인 캔버스 (작업 영역)</h2>
-            <div class="message">실제 워크플로우를 그려나가는 디지털 화이트보드입니다</div>
+            <h2 class="header-2">🔐 크레덴셜 관리 화면</h2>
+            <div class="message">회사의 열쇠보관함처럼 외부 서비스 접근을 위한 인증 정보를 안전하게 관리합니다</div>
             
             <div class="content-grid content-grid-2">
                 <div class="content-card">
-                    <h3 class="card-title">🔧 캔버스 구성 요소</h3>
-                    <ul class="checklist">
-                        <li><strong>점선 격자 배경</strong> - 워크플로우 편집 공간</li>
-                        <li><strong>"Add first step" 점선 사각형</strong> - 첫 번째 노드 추가 위치</li>
-                        <li><strong>Execute workflow 버튼</strong> - 모든 노드 순차적 실행</li>
-                        <li><strong>+ 아이콘 버튼</strong> - 노드 패널 열기</li>
-                        <li><strong>노트 아이콘</strong> - 캔버스에 스티키 노트 추가</li>
-                        <li><strong>Ask Assistant 버튼</strong> - AI 워크플로우 구축 도움</li>
-                    </ul>
+                    <h3 class="card-title">🗝️ 크레덴셜이란?</h3>
+                    <table class="content-table">
+                        <thead>
+                            <tr>
+                                <th>실생활 비유</th>
+                                <th>크레덴셜 종류</th>
+                                <th>용도</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>🏠 집 열쇠</td>
+                                <td>API Key</td>
+                                <td>개인 서비스 전체 접근</td>
+                            </tr>
+                            <tr>
+                                <td>🎫 방문증</td>
+                                <td>OAuth 토큰</td>
+                                <td>제한된 권한으로 안전 접근</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
                 
                 <div class="content-card">
-                    <h3 class="card-title">🎮 캔버스 제어 기능</h3>
+                    <h3 class="card-title">📂 크레덴셜 관리 인터페이스</h3>
                     <ul class="checklist">
-                        <li><strong>줌 조절</strong> - 화면에 맞게 줌 조절</li>
-                        <li><strong>줌 인/아웃</strong> - 세부 편집 및 전체 보기</li>
-                        <li><strong>줌 리셋</strong> - 기본 크기로 복원</li>
-                        <li><strong>화면 정리</strong> - 노드 자동 정렬</li>
-                    </ul>
-                    
-                    <h3 class="card-title">🖱️ 캔버스 네비게이션</h3>
-                    <ul class="checklist">
-                        <li><span class="kbd">Ctrl + 좌클릭</span>으로 드래그 이동</li>
-                        <li>마우스 중간 버튼으로 드래그 이동</li>
-                        <li>터치패드에서 두 손가락으로 슬라이드</li>
+                        <li><strong>Credentials 메뉴</strong> - 좌측 사이드바에서 접근</li>
+                        <li><strong>My credentials</strong> - 내가 생성한 인증 정보</li>
+                        <li><strong>All credentials</strong> - 팀 공유 인증 정보 포함</li>
+                        <li><strong>Create credential</strong> - 새 인증 정보 추가</li>
+                        <li><strong>Test connection</strong> - 연결 상태 확인</li>
+                        <li><strong>암호화 저장</strong> - 민감 정보 자동 보호</li>
                     </ul>
                 </div>
             </div>
+            
+            <div style="text-align: center; margin: 24px 0;">
+                <img src="https://clip.pss.so/cvcT94yc+" alt="Credential 등록 화면" style="max-width: 80%; height: auto; border: 1px solid #E2E8F0; border-radius: 8px; box-shadow: 0 2px 8px rgba(27, 54, 93, 0.1); margin: 8px 0; display: block; margin-left: auto; margin-right: auto;">
+            </div>
         </section>
 
-        <!-- 슬라이드 5: 노드 패널 -->
+        <!-- 슬라이드 5: API Key vs OAuth 인증 방식 -->
         <section class="slide" id="slide-5">
-            <h2 class="header-2">🧩 노드 패널 (우측)</h2>
-            <div class="message">레고 블록을 선택하는 것처럼 필요한 기능 노드를 골라 사용합니다</div>
+            <h2 class="header-2">🔑 API Key vs OAuth - 두 가지 인증 방식</h2>
+            <div class="message">집 열쇠와 방문증처럼 각각 다른 보안 수준과 편의성을 제공합니다</div>
             
             <div class="content-grid content-grid-2">
                 <div class="content-card">
-                    <h3 class="card-title">🔑 노드 패널 열기 방법</h3>
+                    <h3 class="card-title">🗝️ API Key 방식 (집 열쇠)</h3>
                     <ul class="checklist">
-                        <li>캔버스 우상단 <strong>+ 아이콘</strong> 클릭</li>
-                        <li>기존 노드 우측 <strong>+ 아이콘</strong> 클릭</li>
-                        <li>키보드 <span class="kbd">Tab 키</span> 누르기</li>
-                    </ul>
-                </div>
-                
-                <div class="content-card">
-                    <h3 class="card-title">📦 노드 분류</h3>
-                    <ul class="checklist">
-                        <li><strong>첫 번째 노드</strong> - 다양한 트리거 노드 카테고리</li>
-                        <li><strong>Advanced AI</strong> - AI 기능 노드들</li>
-                        <li><strong>Actions in an App</strong> - 앱 연동 액션</li>
-                        <li><strong>Data transformation</strong> - 데이터 변환</li>
-                        <li><strong>Flow</strong> - 흐름 제어</li>
-                        <li><strong>Core</strong> - 핵심 기능</li>
-                        <li><strong>Human in the loop</strong> - 사람 개입 기능</li>
-                    </ul>
-                </div>
-            </div>
-        </section>
-
-        <!-- 슬라이드 6: 노드 관리 -->
-        <section class="slide" id="slide-6">
-            <h2 class="header-2">⚙️ 노드 관리 기능</h2>
-            <div class="message">각 노드를 효율적으로 제어하고 편집하는 방법을 익힙니다</div>
-            
-            <div class="content-grid content-grid-2">
-                <div class="content-card">
-                    <h3 class="card-title">🎛️ 노드 제어 (마우스 호버 시)</h3>
-                    <ul class="checklist">
-                        <li><strong>Execute step</strong> - 해당 노드만 실행</li>
-                        <li><strong>Deactivate</strong> - 노드 비활성화</li>
-                        <li><strong>Delete</strong> - 노드 삭제</li>
-                        <li><strong>Node context menu</strong> - 노드 액션 메뉴</li>
-                    </ul>
-                </div>
-                
-                <div class="content-card">
-                    <h3 class="card-title">✏️ 노드 이름 변경</h3>
-                    <ul class="checklist">
-                        <li>노드 선택 후 <span class="kbd">F2 키</span></li>
-                        <li>노드 더블클릭 → 좌상단 이름 클릭 → Rename</li>
-                        <li>노드 우클릭 → Rename 옵션 선택</li>
-                    </ul>
-                </div>
-            </div>
-        </section>
-
-        <!-- 슬라이드 7: 실행 관리 -->
-        <section class="slide" id="slide-7">
-            <h2 class="header-2">▶️ 실행 관리</h2>
-            <div class="message">워크플로우를 테스트하고 모니터링하는 핵심 기능입니다</div>
-            
-            <div class="content-grid content-grid-2">
-                <div class="content-card">
-                    <h3 class="card-title">📊 실행 로그 접근 방법</h3>
-                    <h4 class="header-3">특정 워크플로우 실행:</h4>
-                    <ul class="checklist">
-                        <li>워크플로우 캔버스에서 <strong>Executions 탭</strong> 선택</li>
-                        <li><strong>Editor 탭</strong>으로 노드 에디터 복귀</li>
+                        <li><strong>특징</strong> - 한 번 발급받으면 영구 사용</li>
+                        <li><strong>보안</strong> - 전체 권한, 노출 시 위험</li>
+                        <li><strong>설정</strong> - 간단한 복사&붙여넣기</li>
+                        <li><strong>관리</strong> - 정기적 교체 권장</li>
                     </ul>
                     
-                    <h4 class="header-3">전체 실행 로그:</h4>
+                    <h4 class="header-3">주요 사용 서비스:</h4>
                     <ul class="checklist">
-                        <li>에디터 UI에서 <strong>Overview</strong> 선택</li>
-                        <li>메인 패널의 <strong>Executions 탭</strong> 선택</li>
+                        <li>OpenAI (ChatGPT API)</li>
+                        <li>Upstage (한국어 AI)</li>
+                        <li>대부분의 AI 서비스</li>
+                        <li>날씨, 뉴스 등 공개 API</li>
                     </ul>
+                    
+                    <h4 class="header-3">인증 절차:</h4>
+                    <div class="mermaid">
+sequenceDiagram
+    participant 사용자
+    participant API제공업체
+    participant n8n
+    
+    사용자->>API제공업체: API Key 요청
+    API제공업체->>사용자: API Key 발급
+    사용자->>n8n: API Key 입력
+    n8n->>API제공업체: API Key로 인증 및 호출
+    </div>
                 </div>
                 
                 <div class="content-card">
-                    <h3 class="card-title">🔄 워크플로우 활성화</h3>
+                    <h3 class="card-title">🎫 OAuth 방식 (방문증)</h3>
                     <ul class="checklist">
-                        <li>상단 내비게이션의 <strong>Inactive</strong> 토글을 <strong>Activated</strong>로 설정</li>
-                        <li>우상단 점 3개 메뉴에서 <strong>Settings</strong> 접근</li>
+                        <li><strong>특징</strong> - 임시 토큰, 자동 갱신</li>
+                        <li><strong>보안</strong> - 제한된 권한, 언제든 철회 가능</li>
+                        <li><strong>설정</strong> - "Connect" 버튼으로 간편 연결</li>
+                        <li><strong>관리</strong> - 자동 토큰 관리</li>
                     </ul>
+                    
+                    <h4 class="header-3">주요 사용 서비스:</h4>
+                    <ul class="checklist">
+                        <li>Google (Gmail, Sheets, Drive)</li>
+                        <li>Microsoft (Outlook, Excel)</li>
+                        <li>소셜미디어 (Twitter, LinkedIn)</li>
+                        <li>클라우드 스토리지 (Dropbox)</li>
+                    </ul>
+                    
+                    <h4 class="header-3">인증 절차:</h4>
+                    <div class="mermaid">
+sequenceDiagram
+    participant 사용자
+    participant OAuth제공업체
+    participant n8n
+    
+    사용자->>n8n: OAuth 연결 요청
+    n8n->>OAuth제공업체: 인증 페이지로 리다이렉트
+    사용자->>OAuth제공업체: 로그인 및 권한 승인
+    OAuth제공업체->>n8n: 토큰 발급
+    n8n->>OAuth제공업체: 토큰으로 서비스 호출
+    </div>
                 </div>
             </div>
         </section>
 
-        <!-- 슬라이드 8: 실행 설정 -->
-        <section class="slide" id="slide-8">
-            <h2 class="header-2">⚙️ 실행 설정 옵션</h2>
-            <div class="message">워크플로우 실행을 최적화하고 문제를 추적하는 설정들입니다</div>
+        <!-- 슬라이드 6: Execution 상세 디버깅 -->
+        <section class="slide" id="slide-6">
+            <h2 class="header-2">🔧 Execution 상세 디버깅 (심화)</h2>
+            <div class="message">의사가 환자를 진단하듯이 개별 실행 문제를 단계별로 해결합니다</div>
             
             <div class="content-grid content-grid-2">
                 <div class="content-card">
-                    <h3 class="card-title">⏱️ 타임아웃 설정</h3>
-                    <ul class="checklist">
-                        <li><strong>EXECUTIONS_TIMEOUT</strong> - 최대 실행 시간(초) 설정</li>
-                        <li>무한 실행 방지 및 리소스 소비 제어</li>
-                    </ul>
+                    <h3 class="card-title">🖥️ 상세 디버깅 화면</h3>
+                    <div style="text-align: center; margin: 16px 0;">
+                        <img src="https://clip.pss.so/dYPPjHss+" alt="n8n Execution 디버깅 화면" style="max-width: 100%; height: auto; border: 1px solid #E2E8F0; border-radius: 8px; box-shadow: 0 2px 8px rgba(27, 54, 93, 0.1);">
+                    </div>
+                    <p class="basic-font">실패한 워크플로우의 실행 상태와 각 노드별 에러 정보를 상세히 분석할 수 있습니다.</p>
                 </div>
                 
                 <div class="content-card">
-                    <h3 class="card-title">💾 실행 데이터 저장</h3>
-                    <ul class="checklist">
-                        <li><strong>Save failed executions</strong> - 실패한 실행 데이터 저장 (기본: 저장)</li>
-                        <li><strong>Save successful executions</strong> - 성공한 실행 데이터 저장 (기본: 저장)</li>
-                        <li><strong>Save manual executions</strong> - 수동 실행 데이터 저장 (기본: 저장)</li>
-                        <li><strong>Save execution progress</strong> - 각 노드 실행 데이터 저장 (에러 지점 재개 가능, 기본: 저장 안 함)</li>
-                    </ul>
+                    <h3 class="card-title">🔍 체계적인 디버깅 프로세스</h3>
+                    <ol class="step-list">
+                        <li>
+                            <strong>실패한 실행 확인</strong>
+                            <ul class="checklist">
+                                <li>Executions 탭에서 빨간색 실패 표시 확인</li>
+                                <li>실행 시간과 에러 개수 파악</li>
+                            </ul>
+                        </li>
+                        <li>
+                            <strong>실패한 노드 확인</strong>
+                            <ul class="checklist">
+                                <li>워크플로우에서 빨간색으로 표시된 노드 식별</li>
+                                <li>에러가 발생한 지점 파악</li>
+                            </ul>
+                        </li>
+                        <li>
+                            <strong>상세 원인 확인</strong>
+                            <ul class="checklist">
+                                <li>실패 노드 클릭으로 에러 메시지 확인</li>
+                                <li>입력/출력 데이터 검토</li>
+                                <li>API 응답 코드 및 상세 에러 로그 분석</li>
+                            </ul>
+                        </li>
+                        <li>
+                            <strong>문제 해결 후 Replay</strong>
+                            <ul class="checklist">
+                                <li>워크플로우 수정 후 저장</li>
+                                <li>Replay 버튼으로 동일 조건 재실행</li>
+                                <li>성공할 때까지 반복 디버깅</li>
+                            </ul>
+                        </li>
+                    </ol>
+                    
+                    <div class="callout">
+                        💡 <strong>디버깅 팁:</strong> Replay 기능을 통해 같은 입력 데이터로 반복 테스트하며 문제를 해결할 수 있습니다.
+                    </div>
                 </div>
             </div>
         </section>
 
-        <!-- 슬라이드 9: 크레덴셜 관리 개요 -->
-        <section class="slide" id="slide-9">
-            <h2 class="header-2">🔐 크레덴셜 관리</h2>
-            <div class="message">외부 서비스와 안전하게 연결하기 위한 인증 정보를 관리합니다</div>
+        <!-- 슬라이드 7: Execution 관리 화면 -->
+        <section class="slide" id="slide-7">
+            <h2 class="header-2">📊 Execution 관리 화면</h2>
+            <div class="message">공장의 생산 현황판처럼 시스템 전반의 건강 상태를 한눈에 모니터링합니다</div>
             
-            <div class="content-grid content-grid-3">
+            <div class="content-grid content-grid-2">
                 <div class="content-card">
-                    <h3 class="card-title">🔑 크레덴셜 개요</h3>
+                    <h3 class="card-title">📈 시스템 전반 통계 확인</h3>
+                    <div style="text-align: center; margin: 16px 0;">
+                        <img src="https://clip.pss.so/B8vKfMJ6+" alt="n8n 실행 통계 화면" style="max-width: 100%; height: auto; border: 1px solid #E2E8F0; border-radius: 8px; box-shadow: 0 2px 8px rgba(27, 54, 93, 0.1);">
+                    </div>
                     <ul class="checklist">
-                        <li>앱과 서비스 인증을 위한 개인 정보</li>
-                        <li>n8n과 외부 서비스 간 연결 브리지</li>
-                        <li>암호화되어 안전하게 저장됨</li>
+                        <li><strong>성공률</strong> - 전체 시스템 안정성 지표</li>
+                        <li><strong>실패 수</strong> - 문제 발생 빈도 확인</li>
+                        <li><strong>실패율</strong> - 시스템 이상 여부 판단</li>
+                        <li><strong>트렌드 분석</strong> - 시간대별 패턴 파악</li>
                     </ul>
                 </div>
                 
                 <div class="content-card">
-                    <h3 class="card-title">📁 인터페이스 접근</h3>
+                    <h3 class="card-title">🔍 실행 목록 모니터링</h3>
+                    <div style="text-align: center; margin: 16px 0;">
+                        <img src="https://clip.pss.so/mCzs0L6X+" alt="n8n 실행 목록 화면" style="max-width: 100%; height: auto; border: 1px solid #E2E8F0; border-radius: 8px; box-shadow: 0 2px 8px rgba(27, 54, 93, 0.1);">
+                    </div>
                     <ul class="checklist">
-                        <li>좌측 메뉴에서 <strong>"Credentials"</strong> 선택</li>
-                        <li><strong>My credentials</strong> - 내가 생성한 크레덴셜</li>
-                        <li><strong>All credentials</strong> - 공유된 크레덴셜 포함</li>
+                        <li><strong>성공/실패 상태</strong> - 초록색/빨간색 표시로 즉시 구분</li>
+                        <li><strong>필터링 기능</strong> - 실패 사례만 모아서 확인</li>
+                        <li><strong>워크플로우별 현황</strong> - 어느 자동화에서 문제 발생하는지 파악</li>
+                        <li><strong>실행 시간 확인</strong> - 언제 문제가 발생했는지 추적</li>
                     </ul>
-                </div>
-                
-                <div class="content-card">
-                    <h3 class="card-title">🛡️ 보안 기능</h3>
-                    <ul class="checklist">
-                        <li><strong>암호화 저장</strong> - 민감한 정보 보호</li>
-                        <li><strong>OAuth 인증</strong> - "connect" 버튼으로 간편 로그인</li>
-                        <li><strong>필드 숨김</strong> - 민감한 정보 자동 숨김</li>
-                        <li><strong>접근 제어</strong> - 노드별 권한 관리</li>
-                    </ul>
+                    
+                    <div class="callout">
+                        🎯 <strong>모니터링 전략:</strong> 통계로 전반적인 시스템 상태를 파악하고, 실행 목록에서 구체적인 문제 지점을 식별합니다.
+                    </div>
                 </div>
             </div>
         </section>
 
-        <!-- 슬라이드 10: 효율적인 워크플로우 개발 -->
+        <!-- 슬라이드 8: 실행 모니터링과 트러블슈팅 -->
+        <section class="slide" id="slide-8">
+            <h2 class="header-2">🔍 실행 모니터링과 트러블슈팅</h2>
+            <div class="message">의사가 환자를 진단하듯이 체계적으로 문제를 찾고 해결합니다</div>
+            
+            <div class="content-grid content-grid-2">
+                <div class="content-card">
+                    <h3 class="card-title">📈 실행 패턴 분석</h3>
+                    <ul class="checklist">
+                        <li><strong>성공률 추이</strong> - 시간대별 성공/실패 비율</li>
+                        <li><strong>실행 빈도</strong> - 트리거 발생 패턴 분석</li>
+                        <li><strong>처리 시간</strong> - 평균 실행 시간 모니터링</li>
+                        <li><strong>병목 지점</strong> - 가장 오래 걸리는 노드 식별</li>
+                    </ul>
+                    
+                    <h3 class="card-title">⚠️ 알림 설정</h3>
+                    <ul class="checklist">
+                        <li>실패율이 20% 초과 시 Slack 알림</li>
+                        <li>5분 이상 실행되지 않은 워크플로우 체크</li>
+                        <li>크리티컬 워크플로우 실패 시 즉시 알림</li>
+                    </ul>
+                </div>
+                
+                <div class="content-card">
+                    <h3 class="card-title">🔧 일반적인 문제 해결</h3>
+                    <table class="content-table">
+                        <thead>
+                            <tr>
+                                <th>문제 상황</th>
+                                <th>해결 방법</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>크레덴셜 에러</td>
+                                <td>인증 정보 재설정</td>
+                            </tr>
+                            <tr>
+                                <td>타임아웃 에러</td>
+                                <td>실행 시간 제한 증가</td>
+                            </tr>
+                            <tr>
+                                <td>데이터 형식 오류</td>
+                                <td>Set 노드로 데이터 변환</td>
+                            </tr>
+                            <tr>
+                                <td>API 제한 초과</td>
+                                <td>Rate limit 설정 추가</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- 슬라이드 9: 세팅 화면 -->
+        <section class="slide" id="slide-9">
+            <h2 class="header-2">⚙️ 세팅 화면</h2>
+            <div class="message">사무실 환경을 설정하고 새로운 도구를 추가하는 관리자 패널입니다</div>
+            
+            <div class="content-grid content-grid-2">
+                <div class="content-card">
+                    <h3 class="card-title">🖥️ Settings 관리 화면</h3>
+                    <div style="text-align: center; margin: 16px 0;">
+                        <img src="https://clip.pss.so/DQKFHypb+" alt="n8n Settings 화면" style="max-width: 100%; height: auto; border: 1px solid #E2E8F0; border-radius: 8px; box-shadow: 0 2px 8px rgba(27, 54, 93, 0.1);">
+                    </div>
+                    <p class="basic-font">좌측 메뉴에서 사용자 관리, Community Node 설치 등 다양한 설정을 관리할 수 있습니다.</p>
+                </div>
+                
+                <div class="content-card">
+                    <h3 class="card-title">👥 핵심 설정 기능</h3>
+                    
+                    <h4 class="header-3">사용자 관리</h4>
+                    <ul class="checklist">
+                        <li><strong>User Settings</strong> - 개인 프로필, 언어, 시간대 설정</li>
+                        <li><strong>Password Change</strong> - 보안을 위한 정기 변경</li>
+                        <li><strong>API Keys</strong> - n8n API 접근용 개인 키</li>
+                    </ul>
+                    
+                    <h4 class="header-3">Community Node 설치</h4>
+                    <p class="basic-font">앱스토어처럼 필요한 서비스 연동 노드를 추가</p>
+                    <ol class="step-list">
+                        <li><strong>Community Nodes</strong> 메뉴 선택</li>
+                        <li><strong>Browse</strong> 버튼으로 노드 검색</li>
+                        <li>필요한 노드 (Notion, Discord 등) <strong>Install</strong></li>
+                    </ol>
+                    
+                    <h4 class="header-3">기타 설정</h4>
+                    <ul class="checklist">
+                        <li><strong>보안 설정</strong> - 2단계 인증, 세션 관리</li>
+                        <li><strong>시스템 설정</strong> - 로그 수준, 캐시 관리</li>
+                    </ul>
+                    
+                    <div class="callout">
+                        💡 <strong>중요:</strong> Community Node 설치 후 n8n 재시작이 필요할 수 있습니다.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 슬라이드 10: Community Node 설치 과정 -->
         <section class="slide" id="slide-10">
-            <h2 class="header-2">🚀 효율적인 워크플로우 개발 순서</h2>
-            <div class="message">UI 요소들을 조합하여 체계적으로 자동화를 구축하는 방법입니다</div>
+            <h2 class="header-2">🔌 Community Node 설치 과정</h2>
+            <div class="message">스마트폰에 새 앱을 설치하듯이 필요한 서비스 연동 노드를 추가합니다</div>
+            
+            <div class="content-grid content-grid-2">
+                <div class="content-card">
+                    <ol class="step-list">
+                        <li>
+                            <strong>설정 메뉴 접근</strong>
+                            <ul class="checklist">
+                                <li>좌측 사이드바에서 Settings 클릭</li>
+                                <li>Community Nodes 섹션 선택</li>
+                            </ul>
+                        </li>
+                        <li>
+                            <strong>커뮤니티 노드 이름 입력</strong>
+                            <ul class="checklist">
+                                <li>노드 패키지 이름 입력 (예: "n8n-nodes-solar")</li>
+                                <li>정확한 패키지명 확인</li>
+                            </ul>
+                        </li>
+                        <li>
+                            <strong>설치 실행</strong>
+                            <ul class="checklist">
+                                <li>"Install" 버튼 클릭</li>
+                                <li>설치 진행 상황 모니터링</li>
+                            </ul>
+                        </li>
+                        <li>
+                            <strong>설치 완료 확인</strong>
+                            <ul class="checklist">
+                                <li>페이지 새로고침</li>
+                                <li>노드 패널에서 새 노드 확인</li>
+                            </ul>
+                        </li>
+                    </ol>
+                    
+                    <div class="callout">
+                        ⚠️ <strong>주의사항:</strong> Community Node는 제3자가 개발한 것으로 공식 지원이 제한될 수 있습니다. 신뢰할 수 있는 개발자의 노드를 선택하세요.
+                    </div>
+                </div>
+                
+                <div class="content-card">
+                    <h3 class="card-title">🖥️ Community Node 설치 화면</h3>
+                    <div style="text-align: center; margin: 16px 0;">
+                        <img src="https://clip.pss.so/MY5jmysX+" alt="n8n Community Node 설치 화면" style="max-width: 100%; height: auto; border: 1px solid #E2E8F0; border-radius: 8px; box-shadow: 0 2px 8px rgba(27, 54, 93, 0.1);">
+                    </div>
+                    <p class="basic-font">커뮤니티 노드 패키지 이름을 직접 입력하여 설치할 수 있습니다.</p>
+                </div>
+            </div>
+        </section>
+        
+        <!-- 슬라이드 11: 워크플로우 제작 화면 -->
+        <section class="slide" id="slide-11">
+            <h2 class="header-2">🎨 워크플로우 제작 화면</h2>
+            <div class="message">실제 자동화를 만드는 핵심 작업 공간입니다</div>
+            
+            <div style="text-align: center; margin: 32px 0;">
+                <img src="https://clip.pss.so/mvN0cdjL+" alt="n8n 워크플로우 제작 화면" style="max-width: 95%; height: auto; border: 1px solid #E2E8F0; border-radius: 8px; box-shadow: 0 4px 16px rgba(27, 54, 93, 0.15);">
+            </div>
+            
+            <div class="callout">
+                💡 <strong>워크플로우 제작의 핵심:</strong> 캔버스에서 노드를 드래그하여 연결하고, 우측 패널에서 필요한 노드를 찾아 추가할 수 있습니다. 실제 작업이 이루어지는 가장 중요한 화면입니다.
+            </div>
+        </section>
+        
+        <!-- 슬라이드 12: 워크플로우 제작 화면 개요 -->
+        <section class="slide" id="slide-12">
+            <h2 class="header-2">🎨 워크플로우 제작 화면 개요</h2>
+            <div class="message">실제 자동화를 만드는 작업실로 모든 창작 활동이 이루어지는 핵심 공간입니다</div>
+            
+            <div class="content-grid content-grid-2">
+                <div class="content-card">
+                    <h3 class="card-title">🖼️ 캔버스 작업공간</h3>
+                    <ul class="checklist">
+                        <li><strong>점선 격자 배경</strong> - 노드 배치를 위한 가이드</li>
+                        <li><strong>무한 스크롤</strong> - 복잡한 워크플로우도 자유롭게 확장</li>
+                        <li><strong>줌 인/아웃</strong> - 세부 작업과 전체 조망 자유 전환</li>
+                        <li><strong>드래그 앤 드롭</strong> - 직관적인 노드 배치</li>
+                        <li><strong>자동 정렬</strong> - 깔끔한 레이아웃 자동 생성</li>
+                    </ul>
+                    
+                    <h3 class="card-title">🎮 캔버스 조작법</h3>
+                    <ul class="checklist">
+                        <li><span class="kbd">Ctrl + 클릭 드래그</span> - 캔버스 이동</li>
+                        <li><span class="kbd">마우스 휠</span> - 줌 인/아웃</li>
+                        <li><span class="kbd">스페이스바</span> - 캔버스 전체 보기</li>
+                    </ul>
+                </div>
+                
+                <div class="content-card">
+                    <h3 class="card-title">🧩 우측 노드 패널</h3>
+                    <ul class="checklist">
+                        <li><strong>열기 방법</strong> - + 버튼 또는 <span class="kbd">Tab</span> 키</li>
+                        <li><strong>카테고리별 분류</strong> - 용도에 따른 체계적 구성</li>
+                        <li><strong>검색 기능</strong> - 원하는 노드 빠른 찾기</li>
+                        <li><strong>드래그 설치</strong> - 패널에서 캔버스로 끌어오기</li>
+                    </ul>
+                    
+                    <h4 class="header-3">주요 노드 카테고리:</h4>
+                    <ul class="checklist">
+                        <li><strong>Triggers</strong> - 자동화 시작점</li>
+                        <li><strong>Actions</strong> - 실제 작업 수행</li>
+                        <li><strong>Advanced AI</strong> - AI 기능 활용</li>
+                        <li><strong>Data transformation</strong> - 데이터 가공</li>
+                        <li><strong>Flow control</strong> - 흐름 제어</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+        
+        <!-- 슬라이드 13: 메모/노트 기능과 실행 모니터링 -->
+        <section class="slide" id="slide-13">
+            <h2 class="header-2">📝 메모 기능과 개발 중 실행 모니터링</h2>
+            <div class="message">복잡한 워크플로우도 체계적으로 관리하고 실시간으로 테스트할 수 있습니다</div>
+            
+            <div class="content-grid content-grid-2">
+                <div class="content-card">
+                    <h3 class="card-title">📋 메모/스티키 노트 활용</h3>
+                    <ul class="checklist">
+                        <li><strong>추가 방법</strong> - 캔버스에서 노트 아이콘 클릭</li>
+                        <li><strong>용도</strong> - 설계 의도, 주의사항, TODO 기록</li>
+                        <li><strong>색상 구분</strong> - 우선순위나 카테고리별 분류</li>
+                        <li><strong>크기 조절</strong> - 내용량에 맞는 자유로운 크기</li>
+                    </ul>
+                    
+                    <h4 class="header-3">메모 활용 예시:</h4>
+                    <ul class="checklist">
+                        <li>"고객 데이터 처리 구간 - 개인정보 주의"</li>
+                        <li>"API 제한: 분당 100회까지"</li>
+                        <li>"TODO: 에러 처리 로직 추가 필요"</li>
+                        <li>"v2 업데이트 시 이 부분 개선"</li>
+                    </ul>
+                </div>
+                
+                <div class="content-card">
+                    <h3 class="card-title">⚡ 개발 중 실행 모니터링</h3>
+                    <ul class="checklist">
+                        <li><strong>실시간 실행</strong> - Execute Workflow로 전체 테스트</li>
+                        <li><strong>개별 노드 실행</strong> - 특정 노드만 단독 테스트</li>
+                        <li><strong>데이터 흐름 확인</strong> - 각 연결선의 데이터 전달 상태</li>
+                        <li><strong>에러 표시</strong> - 빨간색으로 문제 노드 즉시 식별</li>
+                    </ul>
+                    
+                    <h4 class="header-3">디버깅 팁:</h4>
+                    <ul class="checklist">
+                        <li>Set 노드로 중간 데이터 확인</li>
+                        <li>Console 노드로 로그 출력</li>
+                        <li>If 노드로 조건별 분기 테스트</li>
+                        <li>Try/Catch로 에러 처리 확인</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+        
+        <!-- 슬라이드 14: Save 버튼과 Active 토글의 중요성 -->
+        <section class="slide" id="slide-14">
+            <h2 class="header-2">💾 Save 버튼과 Active 토글 관리</h2>
+            <div class="message">자동차의 시동과 주차브레이크처럼 반드시 확인해야 할 핵심 컨트롤입니다</div>
+            
+            <div class="content-grid content-grid-2">
+                <div class="content-card">
+                    <h3 class="card-title">💾 Save 버튼의 중요성</h3>
+                    <ul class="checklist">
+                        <li><strong>자동 저장 없음</strong> - 반드시 수동으로 저장 필요</li>
+                        <li><strong>저장 타이밍</strong> - 노드 추가/수정 후 즉시 저장</li>
+                        <li><strong>단축키</strong> - <span class="kbd">Ctrl + S</span> (윈도우), <span class="kbd">Cmd + S</span> (맥)</li>
+                        <li><strong>저장 표시</strong> - 제목 옆 별표(*)로 미저장 상태 확인</li>
+                    </ul>
+                    
+                    <h4 class="header-3">저장하지 않으면:</h4>
+                    <ul class="checklist">
+                        <li>브라우저 새로고침 시 모든 작업 손실</li>
+                        <li>다른 워크플로우로 이동 시 변경사항 사라짐</li>
+                        <li>실행 시 이전 버전으로 동작</li>
+                    </ul>
+                    
+                    <div class="callout">
+                        ⚠️ <strong>습관화 필수:</strong> 노드 하나 추가할 때마다 Ctrl+S 습관을 만드세요!
+                    </div>
+                </div>
+                
+                <div class="content-card">
+                    <h3 class="card-title">🔄 Active 토글 관리</h3>
+                    <table class="content-table">
+                        <thead>
+                            <tr>
+                                <th>상태</th>
+                                <th>의미</th>
+                                <th>동작</th>
+                                <th>용도</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Inactive</strong></td>
+                                <td>비활성</td>
+                                <td>트리거 무시</td>
+                                <td>개발/테스트 중</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Active</strong></td>
+                                <td>활성</td>
+                                <td>자동 실행</td>
+                                <td>운영 배포</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    <h4 class="header-3">Active 전환 체크리스트:</h4>
+                    <ol class="step-list">
+                        <li>
+                            <strong>충분한 테스트 완료</strong>
+                        </li>
+                        <li>
+                            <strong>에러 처리 로직 확인</strong>
+                        </li>
+                        <li>
+                            <strong>크레덴셜 연결 상태 점검</strong>
+                        </li>
+                        <li>
+                            <strong>알림 설정 구성</strong>
+                        </li>
+                    </ol>
+                </div>
+            </div>
+        </section>
+        
+        <!-- 슬라이드 15: 효율적인 워크플로우 개발 순서 -->
+        <section class="slide" id="slide-15">
+            <h2 class="header-2">🚀 5개 핵심 화면을 활용한 완벽한 워크플로우 개발 프로세스</h2>
+            <div class="message">회사 업무 프로세스처럼 체계적으로 5개 화면을 순환하며 자동화를 완성합니다</div>
             
             <ol class="step-list">
                 <li>
-                    <strong>좌측 패널에서 프로젝트 선택</strong>
+                    <strong>📊 메인 관리 화면: 프로젝트 시작</strong>
                     <ul class="checklist">
-                        <li><strong>Overview</strong> 또는 <strong>Personal</strong> 선택</li>
-                        <li><strong>Create Workflow</strong> 클릭하여 새 워크플로우 시작</li>
+                        <li>Overview/Personal에서 "Create Workflow" 클릭</li>
+                        <li>의미있는 이름으로 워크플로우 생성</li>
+                        <li>템플릿이 있다면 Duplicate 활용</li>
                     </ul>
                 </li>
                 <li>
-                    <strong>노드 패널에서 트리거 선택</strong>
+                    <strong>🔐 크레덴셜 화면: 인증 설정</strong>
                     <ul class="checklist">
-                        <li><span class="kbd">Tab 키</span> 또는 <strong>+ 아이콘</strong> 클릭으로 노드 패널 열기</li>
-                        <li>트리거 노드 카테고리에서 적절한 노드 선택</li>
+                        <li>필요한 외부 서비스 크레덴셜 미리 준비</li>
+                        <li>API Key 또는 OAuth 방식으로 연결</li>
+                        <li>Test connection으로 연결 상태 확인</li>
                     </ul>
                 </li>
                 <li>
-                    <strong>노드 설정 및 크레덴셜 연결</strong>
+                    <strong>🎨 워크플로우 제작 화면: 실제 구축</strong>
                     <ul class="checklist">
-                        <li>노드 더블클릭으로 설정 패널 열기</li>
-                        <li>필요한 크레덴셜 선택 또는 새로 생성</li>
+                        <li>트리거 노드부터 시작하여 순차적 구성</li>
+                        <li>각 노드마다 <span class="kbd">Ctrl + S</span>로 즉시 저장</li>
+                        <li>메모 노드로 설계 의도 기록</li>
+                        <li>개별 노드 실행으로 단계별 테스트</li>
                     </ul>
                 </li>
                 <li>
-                    <strong>워크플로우 확장 및 연결</strong>
+                    <strong>📊 Execution 화면: 테스트 및 디버깅</strong>
                     <ul class="checklist">
-                        <li>노드 우측 <strong>+ 아이콘</strong>으로 다음 노드 추가</li>
-                        <li>Advanced AI, Actions, Data transformation 등에서 선택</li>
+                        <li>Execute Workflow로 전체 테스트 실행</li>
+                        <li>실패 시 에러 로그 확인 및 수정</li>
+                        <li>Replay 기능으로 반복 테스트</li>
                     </ul>
                 </li>
                 <li>
-                    <strong>테스트 및 활성화</strong>
+                    <strong>📊 메인 관리 화면: 배포 및 운영</strong>
                     <ul class="checklist">
-                        <li><strong>Execute workflow</strong> 또는 개별 노드 <strong>Execute step</strong>으로 테스트</li>
-                        <li>상단 토글을 <strong>Activated</strong>로 설정하여 자동 실행 활성화</li>
+                        <li>최종 저장 후 Active 토글 ON</li>
+                        <li>Execution 화면에서 실행 모니터링</li>
+                        <li>필요시 ⚙️ 세팅 화면에서 Community Node 추가</li>
                     </ul>
                 </li>
             </ol>
             
             <div class="callout">
-                🎉 <strong>마스터 완료!</strong> n8n 에디터 UI를 완전히 이해했습니다. 다음은 크레덴셜 발급과 노드 속성값 설정을 자세히 배워보겠습니다!
+                🎯 <strong>UI 마스터 완료!</strong> 이제 5개 핵심 화면을 자유자재로 활용하여 어떤 자동화든 체계적으로 구축할 수 있습니다. 다음 강의에서는 실제 노드 연결과 데이터 흐름을 배워보겠습니다!
             </div>
         </section>
     </div>

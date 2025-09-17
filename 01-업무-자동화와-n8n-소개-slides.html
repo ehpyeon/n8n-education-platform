@@ -440,7 +440,7 @@
         <div class="nav-logo">📚 n8n 자동화 마스터</div>
         <div class="nav-progress">
             <span class="current-topic">업무 자동화와 n8n 소개</span>
-            <span class="slide-counter">1 / 7</span>
+            <span class="slide-counter">1 / 6</span>
         </div>
     </nav>
 
@@ -455,6 +455,7 @@
         <section class="slide intro" id="slide-1">
             <h1 class="header-1">🎯 업무 자동화와 n8n 소개</h1>
             <h2 class="header-2">미래의 똑똑한 사무실이 어떤 모습일까?</h2>
+            
             
             <div class="callout-center">
                 <ol class="step-list">
@@ -475,8 +476,8 @@
                 <thead>
                     <tr>
                         <th>구분</th>
-                        <th>기존 자동화 (과거)</th>
-                        <th>AI 기반 자동화 (현재)</th>
+                        <th>기존 자동화=전통적 RPA</th>
+                        <th>AI 기반 자동화(현재)=AI와 강하게 결합된 RPA</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -503,105 +504,186 @@
                 </tbody>
             </table>
             
-            <div class="callout">
-                ⚡ <strong>핵심 변화:</strong> AI가 단순한 도구가 아닌 "생각하는 동료"로 업무에 참여하기 시작했습니다.
+            <!-- 워크플로우 비교 섹션 -->
+            <div class="content-grid content-grid-2">
+                <!-- 왼쪽: 전통적 RPA 워크플로우 -->
+                <div class="content-card">
+                    <h3 class="card-title">전통적 RPA 워크플로우</h3>
+                    <div class="mermaid-container" style="margin: 12px 0; background: #f8f9fa; padding: 16px; border-radius: 8px;">
+                        <div class="mermaid">
+graph LR
+    A[📄 입력] --> B[📝 파일 이름 일괄적 수정] --> C[📁 폴더 이동] --> D[📋 파일 이름 시트에 기록]
+    
+    style A fill:#E3F2FD
+    style B fill:#E3F2FD  
+    style C fill:#E3F2FD
+    style D fill:#E3F2FD
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 오른쪽: AI 기반 자동화 워크플로우 -->
+                <div class="content-card">
+                    <h3 class="card-title">AI 기반 자동화 워크플로우</h3>
+                    <div class="mermaid-container" style="margin: 12px 0; background: #f8f9fa; padding: 16px; border-radius: 8px;">
+                        <div class="mermaid">
+graph LR
+    A[📄 입력] --> B[🧠 AI 동작 판단]
+    B --> D[📝 이미지를 디지털 문서로 변환]
+    B --> E[✂️ 문장 요약 AI]
+    
+    style A fill:#E3F2FD
+    style B fill:#F3E5F5
+    style D fill:#FFF3E0
+    style E fill:#E1F5FE
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div style="font-size: 14pt; font-style: italic; color: #636E72; margin: 12px 0; line-height: 1.5; background: rgba(178, 73, 234, 0.04); padding: 12px; border-radius: 8px;">
+                📖 <strong>RPA란?</strong> RPA(Robotic Process Automation)는 "로봇 프로세스 자동화"로, 컴퓨터가 사람이 하는 반복 업무를 대신 수행하는 기술입니다. 마치 24시간 일하는 디지털 직원처럼 클릭, 타이핑, 복사 등의 작업을 자동으로 처리합니다.
             </div>
         </section>
 
-        <!-- 슬라이드 3: n8n + AI 결합의 3가지 혁신 -->
+        <!-- 슬라이드 3: RPA 도구 비교 -->
         <section class="slide" id="slide-3">
-            <h2 class="header-2">🎯 n8n + AI 결합으로 실현되는 3가지 혁신</h2>
-            <div class="message">이 과정에서 구축하게 될 3가지 핵심 지능형 자동화 시스템입니다</div>
+            <h2 class="header-2">🎯 RPA 도구 비교 - 전통적 도구 vs n8n</h2>
+            <div class="message">대부분의 기능은 비슷하지만, 핵심 차이점에서 n8n이 우수합니다</div>
             
-            <div class="content-grid content-grid-3">
-                <div class="content-card">
-                    <h3 class="card-title">📄 Document AI</h3>
-                    <div class="basic-font"><strong>문서를 읽고 이해하는 자동화</strong></div>
-                    <ul class="checklist">
-                        <li>PDF, DOCX 파일 자동 분류</li>
-                        <li>핵심 정보 지능형 추출</li>
-                        <li>계약서/견적서 처리</li>
-                        <li>한국어 특화 문서 이해</li>
-                    </ul>
-                    <div class="callout">
-                        <strong>효과:</strong> 서류 처리 업무 95% 단축
-                    </div>
+            <!-- 도구 로고 섹션 -->
+            <div style="display: flex; justify-content: center; align-items: center; gap: 40px; margin: 20px 0; padding: 16px; background: #f8f9fa; border-radius: 8px;">
+                <div style="text-align: center;">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/0/02/Zapier_logo.png" alt="Zapier" style="height: 50px; margin-bottom: 8px;">
+                    <div style="font-size: 12pt; color: #636E72;">Zapier</div>
                 </div>
-                
-                <div class="content-card">
-                    <h3 class="card-title">🧠 LLM 챗봇</h3>
-                    <div class="basic-font"><strong>회사 지식을 활용한 지능형 상담원</strong></div>
-                    <ul class="checklist">
-                        <li>RAG 시스템 기반 정확한 답변</li>
-                        <li>회사 매뉴얼 완전 학습</li>
-                        <li>24/7 무인 고객 상담</li>
-                        <li>개인화된 응답 생성</li>
-                    </ul>
-                    <div class="callout">
-                        <strong>효과:</strong> 고객 응답 시간 90% 단축
-                    </div>
+                <div style="text-align: center;">
+                    <img src="https://cdn.freelogovectors.net/wp-content/uploads/2023/11/make-logo-freelogovectors.net_.png" alt="Make" style="height: 50px; margin-bottom: 8px;">
+                    <div style="font-size: 12pt; color: #636E72;">Make</div>
                 </div>
-                
-                <div class="content-card">
-                    <h3 class="card-title">🤖 Agent AI</h3>
-                    <div class="basic-font"><strong>복잡한 업무를 스스로 처리하는 AI 직원</strong></div>
-                    <ul class="checklist">
-                        <li>목표 설정으로 자동 실행</li>
-                        <li>상황 판단 후 도구 선택</li>
-                        <li>에러 발생시 자동 해결</li>
-                        <li>업무 완료까지 끝까지</li>
-                    </ul>
-                    <div class="callout">
-                        <strong>효과:</strong> 복잡한 업무도 완전 무인화
-                    </div>
+                <div style="text-align: center;">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/N8n-logo-new.svg/2560px-N8n-logo-new.svg.png" alt="n8n" style="height: 50px; margin-bottom: 8px;">
+                    <div style="font-size: 12pt; color: #1B365D; font-weight: 600;">n8n</div>
                 </div>
             </div>
-        </section>
 
-        <!-- 슬라이드 4: n8n 선택 이유 -->
-        <section class="slide" id="slide-4">
-            <h2 class="header-2">🎯 왜 n8n을 선택하는가?</h2>
-            <div class="message">직접 요리 vs 배달음식처럼, 자동화 도구도 선택의 기준이 있습니다</div>
-            
+            <!-- 통합 비교 테이블 -->
             <table class="content-table">
                 <thead>
                     <tr>
-                        <th>비교 영역</th>
-                        <th>다른 도구들 (배달음식)</th>
-                        <th>n8n (직접 요리)</th>
+                        <th style="width: 15%;">구분</th>
+                        <th style="width: 20%;">세부 항목</th>
+                        <th style="width: 32.5%;">전통적 RPA (Zapier/Make)</th>
+                        <th style="width: 32.5%;">n8n</th>
                     </tr>
                 </thead>
                 <tbody>
+                    <!-- 공통점 섹션 -->
                     <tr>
-                        <td><strong>💰 비용</strong></td>
-                        <td>매월 요금 지불 (사용량에 따라 증가)</td>
-                        <td><strong>완전 무료</strong> (오픈소스)</td>
+                        <td rowspan="1" style="vertical-align: middle; background: #F8F9FA; font-weight: 600; color: #1B365D;"><strong>🤝 공통점</strong></td>
+                        <td style="background: #F8F9FA;">핵심 기능</td>
+                        <td colspan="2" style="background: #F8F9FA; text-align: center;">노코드 워크플로우 구축, 다양한 앱/서비스 연동, 트리거 기반 자동화, API 통합 지원</td>
+                    </tr>
+                    
+                    <!-- 차이점 섹션 -->
+                    <tr>
+                        <td rowspan="5" style="vertical-align: middle; background: #FFF3E0; font-weight: 600; color: #1B365D;"><strong>⚖️ 차이점</strong></td>
+                        <td style="background: #FFF3E0;"><strong>비용 모델</strong></td>
+                        <td>사용량 증가시 비용 급증</td>
+                        <td><strong>무료 (오픈소스)</strong></td>
                     </tr>
                     <tr>
-                        <td><strong>🔒 데이터 보안</strong></td>
-                        <td>남의 주방(클라우드)에 맡김</td>
-                        <td><strong>내 주방(자체 서버)</strong>에서 요리</td>
+                        <td style="background: #FFF3E0;"><strong>사용량 확장성</strong></td>
+                        <td>월 사용량 제한, 추가 요금</td>
+                        <td><strong>무제한 사용 가능</strong></td>
                     </tr>
                     <tr>
-                        <td><strong>🎨 커스터마이징</strong></td>
-                        <td>메뉴가 정해져 있음</td>
-                        <td><strong>원하는 대로 레시피</strong> 수정 가능</td>
+                        <td style="background: #F3E5F5;"><strong>데이터 소유권</strong></td>
+                        <td>SaaS 업체 의존</td>
+                        <td><strong>100% 자체 소유</strong></td>
                     </tr>
                     <tr>
-                        <td><strong>🤖 AI 기능</strong></td>
-                        <td>기본적인 자동화만</td>
-                        <td><strong>ChatGPT 같은 지능형</strong> 자동화</td>
+                        <td style="background: #F3E5F5;"><strong>보안 통제</strong></td>
+                        <td>SaaS 업체 의존</td>
+                        <td><strong>완전한 보안 통제</strong></td>
+                    </tr>
+                    <tr>
+                        <td style="background: #E8F5E8;"><strong>AI 기능</strong></td>
+                        <td>기본 수준 자동화</td>
+                        <td><strong>뛰어난 Agent 워크플로우</strong></td>
                     </tr>
                 </tbody>
             </table>
-            
+
+            <!-- n8n 핵심 장점 콜아웃 -->
             <div class="callout">
-                🎉 <strong>결론:</strong> n8n은 비용 걱정 없이 완전한 자유도로 나만의 자동화 시스템을 구축할 수 있습니다.
+                🌟 <strong>n8n의 핵심 장점:</strong> LangChain AI 프레임워크 기반의 우수한 Agent 설계 • 사용량 증가해도 추가 비용 없음 • 완전한 데이터 통제권
             </div>
         </section>
 
-        <!-- 슬라이드 5: 요리 비유로 설명하는 학습 과정 -->
+        <!-- 슬라이드 4: 점진적 개선을 통한 문제 해결 접근법 -->
+        <section class="slide" id="slide-4">
+            <h2 class="header-2">🧠 점진적 개선을 통한 문제 해결 접근법</h2>
+            <div class="message">완벽주의보다는 단계별 발전으로 실무에서 바로 활용 가능한 자동화를 구축합니다</div>
+            
+            <div class="content-grid content-grid-2">
+                <div class="content-card">
+                    <h3 class="card-title">1단계: 간단한 시작 🎯</h3>
+                    <img src="https://clip.pss.so/s5Lttqgf+" alt="첫 워크플로우" style="width: 100%; border-radius: 8px; margin-bottom: 12px; border: 1px solid #E2E8F0;">
+                    <ul class="checklist">
+                        <li>단순한 문서 분류 및 정보 추출 테스트</li>
+                        <li>기본 개념 이해와 검증</li>
+                        <li>작동 확인에 집중</li>
+                    </ul>
+                </div>
+                
+                <div class="content-card">
+                    <h3 class="card-title">2단계: 실무 고도화 🚀</h3>
+                    <img src="https://clip.pss.so/k1RLjGBF+" alt="워크플로우 고도화" style="width: 100%; border-radius: 8px; margin-bottom: 12px; border: 1px solid #E2E8F0;">
+                    <ul class="checklist">
+                        <li>폴더 변화 감지 → 자동 실행</li>
+                        <li>다수의 PDF 동시 처리</li>
+                        <li>스키마 저장 및 재사용</li>
+                        <li>완료 파일 자동 아카이브</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="callout">
+                💡 <strong>핵심 전략:</strong> 처음에는 간단히 시작해서 작동만 하면 충분합니다. 차근차근 기능을 더해가며 점진적으로 고도화된 자동화 시스템을 구축해 나가세요.
+            </div>
+        </section>
+
+        <!-- 슬라이드 5: 기대 성과 -->
         <section class="slide" id="slide-5">
+            <h2 class="header-2">🎯 학습 완료 후 기대 성과</h2>
+            <div class="message">단순한 자동화를 넘어 비즈니스 혁신을 만들어낼 수 있습니다</div>
+            
+            <div class="content-grid content-grid-2">
+                <div class="content-card">
+                    <h3 class="card-title">💻 기술적 역량</h3>
+                    <ul class="checklist">
+                        <li><strong>n8n 노코드 툴</strong> 완전 정복</li>
+                        <li><strong>AI Agent 구현</strong> 능력</li>
+                        <li><strong>RAG 시스템 구축</strong> 기술</li>
+                        <li><strong>자동화 시스템 설계</strong> 역량</li>
+                    </ul>
+                </div>
+                
+                <div class="content-card">
+                    <h3 class="card-title">💼 비즈니스 가치</h3>
+                    <ul class="checklist">
+                        <li><strong>생산성 향상</strong> - 창의적 업무 집중</li>
+                        <li><strong>무인 서비스 운영</strong> - 24시간 자동화</li>
+                        <li><strong>데이터 기반 의사결정</strong> - AI 인사이트</li>
+                        <li><strong>개발 효율성</strong> - 시간과 비용 절약</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- 슬라이드 6: 요리 비유로 설명하는 학습 과정 -->
+        <section class="slide" id="slide-6">
             <h2 class="header-2">👨‍🍳 요리를 배우듯 단계별로 완성하는 자동화 여정</h2>
             <div class="message">기본 재료 준비부터 최고급 요리까지 체계적으로 학습합니다</div>
             
@@ -639,114 +721,9 @@
                     </ul>
                 </div>
             </div>
-        </section>
-
-        <!-- 슬라이드 6: 기대 성과 -->
-        <section class="slide" id="slide-6">
-            <h2 class="header-2">🎯 학습 완료 후 기대 성과</h2>
-            <div class="message">단순한 자동화를 넘어 비즈니스 혁신을 만들어낼 수 있습니다</div>
-            
-            <div class="content-grid content-grid-2">
-                <div class="content-card">
-                    <h3 class="card-title">💻 기술적 역량</h3>
-                    <ul class="checklist">
-                        <li><strong>n8n 노코드 툴</strong> 완전 정복</li>
-                        <li><strong>AI Agent 구현</strong> 능력</li>
-                        <li><strong>RAG 시스템 구축</strong> 기술</li>
-                        <li><strong>자동화 시스템 설계</strong> 역량</li>
-                    </ul>
-                </div>
-                
-                <div class="content-card">
-                    <h3 class="card-title">💼 비즈니스 가치</h3>
-                    <ul class="checklist">
-                        <li><strong>생산성 향상</strong> - 창의적 업무 집중</li>
-                        <li><strong>무인 서비스 운영</strong> - 24시간 자동화</li>
-                        <li><strong>데이터 기반 의사결정</strong> - AI 인사이트</li>
-                        <li><strong>개발 효율성</strong> - 시간과 비용 절약</li>
-                    </ul>
-                </div>
-            </div>
-            
-            <div class="content-grid content-grid-3">
-                <div class="content-card">
-                    <h3 class="card-title">🔮 미래 대비</h3>
-                    <ul class="checklist">
-                        <li>AI 네이티브 사고방식</li>
-                        <li>노코드 개발 역량</li>
-                        <li>즉시 현업 적용 가능</li>
-                    </ul>
-                </div>
-                
-                <div class="content-card">
-                    <h3 class="card-title">🎨 창의적 활용</h3>
-                    <ul class="checklist">
-                        <li>아이디어 빠른 프로토타입</li>
-                        <li>맞춤형 솔루션 구축</li>
-                        <li>비즈니스 프로세스 혁신</li>
-                    </ul>
-                </div>
-                
-                <div class="content-card">
-                    <h3 class="card-title">🌟 성장 마인드셋</h3>
-                    <ul class="checklist">
-                        <li>문제 해결 중심 사고</li>
-                        <li>지속적 학습 능력</li>
-                        <li>커뮤니티 협업 정신</li>
-                    </ul>
-                </div>
-            </div>
-        </section>
-
-        <!-- 슬라이드 7: 성공적인 학습을 위한 마인드셋 -->
-        <section class="slide" id="slide-7">
-            <h2 class="header-2">🧠 성공적인 학습을 위한 마인드셋</h2>
-            <div class="message">올바른 학습 접근법으로 효과를 극대화할 수 있습니다</div>
-            
-            <div class="content-grid content-grid-2">
-                <div class="content-card">
-                    <h3 class="card-title">✨ 학습 원칙</h3>
-                    <ol class="step-list">
-                        <li>
-                            <strong>완벽주의보다는 반복 개선</strong>
-                            <ul class="checklist">
-                                <li>처음에는 작동만 하면 충분</li>
-                                <li>점진적으로 개선해나가기</li>
-                            </ul>
-                        </li>
-                        <li>
-                            <strong>실험 정신 발휘</strong>
-                            <ul class="checklist">
-                                <li>다양한 설정 시도</li>
-                                <li>최적의 결과 탐색</li>
-                            </ul>
-                        </li>
-                    </ol>
-                </div>
-                
-                <div class="content-card">
-                    <h3 class="card-title">🚀 실행 전략</h3>
-                    <ol class="step-list">
-                        <li>
-                            <strong>문제 해결 중심 사고</strong>
-                            <ul class="checklist">
-                                <li>에러를 학습 기회로 활용</li>
-                                <li>디버깅 과정 완전 이해</li>
-                            </ul>
-                        </li>
-                        <li>
-                            <strong>커뮤니티 활용</strong>
-                            <ul class="checklist">
-                                <li>동기들과 활발한 소통</li>
-                                <li>지식 공유와 네트워킹</li>
-                            </ul>
-                        </li>
-                    </ol>
-                </div>
-            </div>
             
             <div class="callout">
-                👨‍🍳 <strong>다음 단계:</strong> 이제 내 컴퓨터에 똑똑한 비서 사무실을 차려보겠습니다 - n8n 설치와 환경 구성으로 시작!
+                🚀 <strong>그럼 이제 시작해보겠습니다!</strong> 다음 장에서는 n8n 설치부터 차근차근 시작해보겠습니다. 여러분만의 지능형 자동화 시스템을 함께 구축해 나가요!
             </div>
         </section>
     </div>

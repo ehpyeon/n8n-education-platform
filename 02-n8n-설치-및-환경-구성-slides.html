@@ -70,7 +70,7 @@
             color: var(--neutral-slate);
         }
 
-        .nav-progress .current-topic {
+        .nav-progress .current-slide-title {
             font-weight: 600;
             color: var(--upstage-deep-blue);
             max-width: 300px;
@@ -398,7 +398,7 @@
                 gap: 12px;
             }
 
-            .nav-progress .current-topic {
+            .nav-progress .current-slide-title {
                 display: none;
             }
 
@@ -466,9 +466,9 @@
 <body>
     <!-- 네비게이션 바 -->
     <nav class="nav-bar">
-        <div class="nav-logo">🔧 n8n 설치 가이드</div>
+        <div class="nav-logo">n8n 설치</div>
         <div class="nav-progress">
-            <span class="current-topic">n8n 설치 및 환경 구성</span>
+            <span class="current-slide-title">🔧 n8n 설치 및 환경 구성</span>
             <span class="slide-counter">1 / 8</span>
         </div>
     </nav>
@@ -647,29 +647,45 @@ npm --version</div>
             <h2 class="header-2">🐳 Docker를 이용한 설치 (고급 사용자)</h2>
             <div class="message">컨테이너 환경으로 더 안정적이고 격리된 설치를 원할 때 사용합니다</div>
             
-            <ol class="step-list">
-                <li>
-                    <strong>Docker 설치 확인</strong>
-                    <div class="code-block">docker --version</div>
-                </li>
-                <li>
-                    <strong>n8n Docker 이미지 실행 (임시)</strong>
-                    <div class="code-block">docker run -it --rm \
+            <div class="content-grid content-grid-2">
+                <div class="content-card">
+                    <h3 class="card-title">💻 터미널에서 설치</h3>
+                    <ol class="step-list">
+                        <li>
+                            <strong>Docker 설치 확인</strong>
+                            <div class="code-block">docker --version</div>
+                        </li>
+                        <li>
+                            <strong>n8n Docker 이미지 실행 (임시)</strong>
+                            <div class="code-block">docker run -it --rm \
   --name n8n \
   -p 5678:5678 \
   -v ~/.n8n:/home/node/.n8n \
   n8nio/n8n</div>
-                </li>
-                <li>
-                    <strong>데이터 영구 저장 설정 (권장)</strong>
-                    <div class="code-block">docker run -d \
+                        </li>
+                        <li>
+                            <strong>데이터 영구 저장 설정 (권장)</strong>
+                            <div class="code-block">docker run -d \
   --restart unless-stopped \
   --name n8n \
   -p 5678:5678 \
   -v n8n_data:/home/node/.n8n \
   n8nio/n8n</div>
-                </li>
-            </ol>
+                        </li>
+                    </ol>
+                </div>
+                
+                <div class="content-card">
+                    <h3 class="card-title">🖱️ Docker Desktop에서 설치</h3>
+                    <img src="https://clip.pss.so/3hGrHFGk+" alt="Docker Desktop n8n 설치" style="width: 100%; border-radius: 8px; margin-bottom: 12px; border: 1px solid #E2E8F0;">
+                    <ol class="step-list">
+                        <li><strong>Docker Hub에서 n8n 검색</strong></li>
+                        <li><strong>n8nio/n8n 이미지 Pull</strong></li>
+                        <li><strong>Run 실행</strong> (포트 5678:5678 설정)</li>
+                        <li><strong>localhost:5678 접속</strong></li>
+                    </ol>
+                </div>
+            </div>
         </section>
 
         <!-- 슬라이드 7: 문제 해결 -->
@@ -747,13 +763,23 @@ export NODE_OPTIONS="--max-old-space-size=4096"</div>
             const scrollTop = window.pageYOffset + 150;
             
             let currentSlide = 1;
+            let currentSlideElement = slides[0];
+            
             slides.forEach((slide, index) => {
                 if (scrollTop >= slide.offsetTop) {
                     currentSlide = index + 1;
+                    currentSlideElement = slide;
                 }
             });
             
+            // Update slide counter
             document.querySelector('.slide-counter').textContent = `${currentSlide} / ${slides.length}`;
+            
+            // Update current slide title
+            const slideTitle = currentSlideElement.querySelector('.header-2');
+            if (slideTitle) {
+                document.querySelector('.current-slide-title').textContent = slideTitle.textContent.trim();
+            }
         }
 
         // 이벤트 리스너

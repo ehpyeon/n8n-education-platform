@@ -100,7 +100,7 @@
             color: #636E72;
         }
 
-        .nav-progress .current-topic {
+        .nav-progress .current-slide-title {
             font-weight: 600;
             color: #1B365D;
             max-width: 300px;
@@ -435,9 +435,9 @@
 </head>
 <body>
     <nav class="nav-bar">
-        <div class="nav-logo">🤖 스마트 에이전트</div>
+        <div class="nav-logo">에이전트 노드의 이해</div>
         <div class="nav-progress">
-            <span class="current-topic">에이전트 노드의 이해</span>
+            <span class="current-slide-title">🤖 에이전트 노드의 이해</span>
             <span class="slide-counter">19강</span>
         </div>
     </nav>
@@ -1032,6 +1032,7 @@ VIP 고객이니 빠르게 해결해주세요."
             const slides = document.querySelectorAll('.slide');
             const scrollTop = window.pageYOffset + 150;
             let currentSlide = 1;
+            let currentSlideElement = slides[0];
             
             slides.forEach((slide, index) => {
                 const slideTop = slide.offsetTop;
@@ -1039,10 +1040,18 @@ VIP 고객이니 빠르게 해결해주세요."
                 
                 if (scrollTop >= slideTop && scrollTop < slideBottom) {
                     currentSlide = index + 1;
+                    currentSlideElement = slide;
                 }
             });
             
+            // Update slide counter
             document.querySelector('.slide-counter').textContent = `${currentSlide} / ${slides.length}`;
+            
+            // Update current slide title
+            const slideTitle = currentSlideElement.querySelector('.header-2');
+            if (slideTitle) {
+                document.querySelector('.current-slide-title').textContent = slideTitle.textContent.trim();
+            }
         }
 
         // Event listeners

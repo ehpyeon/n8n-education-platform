@@ -100,7 +100,7 @@
             color: #636E72;
         }
 
-        .nav-progress .current-topic {
+        .nav-progress .current-slide-title {
             font-weight: 600;
             color: #1B365D;
             max-width: 300px;
@@ -433,10 +433,10 @@
 </head>
 <body>
     <nav class="nav-bar">
-        <div class="nav-logo">🚀 n8n 마스터</div>
+        <div class="nav-logo">트리거와 액션 노드</div>
         <div class="nav-progress">
-            <span class="current-topic">트리거와 액션 노드</span>
-            <span class="slide-counter">1 / 14</span>
+            <span class="current-slide-title">🚀 트리거와 액션 노드</span>
+            <span class="slide-counter">1 / 15</span>
         </div>
     </nav>
 
@@ -515,14 +515,6 @@
                         <tr>
                             <td>7시 커피머신 작동</td>
                             <td>Schedule</td>
-                        </tr>
-                        <tr>
-                            <td>30분마다 공기청정기</td>
-                            <td>Interval</td>
-                        </tr>
-                        <tr>
-                            <td>일요일 로봇청소기</td>
-                            <td>Cron</td>
                         </tr>
                     </table>
                 </div>
@@ -655,9 +647,79 @@
             </div>
         </section>
 
-
-        <!-- Slide 5: 스케줄 트리거 -->
+        <!-- Slide 5: Webhook 속성 설정 상세 -->
         <section class="slide" id="slide-5">
+            <h2 class="header-2">⚙️ Webhook 노드 속성 설정 상세</h2>
+            <div class="message">전문가처럼 Webhook을 정교하게 설정해서 안전하고 효율적인 자동화 구축하기</div>
+            
+            <div style="text-align: center; margin-bottom: 20px;">
+                <img src="https://clip.pss.so/D32Cjd7C+" alt="n8n Webhook 노드 속성 설정 화면" style="width: 100%; max-width: 600px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+            </div>
+            
+            <div class="content-grid content-grid-2">
+                <div class="content-card">
+                    <div class="card-title">🔗 Endpoint 설정</div>
+                    <table class="content-table">
+                        <tr>
+                            <th>구분</th>
+                            <th>용도</th>
+                            <th>사용 시기</th>
+                        </tr>
+                        <tr>
+                            <td><strong>Test URL</strong></td>
+                            <td>개발 및 테스트용</td>
+                            <td>워크플로우 제작 중</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Production URL</strong></td>
+                            <td>실제 서비스용</td>
+                            <td>배포 후 운영 시</td>
+                        </tr>
+                    </table>
+                    
+                    <div class="basic-font"><strong>🌐 HTTP Request 방식</strong></div>
+                    <ul class="checklist">
+                        <li><strong>GET:</strong> 데이터 가져오기 (조회)</li>
+                        <li><strong>POST:</strong> 데이터 업데이트 (생성/수정)</li>
+                        <li><strong>PUT:</strong> 전체 데이터 교체</li>
+                        <li><strong>DELETE:</strong> 데이터 삭제</li>
+                    </ul>
+                </div>
+                
+                <div class="content-card">
+                    <div class="card-title">🛡️ 보안 및 응답 설정</div>
+                    
+                    <div class="basic-font"><strong>📍 Path 설정</strong></div>
+                    <ul class="checklist">
+                        <li><strong>목적:</strong> 사용자 지정 URL 경로</li>
+                        <li><strong>예시:</strong> /customer-inquiry, /order-update</li>
+                        <li><strong>팁:</strong> 의미 있는 이름으로 관리 용이</li>
+                    </ul>
+                    
+                    <div class="basic-font"><strong>🔐 Authentication (보안)</strong></div>
+                    <ul class="checklist">
+                        <li><strong>권장:</strong> 보안을 위해 반드시 설정</li>
+                        <li><strong>API Key:</strong> 간단한 인증 방식</li>
+                        <li><strong>OAuth:</strong> 고급 인증 시스템</li>
+                        <li><strong>Basic Auth:</strong> 사용자명/비밀번호</li>
+                    </ul>
+                    
+                    <div class="basic-font"><strong>📤 Respond 설정</strong></div>
+                    <ul class="checklist">
+                        <li><strong>권장:</strong> 'Respond to Webhook' 노드 활용</li>
+                        <li><strong>목적:</strong> 요청자에게 응답 메시지 전송</li>
+                        <li><strong>예시:</strong> "접수 완료", "처리 중" 등</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="callout">
+                🎯 <strong>Webhook 설정 핵심:</strong> Test URL로 개발하고 → Authentication 설정으로 보안 강화 → Production URL로 실서비스! 'Respond to Webhook' 노드로 친절한 응답까지 완벽 구성하세요.
+            </div>
+        </section>
+
+        <!-- Slide 6: 스케줄 트리거 -->
+        <section class="slide" id="slide-6">
             <h2 class="header-2">⏰ 스케줄 트리거 - 정확한 알람시계</h2>
             <div class="message">매일 오전 7시 알람처럼 정확한 시간에 자동 실행</div>
             
@@ -701,8 +763,8 @@
 
 
 
-        <!-- Slide 6: 메뉴얼 트리거 -->
-        <section class="slide" id="slide-6">
+        <!-- Slide 7: 메뉴얼 트리거 -->
+        <section class="slide" id="slide-7">
             <h2 class="header-2">👆 메뉴얼 트리거 - 워크플로우 테스트 버튼</h2>
             <div class="message">의도적으로 워크플로우 동작을 촉발시켜 당장 결과를 확인할 때 사용하는 테스트 도구</div>
             
@@ -775,8 +837,8 @@
             </div>
         </section>
 
-        <!-- Slide 7: Chat Trigger -->
-        <section class="slide" id="slide-7">
+        <!-- Slide 8: Chat Trigger -->
+        <section class="slide" id="slide-8">
             <h2 class="header-2">💬 Chat Trigger - AI 대화 테스트 도구</h2>
             <div class="message">Webhook 없이 바로 AI 시스템과 대화하며 테스트할 수 있는 간편한 도구</div>
             
@@ -821,8 +883,8 @@
             </div>
         </section>
 
-        <!-- Slide 8: 트리거에서 액션으로 전환 -->
-        <section class="slide" id="slide-8">
+        <!-- Slide 9: 트리거에서 액션으로 전환 -->
+        <section class="slide" id="slide-9">
             <h2 class="header-2">🔄 트리거에서 액션으로 - 신호에서 실행으로</h2>
             <div class="message">트리거가 "시작!" 신호를 보내면 이제 실제 일을 처리하는 액션 노드들의 차례입니다</div>
             
@@ -853,8 +915,8 @@
             </div>
         </section>
 
-        <!-- Slide 9: 액션 노드 소개 -->
-        <section class="slide" id="slide-9">
+        <!-- Slide 10: 액션 노드 소개 -->
+        <section class="slide" id="slide-10">
             <h1 class="header-1">⚙️ 액션 노드들의 분류</h1>
             <h2 class="header-2">자동화의 실제 작업을 담당하는 전문 직원들</h2>
             <div class="callout-center">
@@ -882,8 +944,8 @@
             </div>
         </section>
 
-        <!-- Slide 10: Set 노드 - 데이터 처리 -->
-        <section class="slide" id="slide-10">
+        <!-- Slide 11: Set 노드 - 데이터 처리 -->
+        <section class="slide" id="slide-11">
             <h2 class="header-2">🔧 Set 노드 - 데이터 필드 조작의 스위스 칼</h2>
             <div class="message">레고 블록을 조립하듯 데이터 필드를 자유자재로 추가, 수정, 삭제하는 만능 도구</div>
             
@@ -951,8 +1013,8 @@
             </div>
         </section>
 
-        <!-- Slide 11: Function 노드 - 고급 데이터 처리 -->
-        <section class="slide" id="slide-11">
+        <!-- Slide 12: Function 노드 - 고급 데이터 처리 -->
+        <section class="slide" id="slide-12">
             <h2 class="header-2">⚡ Function 노드 - 프로그래밍의 힘</h2>
             <div class="message">Set 노드로 해결하기 어려운 복잡한 데이터 처리를 JavaScript/Python 코드로 자유자재로</div>
             
@@ -1042,8 +1104,8 @@ return {
             </div>
         </section>
 
-        <!-- Slide 12: 외부 서비스 연동 노드 -->
-        <section class="slide" id="slide-12">
+        <!-- Slide 13: 외부 서비스 연동 노드 -->
+        <section class="slide" id="slide-13">
             <h2 class="header-2">🔗 외부 서비스 연동 노드 - 디지털 비서의 네트워킹</h2>
             <div class="message">업무에 필요한 모든 서비스들과 자동으로 소통하는 만능 커넥터</div>
             
@@ -1115,8 +1177,8 @@ return {
             </div>
         </section>
 
-        <!-- Slide 13: 흐름 제어 노드 - 조건부 실행 -->
-        <section class="slide" id="slide-13">
+        <!-- Slide 14: 흐름 제어 노드 - 조건부 실행 -->
+        <section class="slide" id="slide-14">
             <h2 class="header-2">🎛️ 흐름 제어 노드 - 조건부 실행</h2>
             <div class="message">사람이 판단하는 것처럼 상황에 따라 다른 길로 안내하는 교통 제어소</div>
             
@@ -1183,8 +1245,8 @@ return {
             </div>
         </section>
 
-        <!-- Slide 14: 흐름 제어 노드 - 대기/중단 & 병합/나누기 -->
-        <section class="slide" id="slide-14">
+        <!-- Slide 15: 흐름 제어 노드 - 대기/중단 & 병합/나누기 -->
+        <section class="slide" id="slide-15">
             <h2 class="header-2">⏸️ 흐름 제어 노드 - 대기/중단 & 병합/나누기</h2>
             <div class="message">타이밍과 데이터 흐름을 완벽하게 제어하는 마에스트로의 지휘봉</div>
             
@@ -1265,17 +1327,31 @@ return {
             const scrollTop = window.pageYOffset;
             const docHeight = document.body.offsetHeight - window.innerHeight;
             const scrollPercent = (scrollTop / docHeight) * 100;
-            document.querySelector('.progress-bar').style.width = scrollPercent + '%';
+            document.querySelector('.scroll-progress-bar').style.width = scrollPercent + '%';
         }
 
         function updateSlideCounter() {
             const slides = document.querySelectorAll('.slide');
-            const scrollTop = window.pageYOffset;
-            const slideHeight = window.innerHeight;
-            const currentSlideIndex = Math.round(scrollTop / slideHeight);
-            const currentSlideNumber = Math.min(Math.max(currentSlideIndex + 1, 1), slides.length);
+            const scrollTop = window.pageYOffset + 150; // Add offset for nav bar
             
-            document.querySelector('.slide-counter').textContent = `${currentSlideNumber} / ${slides.length}`;
+            let currentSlide = 1;
+            let currentSlideElement = slides[0];
+            
+            slides.forEach((slide, index) => {
+                if (scrollTop >= slide.offsetTop) {
+                    currentSlide = index + 1;
+                    currentSlideElement = slide;
+                }
+            });
+            
+            // Update slide counter
+            document.querySelector('.slide-counter').textContent = `${currentSlide} / ${slides.length}`;
+            
+            // Update current slide title
+            const slideTitle = currentSlideElement.querySelector('.header-2');
+            if (slideTitle) {
+                document.querySelector('.current-slide-title').textContent = slideTitle.textContent.trim();
+            }
         }
 
         // Update on scroll

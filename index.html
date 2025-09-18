@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>n8n 자동화 교육 플랫폼</title>
+    <title>모두를 위한 AI 자동화</title>
     <style>
         /* Global Reset */
         *, *::before, *::after { box-sizing: border-box; }
@@ -258,45 +258,380 @@
             100% { transform: rotate(360deg); }
         }
 
+        /* Mobile Table of Contents Button */
+        .mobile-toc-btn {
+            display: none;
+            position: absolute;
+            top: 60px;
+            right: 2%;
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.4);
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            padding: 10px;
+            z-index: 1001;
+            transition: all 0.2s ease;
+            backdrop-filter: blur(10px);
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Hamburger Menu Icon */
+        .hamburger {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+            margin-bottom: 4px;
+        }
+
+        .hamburger-line {
+            width: 18px;
+            height: 2px;
+            background: var(--upstage-deep-blue);
+            border-radius: 2px;
+            transition: all 0.3s ease;
+        }
+
+        .mobile-toc-label {
+            font-size: 9px;
+            color: #999;
+            text-align: center;
+            line-height: 1;
+        }
+
+        .mobile-toc-btn:hover {
+            background: var(--upstage-electric-blue);
+            color: var(--pure-white);
+            transform: scale(1.1);
+        }
+
+        .mobile-toc-btn:hover .hamburger-line {
+            background: var(--pure-white);
+        }
+
+        .mobile-toc-btn:hover .mobile-toc-label {
+            color: var(--pure-white);
+        }
+
+        /* Mobile Table of Contents Popup */
+        .mobile-toc-popup {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 1002;
+            backdrop-filter: blur(4px);
+        }
+
+        .mobile-toc-popup.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .mobile-toc-container {
+            width: 92%;
+            max-width: 380px;
+            max-height: 80vh;
+            background: var(--pure-white);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from { 
+                opacity: 0;
+                transform: translateY(30px) scale(0.95);
+            }
+            to { 
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .mobile-toc-header {
+            padding: 16px 20px;
+            background: linear-gradient(135deg, var(--upstage-deep-blue), var(--upstage-electric-blue));
+            color: var(--pure-white);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .mobile-toc-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .mobile-toc-close {
+            background: none;
+            border: none;
+            color: var(--pure-white);
+            font-size: 20px;
+            cursor: pointer;
+            padding: 4px;
+            border-radius: 50%;
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s ease;
+        }
+
+        .mobile-toc-close:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .mobile-toc-content {
+            max-height: calc(80vh - 68px);
+            overflow-y: auto;
+            padding: 8px 0;
+        }
+
+        .mobile-nav-section {
+            margin-bottom: 12px;
+        }
+
+        .mobile-nav-section-title {
+            padding: 8px 16px 6px;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--upstage-dark-gray);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid var(--border-normal);
+            margin-bottom: 2px;
+        }
+
+        .mobile-nav-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 16px;
+            color: var(--upstage-dark-gray);
+            text-decoration: none;
+            font-size: 13px;
+            line-height: 1.3;
+            border-left: 3px solid transparent;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            min-height: 48px;
+        }
+
+        .mobile-nav-item:hover {
+            background: var(--hover-bg);
+            border-left-color: var(--upstage-electric-blue);
+            color: var(--upstage-deep-blue);
+        }
+
+        .mobile-nav-item:active {
+            background: rgba(135, 0, 232, 0.2);
+        }
+
+        .mobile-nav-item.active {
+            background: var(--hover-bg);
+            border-left-color: var(--upstage-electric-blue);
+            color: var(--upstage-deep-blue);
+            font-weight: 600;
+        }
+
+        .mobile-nav-item-number {
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            background: var(--light-silver);
+            color: var(--upstage-dark-gray);
+            border-radius: 50%;
+            text-align: center;
+            line-height: 24px;
+            font-size: 11px;
+            font-weight: 600;
+            margin-right: 12px;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+        }
+
+        .mobile-nav-item:hover .mobile-nav-item-number,
+        .mobile-nav-item.active .mobile-nav-item-number {
+            background: var(--upstage-electric-blue);
+            color: var(--pure-white);
+        }
+
         /* Mobile Responsive */
         @media (max-width: 768px) {
             .platform-container {
                 flex-direction: column;
+                padding-top: 0;
             }
             
             .sidebar {
-                width: 100%;
-                height: 200px;
-                border-right: none;
-                border-bottom: 2px solid var(--border-normal);
+                display: none;
             }
             
-            .nav-container {
+            .mobile-toc-btn {
                 display: flex;
-                overflow-x: auto;
-                overflow-y: hidden;
-                padding: 8px;
-            }
-            
-            .nav-section {
-                min-width: 300px;
-                margin-right: 16px;
-                margin-bottom: 0;
             }
             
             .main-content {
-                height: calc(100vh - 200px);
+                height: 100vh;
+                width: 100%;
+            }
+
+            .slide-frame {
+                height: 100vh;
+            }
+
+            .floating-controls {
+                display: none;
+            }
+
+            .welcome-text-desktop {
+                display: none !important;
+            }
+
+            .welcome-text-mobile {
+                display: block !important;
             }
         }
     </style>
 </head>
 <body>
+    <!-- Mobile Table of Contents Button -->
+    <button class="mobile-toc-btn" onclick="toggleMobileToc()" title="목차 보기">
+        <div class="hamburger">
+            <div class="hamburger-line"></div>
+            <div class="hamburger-line"></div>
+            <div class="hamburger-line"></div>
+        </div>
+        <div class="mobile-toc-label">목차</div>
+    </button>
+
+    <!-- Mobile Table of Contents Popup -->
+    <div class="mobile-toc-popup" onclick="closeMobileToc()">
+        <div class="mobile-toc-container" onclick="event.stopPropagation()">
+            <div class="mobile-toc-header">
+                <h3 class="mobile-toc-title">📚 강의 목차</h3>
+                <button class="mobile-toc-close" onclick="closeMobileToc()">✕</button>
+            </div>
+            <div class="mobile-toc-content">
+                <!-- 초기 세팅 -->
+                <div class="mobile-nav-section">
+                    <div class="mobile-nav-section-title">초기 세팅</div>
+                    <a class="mobile-nav-item" data-slide="01-업무-자동화와-n8n-소개-slides.html">
+                        <span class="mobile-nav-item-number">1</span>
+                        n8n 소개
+                    </a>
+                    <a class="mobile-nav-item" data-slide="02-n8n-설치-및-환경-구성-slides.html">
+                        <span class="mobile-nav-item-number">2</span>
+                        n8n 설치
+                    </a>
+                    <a class="mobile-nav-item" data-slide="03-N8N-에디터-UI-빠른-투어-slides.html">
+                        <span class="mobile-nav-item-number">3</span>
+                        n8n 투어
+                    </a>
+                </div>
+
+                <!-- 워크플로우 이해 -->
+                <div class="mobile-nav-section">
+                    <div class="mobile-nav-section-title">워크플로우 이해</div>
+                    <a class="mobile-nav-item" data-slide="04-워크플로우-핵심-구성-요소-slides.html">
+                        <span class="mobile-nav-item-number">4</span>
+                        워크플로우 핵심 구성 요소
+                    </a>
+                    <a class="mobile-nav-item" data-slide="05-트리거와-액션-노드-slides.html">
+                        <span class="mobile-nav-item-number">5</span>
+                        트리거와 액션 노드
+                    </a>
+                </div>
+
+                <!-- 문서처리 자동화 -->
+                <div class="mobile-nav-section">
+                    <div class="mobile-nav-section-title">문서처리 자동화</div>
+                    <a class="mobile-nav-item" data-slide="06-문서와-데이터-다루기-slides.html">
+                        <span class="mobile-nav-item-number">6</span>
+                        문서와 데이터 다루기
+                    </a>
+                    <a class="mobile-nav-item" data-slide="07-업스테이지-노드-설치-및-문서-처리-모듈-이해-slides.html">
+                        <span class="mobile-nav-item-number">7</span>
+                        업스테이지 노드 설치 이해
+                    </a>
+                    <a class="mobile-nav-item" data-slide="08-문서-처리-자동화-실습-slides.html">
+                        <span class="mobile-nav-item-number">8</span>
+                        문서 처리 자동화
+                    </a>
+                </div>
+
+                <!-- 언어모델 활용과 의미 검색 -->
+                <div class="mobile-nav-section">
+                    <div class="mobile-nav-section-title">언어모델 활용과 의미 검색</div>
+                    <a class="mobile-nav-item" data-slide="09-언어모델-이해와-프롬프팅-기법-slides.html">
+                        <span class="mobile-nav-item-number">9</span>
+                        LLM 노드들의 이해
+                    </a>
+                    <a class="mobile-nav-item" data-slide="10-RAG-시스템-이해와-실습-slides.html">
+                        <span class="mobile-nav-item-number">10</span>
+                        RAG 시스템 제작
+                    </a>
+                    <a class="mobile-nav-item" data-slide="11-FAQ봇-제작-및-대응-자동화-slides.html">
+                        <span class="mobile-nav-item-number">11</span>
+                        사내 정보 기반 FAQ 리포트 봇 제작
+                    </a>
+                </div>
+
+                <!-- 에이전트 활용 -->
+                <div class="mobile-nav-section">
+                    <div class="mobile-nav-section-title">에이전트 활용</div>
+                    <a class="mobile-nav-item" data-slide="12-에이전트-노드의-이해-slides.html">
+                        <span class="mobile-nav-item-number">12</span>
+                        에이전트 노드의 이해
+                    </a>
+                    <a class="mobile-nav-item" data-slide="13-API-개념과-HTTP-Request-slides.html">
+                        <span class="mobile-nav-item-number">13</span>
+                        외부 통신과 내부 통신
+                    </a>
+                    <a class="mobile-nav-item" data-slide="14-나만의-Agent-봇-제작-slides.html">
+                        <span class="mobile-nav-item-number">14</span>
+                        나만의 Agent 봇 만들기
+                    </a>
+                </div>
+
+                <!-- 최종 관리 및 고도화 -->
+                <div class="mobile-nav-section">
+                    <div class="mobile-nav-section-title">최종 관리 및 고도화</div>
+                    <a class="mobile-nav-item" data-slide="15-디버깅-팁-및-유지보수-slides.html">
+                        <span class="mobile-nav-item-number">15</span>
+                        에러 디버깅
+                    </a>
+                    <a class="mobile-nav-item" data-slide="16-템플릿-검색-및-활용-slides.html">
+                        <span class="mobile-nav-item-number">16</span>
+                        템플릿 검색 및 활용
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="platform-container">
         <!-- Sidebar Navigation -->
         <nav class="sidebar">
             <div class="sidebar-header">
-                <h1>🚀 n8n 자동화 교육</h1>
-                <p>노코드로 업무 혁신하기</p>
+                <h1>🚀 모두를 위한 AI 자동화</h1>
+                <p>n8n을 활용한 업무 자동화 강의</p>
             </div>
             
             <div class="nav-container">
@@ -373,7 +708,7 @@
                     </a>
                     <a class="nav-item" data-slide="13-API-개념과-HTTP-Request-slides.html">
                         <span class="nav-item-number">13</span>
-                        API 개념 및 HTTP Request
+                        외부 통신과 내부 통신
                     </a>
                     <a class="nav-item" data-slide="14-나만의-Agent-봇-제작-slides.html">
                         <span class="nav-item-number">14</span>
@@ -405,8 +740,9 @@
             
             <div id="slide-container" class="slide-frame">
                 <div class="welcome-screen">
-                    <h2>🚀 n8n 자동화 교육에 오신 것을 환영합니다!</h2>
-                    <p>왼쪽 사이드바에서 학습하고 싶은 강의를 선택하세요. 각 강의는 실무에 바로 적용할 수 있는 노코드 자동화 기술을 다룹니다.</p>
+                    <h2>🚀 n8n을 활용한 업무 자동화 강의에 오신 것을 환영합니다!</h2>
+                    <p class="welcome-text-desktop">왼쪽 사이드바에서 학습하고 싶은 강의를 선택하세요. 각 강의는 실무에 바로 적용할 수 있는 노코드 자동화 기술을 다룹니다.</p>
+                    <p class="welcome-text-mobile" style="display: none;">좌측 상단의 목차 버튼을 터치하여 강의를 선택하세요. 각 강의는 실무에 바로 적용할 수 있는 노코드 자동화 기술을 다룹니다.</p>
                     <button class="start-btn" onclick="loadSlide('01-업무-자동화와-n8n-소개-slides.html')">첫 번째 강의 시작하기</button>
                 </div>
             </div>
@@ -415,9 +751,11 @@
 
     <script>
         let currentSlide = null;
+        let isMobileTocOpen = false;
         
         // Initialize navigation
         document.addEventListener('DOMContentLoaded', function() {
+            // Desktop navigation
             const navItems = document.querySelectorAll('.nav-item');
             navItems.forEach(item => {
                 item.addEventListener('click', function(e) {
@@ -425,6 +763,18 @@
                     const slideFile = this.getAttribute('data-slide');
                     loadSlide(slideFile);
                     setActiveNavItem(this);
+                });
+            });
+            
+            // Mobile navigation
+            const mobileNavItems = document.querySelectorAll('.mobile-nav-item');
+            mobileNavItems.forEach(item => {
+                item.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const slideFile = this.getAttribute('data-slide');
+                    loadSlide(slideFile);
+                    setActiveMobileNavItem(this);
+                    closeMobileToc();
                 });
             });
         });
@@ -463,8 +813,18 @@
         }
 
         function setActiveNavItem(activeItem) {
-            // Remove active class from all items
+            // Remove active class from all desktop nav items
             document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // Add active class to clicked item
+            activeItem.classList.add('active');
+        }
+
+        function setActiveMobileNavItem(activeItem) {
+            // Remove active class from all mobile nav items
+            document.querySelectorAll('.mobile-nav-item').forEach(item => {
                 item.classList.remove('active');
             });
             
@@ -481,10 +841,43 @@
         }
 
 
+        // Mobile Table of Contents Functions
+        function toggleMobileToc() {
+            const popup = document.querySelector('.mobile-toc-popup');
+            
+            isMobileTocOpen = !isMobileTocOpen;
+            
+            if (isMobileTocOpen) {
+                popup.classList.add('show');
+                document.body.style.overflow = 'hidden';
+            } else {
+                closeMobileToc();
+            }
+        }
+
+        function closeMobileToc() {
+            const popup = document.querySelector('.mobile-toc-popup');
+            
+            isMobileTocOpen = false;
+            popup.classList.remove('show');
+            document.body.style.overflow = '';
+        }
+
+        // Close mobile toc on window resize
+        window.addEventListener('resize', function() {
+            if (window.innerWidth > 768 && isMobileTocOpen) {
+                closeMobileToc();
+            }
+        });
+
         // Keyboard navigation
         document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape' && document.fullscreenElement) {
-                document.exitFullscreen();
+            if (e.key === 'Escape') {
+                if (document.fullscreenElement) {
+                    document.exitFullscreen();
+                } else if (isMobileTocOpen) {
+                    closeMobileToc();
+                }
             }
         });
     </script>

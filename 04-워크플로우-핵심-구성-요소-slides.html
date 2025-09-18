@@ -100,7 +100,7 @@
             color: #636E72;
         }
 
-        .nav-progress .current-topic {
+        .nav-progress .current-slide-title {
             font-weight: 600;
             color: #1B365D;
             max-width: 300px;
@@ -433,9 +433,9 @@
 </head>
 <body>
     <nav class="nav-bar">
-        <div class="nav-logo">🔗 n8n 마스터</div>
+        <div class="nav-logo">워크플로우 핵심 구성 요소</div>
         <div class="nav-progress">
-            <span class="current-topic">노드와 연결 이해</span>
+            <span class="current-slide-title">🏗️ 워크플로우의 핵심 구성 요소</span>
             <span class="slide-counter">1 / 12</span>
         </div>
     </nav>
@@ -694,7 +694,7 @@ JSON 형태로 다음 노드에 전달
                 </div>
                 
                 <div class="content-card">
-                    <div class="card-title">⏸️ 일시중지/중단</div>
+                    <div class="card-title">⏸️ 대기/종료</div>
                     <ul class="checklist">
                         <li>Wait: 지연 시간 설정</li>
                         <li>Stop and Error: 워크플로우 중단</li>
@@ -809,7 +809,7 @@ graph LR
                 <div class="content-card">
                     <div class="card-title">⚡ Parallel Flow (병렬)</div>
                     <div class="mermaid">
-graph TD
+graph LR
     A[🚀 Trigger] --> B[🔀 Split]
     B --> C[⚙️ Process A]
     B --> D[🔧 Process B]
@@ -840,7 +840,7 @@ graph TD
                 <div class="content-card">
                     <div class="card-title">🔄 Conditional Flow (조건부)</div>
                     <div class="mermaid">
-graph TD
+graph LR
     A[🚀 Trigger] --> B{🔍 IF 조건}
     B -->|True| C[✅ True Path]
     B -->|False| D[❌ False Path]
@@ -1072,6 +1072,7 @@ graph LR
             const slides = document.querySelectorAll('.slide');
             const scrollTop = window.pageYOffset + 150;
             let currentSlide = 1;
+            let currentSlideElement = slides[0];
             
             slides.forEach((slide, index) => {
                 const slideTop = slide.offsetTop;
@@ -1079,10 +1080,18 @@ graph LR
                 
                 if (scrollTop >= slideTop && scrollTop < slideBottom) {
                     currentSlide = index + 1;
+                    currentSlideElement = slide;
                 }
             });
             
+            // Update slide counter
             document.querySelector('.slide-counter').textContent = `${currentSlide} / ${slides.length}`;
+            
+            // Update current slide title
+            const slideTitle = currentSlideElement.querySelector('.header-2');
+            if (slideTitle) {
+                document.querySelector('.current-slide-title').textContent = slideTitle.textContent.trim();
+            }
         }
 
         // Event listeners

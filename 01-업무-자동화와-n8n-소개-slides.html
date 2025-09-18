@@ -70,7 +70,7 @@
             color: var(--neutral-slate);
         }
 
-        .nav-progress .current-topic {
+        .nav-progress .current-slide-title {
             font-weight: 600;
             color: var(--upstage-deep-blue);
             max-width: 300px;
@@ -369,7 +369,7 @@
                 gap: 12px;
             }
 
-            .nav-progress .current-topic {
+            .nav-progress .current-slide-title {
                 display: none;
             }
 
@@ -437,9 +437,9 @@
 <body>
     <!-- 네비게이션 바 -->
     <nav class="nav-bar">
-        <div class="nav-logo">📚 n8n 자동화 마스터</div>
+        <div class="nav-logo">n8n 소개</div>
         <div class="nav-progress">
-            <span class="current-topic">업무 자동화와 n8n 소개</span>
+            <span class="current-slide-title">🚀 업무 자동화와 n8n 소개</span>
             <span class="slide-counter">1 / 6</span>
         </div>
     </nav>
@@ -709,7 +709,7 @@ graph LR
                             <tr>
                                 <td><strong>워크플로우 이해</strong></td>
                                 <td>노드 연결과 데이터 흐름</td>
-                                <td>3강 (4-6강)</td>
+                                <td>2강 (4-5강)</td>
                             </tr>
                         </tbody>
                     </table>
@@ -726,7 +726,7 @@ graph LR
                     </ul>
                     
                     <div style="text-align: center; margin: 8px 0; color: #636E72; font-size: 12pt;">
-                        📚 <strong>2강</strong> (16-17강)
+                        📚 <strong>2강</strong> (15-16강)
                     </div>
                 </div>
             </div>
@@ -750,7 +750,7 @@ graph LR
                             <li>스마트 문서 요약 생성</li>
                         </ul>
                         <div style="text-align: center; margin: 8px 0; color: #636E72; font-size: 12pt;">
-                            📚 <strong>3강</strong> (7-9강)
+                            📚 <strong>3강</strong> (6-8강)
                         </div>
                     </div>
                     
@@ -767,7 +767,7 @@ graph LR
                             <li>맞춤형 AI 챗봇 구축</li>
                         </ul>
                         <div style="text-align: center; margin: 8px 0; color: #636E72; font-size: 12pt;">
-                            📚 <strong>3강</strong> (10-12강)
+                            📚 <strong>3강</strong> (9-11강)
                         </div>
                     </div>
                     
@@ -784,7 +784,7 @@ graph LR
                             <li>다중 도구 통합 활용</li>
                         </ul>
                         <div style="text-align: center; margin: 8px 0; color: #636E72; font-size: 12pt;">
-                            📚 <strong>3강</strong> (13-15강)
+                            📚 <strong>3강</strong> (12-14강)
                         </div>
                     </div>
                 </div>
@@ -813,13 +813,23 @@ graph LR
             const scrollTop = window.pageYOffset + 150;
             
             let currentSlide = 1;
+            let currentSlideElement = slides[0];
+            
             slides.forEach((slide, index) => {
                 if (scrollTop >= slide.offsetTop) {
                     currentSlide = index + 1;
+                    currentSlideElement = slide;
                 }
             });
             
+            // Update slide counter
             document.querySelector('.slide-counter').textContent = `${currentSlide} / ${slides.length}`;
+            
+            // Update current slide title
+            const slideTitle = currentSlideElement.querySelector('.header-2');
+            if (slideTitle) {
+                document.querySelector('.current-slide-title').textContent = slideTitle.textContent.trim();
+            }
         }
 
         // 이벤트 리스너

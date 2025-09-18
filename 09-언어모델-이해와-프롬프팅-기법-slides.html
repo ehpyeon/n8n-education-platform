@@ -100,7 +100,7 @@
             color: #636E72;
         }
 
-        .nav-progress .current-topic {
+        .nav-progress .current-slide-title {
             font-weight: 600;
             color: #1B365D;
             max-width: 300px;
@@ -438,9 +438,9 @@
 </head>
 <body>
     <nav class="nav-bar">
-        <div class="nav-logo">🧠 LLM 전문가팀</div>
+        <div class="nav-logo">LLM 노드들의 이해</div>
         <div class="nav-progress">
-            <span class="current-topic">LLM 노드들의 이해</span>
+            <span class="current-slide-title">🧠 언어모델 이해와 프롬프팅 기법</span>
             <span class="slide-counter">15강</span>
         </div>
     </nav>
@@ -471,42 +471,54 @@
             
             <div class="content-grid content-grid-3">
                 <div class="content-card">
-                    <div class="card-title">🤖 OpenAI팀</div>
+                    <div class="card-title">
+                        <img src="https://vectorseek.com/wp-content/uploads/2023/10/ChatGPT-Vertical-Logo-Vector.svg-.png" alt="OpenAI ChatGPT Logo" style="height: 40px; width: auto; vertical-align: middle;">
+                    </div>
                     <div class="basic-font"><strong>성능 특징:</strong> GPT-5 최신 모델, 고급 추론</div>
                     <div class="basic-font"><strong>핵심 기능:</strong> 실시간 API, 멀티모달</div>
                     <div class="basic-font"><strong>가격 장점:</strong> 경쟁력 있는 가격, 배치 할인</div>
                 </div>
                 
                 <div class="content-card">
-                    <div class="card-title">🎩 Claude팀</div>
+                    <div class="card-title">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8a/Claude_AI_logo.svg/1280px-Claude_AI_logo.svg.png" alt="Claude AI Logo" style="height: 40px; width: auto; vertical-align: middle;">
+                    </div>
                     <div class="basic-font"><strong>성능 특징:</strong> 1M 토큰 컨텍스트, 명령 수행 우수</div>
                     <div class="basic-font"><strong>핵심 기능:</strong> MCP 툴 호출, Anthropic 고급 기능</div>
                     <div class="basic-font"><strong>가격 장점:</strong> 프리미엄 포지션, 기업 중심</div>
                 </div>
                 
                 <div class="content-card">
-                    <div class="card-title">🔍 Gemini팀</div>
+                    <div class="card-title">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d9/Google_Gemini_logo_2025.svg/2560px-Google_Gemini_logo_2025.svg.png" alt="Google Gemini Logo" style="height: 40px; width: auto; vertical-align: middle;">
+                    </div>
                     <div class="basic-font"><strong>성능 특징:</strong> 2.5 Pro 최첨단, 수학/과학 강점</div>
                     <div class="basic-font"><strong>핵심 기능:</strong> 200만 토큰 초대용량, 멀티모달</div>
                     <div class="basic-font"><strong>가격 장점:</strong> 유연한 계층, 배치 할인</div>
                 </div>
                 
                 <div class="content-card">
-                    <div class="card-title">💡 DeepSeek팀</div>
+                    <div class="card-title">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/ec/DeepSeek_logo.svg/1200px-DeepSeek_logo.svg.png" alt="DeepSeek Logo" style="height: 40px; width: auto; vertical-align: middle;">
+                    </div>
                     <div class="basic-font"><strong>성능 특징:</strong> 15조 토큰 훈련, 고효율</div>
                     <div class="basic-font"><strong>핵심 기능:</strong> 오픈소스, 사고 모드</div>
                     <div class="basic-font"><strong>가격 장점:</strong> 최고 비용효율, 무료 액세스</div>
                 </div>
                 
                 <div class="content-card">
-                    <div class="card-title">🌟 Qwen팀</div>
+                    <div class="card-title">
+                        <img src="https://qwen.readthedocs.io/en/v2.0/_images/qwen2.png" alt="Qwen Logo" style="height: 40px; width: auto; vertical-align: middle;">
+                    </div>
                     <div class="basic-font"><strong>성능 특징:</strong> MoE 아키텍처, 10배 속도향상</div>
                     <div class="basic-font"><strong>핵심 기능:</strong> 119개 언어지원, 하이브리드 추론</div>
                     <div class="basic-font"><strong>가격 장점:</strong> 97% 가격인하, 상업용 자유</div>
                 </div>
                 
                 <div class="content-card">
-                    <div class="card-title">☀️ Upstage팀</div>
+                    <div class="card-title">
+                        <img src="https://m.ddaily.co.kr/photos/2024/03/29/2024032909115842450_l.jpg" alt="Upstage Solar Logo" style="height: 40px; width: auto; vertical-align: middle;">
+                    </div>
                     <div class="basic-font"><strong>성능 특징:</strong> 31B 파라미터, 단일 GPU 효율</div>
                     <div class="basic-font"><strong>핵심 기능:</strong> Document AI 연계, 한국어 특화</div>
                     <div class="basic-font"><strong>가격 장점:</strong> 높은 가격 경쟁력, 기업 가치</div>
@@ -602,113 +614,17 @@
             </div>
         </section>
 
-        <!-- Slide 5: AI 교육 고급 기법 -->
+        <!-- Slide 5: AI 직원 교육 고급 기법 (4가지 기법) -->
         <section class="slide" id="slide-5">
             <h2 class="header-2">🎓 AI 직원 교육 고급 기법</h2>
-            <div class="message">모범 답안을 보여주면서 가르치는 방법으로 AI 성능을 크게 향상시킬 수 있습니다</div>
+            <div class="message">전문적인 AI 직원 교육을 위한 4가지 핵심 기법을 마스터하세요</div>
             
             <div class="content-grid content-grid-2">
                 <div class="content-card">
-                    <div class="card-title">📚 예시로 가르치기 (Few-shot Learning)</div>
-                    <div class="basic-font"><strong>교육 방법:</strong></div>
-                    <div class="code-block">업무 매뉴얼 + 모범 답변 예시들 + 실제 업무 요청</div>
-                    
-                    <div class="basic-font"><strong>고객 문의 분류 교육 예시:</strong></div>
-                    <ul class="checklist">
-                        <li>"배송이 늦어요" → 물류팀</li>
-                        <li>"결제가 안 됩니다" → 결제팀</li>
-                        <li>"제품 사용법을 모르겠어요" → 기술지원팀</li>
-                    </ul>
-                    
-                    <div class="basic-font">이런 예시 몇 개만 보여주면 새로운 문의도 정확하게 분류!</div>
-                </div>
-                
-                <div class="content-card">
-                    <div class="card-title">🔄 실전 교육 프로세스</div>
-                    <div class="code-block">고객 문의 이메일 자동 분류 교육:
+                    <div class="card-title">📊 Format Specification (구조화된 출력)</div>
+                    <div class="basic-font">JSON 스키마를 활용한 정확한 데이터 형식 지정</div>
+                    <div class="code-block">고객 피드백 분석 출력 형식:
 
-예시 1:
-이메일: "주문한 제품이 언제 배송되나요?"
-분류: 문의유형=배송, 긴급도=중간, 감정=중립
-
-예시 2:
-이메일: "제품이 불량품이에요! 즉시 환불해주세요!"
-분류: 문의유형=환불, 긴급도=높음, 감정=분노
-
-예시 3:
-이메일: "서비스가 정말 만족스럽습니다."
-분류: 문의유형=피드백, 긴급도=낮음, 감정=긍정
-
-이제 다음 이메일을 분류해주세요:
-"{{ $json.email_content }}"</div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Slide 6: 고급 프롬프트 전략 -->
-        <section class="slide" id="slide-6">
-            <h2 class="header-2">🧠 고급 프롬프트 전략 마스터</h2>
-            <div class="message">복잡한 업무도 단계별로 나누어 처리하면 AI가 더 정확하게 수행할 수 있습니다</div>
-            
-            <div class="content-grid content-grid-2">
-                <div class="content-card">
-                    <div class="card-title">🔍 Chain of Thought (사고 연쇄)</div>
-                    <div class="basic-font">복잡한 문제를 단계별로 나누어 해결</div>
-                    
-                    <div class="code-block">비즈니스 분석 예시:
-
-다음 단계별로 분석해주세요:
-
-1단계: 현재 상황 파악
-2단계: 문제점 식별  
-3단계: 원인 분석
-4단계: 해결방안 도출
-5단계: 실행계획 수립
-
-분석 대상: {{ $json.business_data }}
-
-각 단계별로 사고 과정을 명확히 보여주고 
-최종 결론을 제시해주세요.</div>
-                </div>
-                
-                <div class="content-card">
-                    <div class="card-title">🎭 Role-based Prompting (역할 기반)</div>
-                    <div class="basic-font">특정 전문가 역할을 부여하여 전문적 답변 유도</div>
-                    
-                    <div class="code-block">마케팅 전문가 역할 예시:
-
-당신은 10년 경력의 디지털 마케팅 전문가입니다.
-
-전문 분야:
-- 소셜미디어 마케팅
-- 콘텐츠 마케팅
-- 데이터 기반 캠페인 최적화
-
-다음 마케팅 데이터를 전문가 관점에서 분석:
-{{ $json.marketing_data }}
-
-분석 항목:
-1. 캠페인 성과 평가
-2. 타겟 오디언스 분석
-3. 개선 기회 식별
-4. 구체적 실행방안 제시</div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Slide 7: 템플릿 기반 프롬프팅 -->
-        <section class="slide" id="slide-7">
-            <h2 class="header-2">📋 템플릿 기반 프롬프팅</h2>
-            <div class="message">재사용 가능한 프롬프트 템플릿으로 일관된 결과를 얻을 수 있습니다</div>
-            
-            <div class="content-grid content-grid-2">
-                <div class="content-card">
-                    <div class="card-title">📊 고객 피드백 분석 템플릿</div>
-                    <div class="code-block">고객 피드백 분석 템플릿
-
-입력: {{ $json.customer_feedback }}
-
-출력 형식:
 ```json
 {
   "sentiment": "긍정/중립/부정",
@@ -720,93 +636,182 @@
 }
 ```
 
-위 템플릿에 따라 분석해주세요.</div>
+위 JSON 형식으로만 답변해주세요.</div>
                 </div>
                 
                 <div class="content-card">
-                    <div class="card-title">⚠️ 에러 처리 프롬프트</div>
-                    <div class="basic-font">예상치 못한 상황에 대처할 수 있는 지침 제공</div>
-                    
-                    <div class="code-block">예외 상황 처리 가이드:
+                    <div class="card-title">📚 Teaching by Examples (예시 기반 학습)</div>
+                    <div class="basic-font">실제 모범 사례를 보여주며 패턴 학습 유도</div>
+                    <div class="code-block">고객 피드백 분석 예시:
 
-다음 조건을 확인하고 적절히 처리해주세요:
+예시 1:
+입력: "배송이 너무 늦어서 실망했습니다"
+출력: {
+  "sentiment": "부정",
+  "category": "배송",
+  "priority": "중간",
+  "key_issues": ["배송지연"],
+  "suggested_actions": ["배송상태 확인", "사과 메일 발송"]
+}
 
-1. 입력 데이터가 불완전한 경우:
-   → "데이터 불충분: [부족한 정보] 확인 필요"
+이제 다음을 분석하세요: {{ $json.feedback }}</div>
+                </div>
+                
+                <div class="content-card">
+                    <div class="card-title">📋 Spec Files (프로젝트 명세서)</div>
+                    <div class="basic-font">spec.md 파일로 프로젝트 정보와 가이드라인 전달</div>
+                    <div class="code-block">spec.md 파일 구조:
 
-2. 분류가 애매한 경우:
-   → "모호한 케이스: [가능한 분류들] 중 선택"
+# 프로젝트 명세서
+## 목표
+- 고객 만족도 향상
+- 응답 시간 단축
 
-3. 예외적인 케이스인 경우:
-   → "특수 케이스: [특이사항] 별도 검토 필요"
+## 브랜드 가이드라인
+- 톤: 친근하고 전문적
+- 스타일: 간결하고 명확
 
-일반적인 경우: 정상 분류 진행
+## 제약사항
+- 개인정보 수집 금지
+- 500자 이내 답변
 
-입력: {{ $json.input_data }}</div>
+이 spec을 참고하여 작업해주세요.</div>
+                </div>
+                
+                <div class="content-card">
+                    <div class="card-title">🧠 Chain of Thoughts (단계별 사고)</div>
+                    <div class="basic-font">planner.md 파일로 문제 해결 과정을 체계화</div>
+                    <div class="code-block">planner.md 파일 예시:
+
+# 고객 문의 처리 플래너
+## 단계별 분석 과정
+1. 문의 내용 파악 및 분류
+2. 고객 감정 상태 분석
+3. 우선순위 결정
+4. 해결방안 도출
+5. 적절한 응답 생성
+
+각 단계를 순서대로 수행하며 
+사고 과정을 명시해주세요.</div>
                 </div>
             </div>
         </section>
 
-        <!-- Slide 8: 실전 워크플로우 -->
-        <section class="slide" id="slide-8">
-            <h2 class="header-2">🏭 실전 워크플로우 구축</h2>
-            <div class="message">실제 비즈니스에 바로 적용할 수 있는 완성된 워크플로우 예시들을 살펴보겠습니다</div>
+        <!-- Slide 6: 실전 통합 사례 - 고객 불만 처리 자동화 -->
+        <section class="slide" id="slide-6">
+            <h2 class="header-2">🔧 실전 통합 사례: 고객 불만 처리 자동화</h2>
+            <div class="message">4가지 기법이 하나의 공통 문제를 해결하기 위해 통합적으로 활용되는 과정을 살펴보겠습니다</div>
             
+            <!-- 공통 문제 정의 -->
+            <div class="content-grid content-grid-1">
+                <div class="content-card">
+                    <div class="card-title">🎯 해결할 공통 문제</div>
+                    <div class="basic-font"><strong>상황:</strong> "고객이 온라인 쇼핑몰에서 주문한 제품이 불량품으로 도착했고, 화가 난 상태로 즉시 환불을 요구하는 상황"</div>
+                    <div class="basic-font"><strong>목표:</strong> 고객 만족도를 높이면서 체계적이고 일관된 처리 시스템 구축</div>
+                </div>
+            </div>
+
+            <!-- 4가지 기법 통합 도식 -->
+            <div class="content-grid content-grid-1">
+                <div class="content-card">
+                    <div class="card-title">⚙️ 4가지 기법 통합 처리 과정</div>
+                    <div class="mermaid">
+                        flowchart LR
+                            A["🔥 고객 불만 발생<br/>불량품 + 즉시환불요구"] --> B["📋 Spec Files<br/>브랜드 가이드라인 적용"]
+                            B --> C["🧠 Chain of Thoughts<br/>단계별 분석 수행"]
+                            C --> D["📚 Teaching by Examples<br/>유사 사례 참조"]
+                            D --> E["📊 Format Specification<br/>구조화된 응답 생성"]
+                            E --> F["✅ 완성된 고객 응답<br/>+ 후속 조치 계획"]
+                            
+                            style A fill:#ffebee,stroke:#d32f2f,stroke-width:2px
+                            style B fill:#e3f2fd,stroke:#1976d2,stroke-width:2px
+                            style C fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
+                            style D fill:#e8f5e8,stroke:#388e3c,stroke-width:2px
+                            style E fill:#fff3e0,stroke:#f57c00,stroke-width:2px
+                            style F fill:#e0f2f1,stroke:#00796b,stroke-width:2px
+                    </div>
+                </div>
+            </div>
+
+            <!-- 각 기법의 구체적 적용 -->
             <div class="content-grid content-grid-2">
                 <div class="content-card">
-                    <div class="card-title">📞 고객 서비스 자동화</div>
-                    <div class="basic-font"><strong>시스템 프롬프트:</strong></div>
-                    <div class="code-block">당신은 친절한 고객 서비스 상담원입니다.
-
-역할:
-- 고객 문의를 정확히 파악하여 분류
-- 감정 상태를 공감적으로 이해
-- 해결방안을 명확하게 제시
-
-출력 형식:
-{
-  "category": "배송/결제/제품/환불/기타",
-  "emotion": "긍정/중립/부정/분노",
-  "priority": "높음/중간/낮음",
-  "response": "고객에게 보낼 답변"
-}</div>
+                    <div class="card-title">🔄 실시간 처리 과정</div>
+                    <div class="basic-font"><strong>Step 1: Spec Files 가이드라인</strong></div>
+                    <div class="code-block">브랜드 톤: 진심 어린 사과 + 신속한 해결
+제약사항: 500자 이내, 개인정보 미요구
+목표: 고객 재구매 유도 + 브랜드 신뢰 회복</div>
                     
-                    <div class="basic-font"><strong>사용자 메시지:</strong></div>
-                    <div class="code-block">고객 문의: {{ $json.email_content }}
-고객 정보: {{ $json.customer_info }}
-구매 이력: {{ $json.order_history }}
-
-위 정보를 바탕으로 문의를 분석하고 
-적절한 답변을 생성해주세요.</div>
+                    <div class="basic-font"><strong>Step 2: Chain of Thoughts 분석</strong></div>
+                    <div class="code-block">1. 불만 유형: 제품 불량 + 감정적 대응 필요
+2. 긴급도: 높음 (즉시 환불 요구)
+3. 고객 감정: 분노 + 실망
+4. 해결책: 즉시 환불 + 추가 보상
+5. 브랜드 회복: 진정성 있는 사과</div>
                 </div>
                 
                 <div class="content-card">
-                    <div class="card-title">📝 콘텐츠 생성 워크플로우</div>
-                    <div class="basic-font"><strong>시스템 프롬프트:</strong></div>
-                    <div class="code-block">당신은 전문 마케팅 카피라이터입니다.
-
-브랜드 톤앤매너:
-- 친근하고 신뢰감 있는 톤
-- 전문성과 따뜻함의 균형
-- 고객 중심의 메시지
-
-콘텐츠 가이드라인:
-- 제목: 흥미롭고 클릭하고 싶은 제목 (10-15자)
-- 본문: 핵심 메시지 명확 전달 (200-300자)
-- 해시태그: 관련성 높은 태그 3-5개</div>
+                    <div class="card-title">💡 학습 기반 대응</div>
+                    <div class="basic-font"><strong>Step 3: Teaching by Examples 참조</strong></div>
+                    <div class="code-block">유사 사례: "화장품 파손 도착 + 분노 고객"
+성공 응답: 즉시 사과 → 환불 확약 → 추가 할인
+결과: 고객 재구매 + 긍정 리뷰 작성</div>
                     
-                    <div class="basic-font"><strong>사용자 메시지:</strong></div>
-                    <div class="code-block">제품 정보: {{ $json.product_info }}
-타겟 고객: {{ $json.target_audience }}
-마케팅 목표: {{ $json.marketing_goal }}
+                    <div class="basic-font"><strong>Step 4: Format Specification 출력</strong></div>
+                    <div class="code-block">{
+  "analysis": {
+    "category": "제품불량", "emotion": "분노", 
+    "priority": "최우선", "solution": "즉시환불+보상"
+  },
+  "response": "진심으로 죄송합니다. 불량품으로 인해 불편을 드려 정말 죄송합니다. 즉시 전액 환불과 함께 다음 주문 시 사용 가능한 20% 할인 쿠폰을 드리겠습니다. 택배 기사가 2시간 내 수거 방문하겠습니다.",
+  "next_actions": ["즉시환불처리", "20%할인쿠폰발급", "2시간내수거예약", "품질관리팀피드백"]
+}</div>
+                </div>
+            </div>
 
-소셜미디어 포스팅용 콘텐츠를 생성해주세요.</div>
+            <!-- 통합 효과 해석 -->
+            <div class="content-grid content-grid-1">
+                <div class="content-card">
+                    <div class="card-title">📈 통합 기법 적용 결과 해석</div>
+                    <div class="basic-font">이 사례에서 4가지 기법이 어떻게 유기적으로 연결되어 문제를 해결했는지 분석해보겠습니다:</div>
+                    
+                    <table class="content-table">
+                        <tr>
+                            <th>기법</th>
+                            <th>이 사례에서의 역할</th>
+                            <th>다른 기법과의 연계점</th>
+                        </tr>
+                        <tr>
+                            <td>📋 Spec Files</td>
+                            <td>브랜드 톤 & 제약사항 설정</td>
+                            <td>→ Chain of Thoughts의 판단 기준 제공</td>
+                        </tr>
+                        <tr>
+                            <td>🧠 Chain of Thoughts</td>
+                            <td>체계적 상황 분석 & 우선순위 결정</td>
+                            <td>→ Teaching by Examples의 사례 선택 기준</td>
+                        </tr>
+                        <tr>
+                            <td>📚 Teaching by Examples</td>
+                            <td>유사 성공 사례 참조 & 응답 품질 향상</td>
+                            <td>→ Format Specification의 구체적 내용 생성</td>
+                        </tr>
+                        <tr>
+                            <td>📊 Format Specification</td>
+                            <td>일관된 구조로 출력 & 후속 조치 명확화</td>
+                            <td>→ 전체 프로세스의 완성 & 실행 가능성 보장</td>
+                        </tr>
+                    </table>
+                    
+                    <div class="callout">
+                        💡 <strong>핵심 인사이트:</strong> 각 기법이 독립적으로 작동하는 것이 아니라, 하나의 복잡한 문제를 해결하기 위해 순차적이면서도 상호 보완적으로 작동합니다. Spec Files가 방향을 제시하면, Chain of Thoughts가 체계적으로 분석하고, Teaching by Examples가 경험을 활용하며, Format Specification이 실행 가능한 형태로 완성합니다.
+                    </div>
                 </div>
             </div>
         </section>
 
-        <!-- Slide 9: 성공하는 AI 팀 완성 -->
-        <section class="slide" id="slide-9">
+        <!-- Slide 7: 성공하는 AI 팀 완성 -->
+        <section class="slide" id="slide-7">
             <h2 class="header-2">🎉 AI 언어 전문가팀 완성!</h2>
             <div class="message">이제 24시간 일하는 AI 컨설턴트 팀을 회사에 고용했습니다</div>
             
@@ -863,7 +868,7 @@
             </div>
             
             <div class="callout">
-                🎯 <strong>완성!</strong> 이제 AI 언어 전문가팀이 회사에서 24시간 일하는 시스템을 구축했습니다! 올바른 업무 매뉴얼과 고급 프롬프트 기법으로 AI의 진정한 잠재력을 발휘할 수 있게 되었습니다. 다음 강의에서는 더욱 자율적인 에이전트 노드의 이해와 활용법을 알아보겠습니다!
+                🎯 <strong>완성!</strong> 이제 AI 언어 전문가팀이 회사에서 24시간 일하는 시스템을 구축했습니다! 4가지 고급 교육 기법(Format Specification, Teaching by Examples, Spec Files, Chain of Thoughts)을 활용한 체계적인 AI 교육으로 전문가 수준의 업무 처리가 가능해졌습니다. 다음 강의에서는 더욱 자율적인 에이전트 노드의 이해와 활용법을 알아보겠습니다!
             </div>
         </section>
     </div>
@@ -882,6 +887,7 @@
             const slides = document.querySelectorAll('.slide');
             const scrollTop = window.pageYOffset + 150;
             let currentSlide = 1;
+            let currentSlideElement = slides[0];
             
             slides.forEach((slide, index) => {
                 const slideTop = slide.offsetTop;
@@ -889,10 +895,18 @@
                 
                 if (scrollTop >= slideTop && scrollTop < slideBottom) {
                     currentSlide = index + 1;
+                    currentSlideElement = slide;
                 }
             });
             
+            // Update slide counter
             document.querySelector('.slide-counter').textContent = `${currentSlide} / ${slides.length}`;
+            
+            // Update current slide title
+            const slideTitle = currentSlideElement.querySelector('.header-2');
+            if (slideTitle) {
+                document.querySelector('.current-slide-title').textContent = slideTitle.textContent.trim();
+            }
         }
 
         // Event listeners

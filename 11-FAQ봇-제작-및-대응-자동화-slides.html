@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>12강: 사내 정보 기반 FAQ 리포트 봇 제작</title>
+    <title>11강: 뉴스 수집 및 분석 자동화 시스템</title>
     <style>
         /* Global Reset and Base Styles */
         *, *::before, *::after { box-sizing: border-box; }
@@ -433,10 +433,10 @@
 </head>
 <body>
     <nav class="nav-bar">
-        <div class="nav-logo">사내 정보 기반 FAQ 리포트 봇 제작</div>
+        <div class="nav-logo">뉴스 수집 및 분석 자동화 시스템</div>
         <div class="nav-progress">
-            <span class="current-slide-title">🤖 FAQ봇 제작 및 대응 자동화</span>
-            <span class="slide-counter">16강</span>
+            <span class="current-slide-title">📰 뉴스 수집 및 분석 자동화</span>
+            <span class="slide-counter">11강</span>
         </div>
     </nav>
 
@@ -447,21 +447,21 @@
     <div class="slide-container">
         <!-- Slide 1: Intro -->
         <section class="slide intro" id="slide-1">
-            <h1 class="header-1">🤖 사내 정보 기반 FAQ 리포트 봇 제작</h1>
-            <h2 class="header-2">회사 문서를 기반으로 상세 리포트까지 작성하는 똑똑한 AI 봇</h2>
+            <h1 class="header-1">📰 뉴스 수집 및 분석 자동화 시스템</h1>
+            <h2 class="header-2">RSS 피드부터 AI 분석까지 완전 자동화된 뉴스 정보 관리 플랫폼</h2>
             <div class="callout-center">
                 <ol class="step-list">
-                    <li><strong>언어모델 이해와 프롬프팅 기법</strong> - 효과적인 AI 대화법</li>
-                    <li><strong>RAG 시스템 구축</strong> - 회사 지식 검색 엔진</li>
-                    <li><strong>FAQ 리포트 봇 제작</strong> - 자동 분석 및 보고서 생성</li>
+                    <li><strong>RSS 뉴스 수집 자동화</strong> - 실시간 뉴스 피드 모니터링</li>
+                    <li><strong>AI 요약 및 임베딩 처리</strong> - 지능형 뉴스 분석 시스템</li>
+                    <li><strong>벡터 DB 기반 검색</strong> - 의미 기반 뉴스 분석 답변</li>
                 </ol>
             </div>
         </section>
 
         <!-- Slide 2: 현재 문제점 -->
         <section class="slide" id="slide-2">
-            <h2 class="header-2">😰 현재 고객 문의 처리의 문제점</h2>
-            <div class="message">우체통에 쌓인 편지처럼 매일 쌓이는 문의 때문에 정작 중요한 업무에 집중하지 못해요</div>
+            <h2 class="header-2">😰 현재 뉴스 정보 관리의 문제점</h2>
+            <div class="message">신문 더미처럼 쌓이는 뉴스들 때문에 정작 중요한 정보를 놓치고 있어요</div>
             
             <div class="content-grid content-grid-2">
                 <div class="content-card">
@@ -469,23 +469,23 @@
                     <table class="content-table">
                         <tr>
                             <th>일상 상황</th>
-                            <th>문의 업무 문제</th>
+                            <th>뉴스 관리 문제</th>
                         </tr>
                         <tr>
-                            <td>우체통에 편지 쌓여도 모름</td>
-                            <td>문의 발견 지연</td>
+                            <td>신문 더미 쌓여도 못 읽음</td>
+                            <td>뉴스 수집 누락</td>
                         </tr>
                         <tr>
-                            <td>편지 종류 확인 후 분류</td>
+                            <td>중요 기사 찾기 어려움</td>
                             <td>수동 분류 필요</td>
                         </tr>
                         <tr>
-                            <td>급한 편지 구분 어려움</td>
-                            <td>우선순위 판단 어려움</td>
+                            <td>요약본 없어 시간 소모</td>
+                            <td>내용 파악 지연</td>
                         </tr>
                         <tr>
-                            <td>답장 쓰느라 하루 다 감</td>
-                            <td>시간 소모</td>
+                            <td>관련 정보 연결 못함</td>
+                            <td>종합 분석 어려움</td>
                         </tr>
                     </table>
                 </div>
@@ -493,10 +493,10 @@
                 <div class="content-card">
                     <div class="card-title">✨ 자동화로 해결</div>
                     <ul class="checklist">
-                        <li>자동 접수: 문의 즉시 알림</li>
-                        <li>스마트 분류: AI 자동 담당부서 배정</li>
-                        <li>우선순위 자동 판단: 긴급도 평가</li>
-                        <li>자동 안내: 접수 확인 즉시 발송</li>
+                        <li>자동 수집: RSS 피드 실시간 모니터링</li>
+                        <li>스마트 요약: AI 기반 핵심 내용 추출</li>
+                        <li>지능형 저장: 벡터 DB 의미 기반 저장</li>
+                        <li>맞춤 분석: 키워드 검색 + 관련 뉴스 연결</li>
                     </ul>
                 </div>
             </div>
@@ -505,172 +505,173 @@
         <!-- Slide 3: 전체 시스템 흐름 -->
         <section class="slide" id="slide-3">
             <h2 class="header-2">🎯 완성된 시스템 동작 과정</h2>
-            <div class="message">똑똑한 비서가 24시간 고객 문의를 처리하는 전체 흐름</div>
+            <div class="message">똑똑한 뉴스 비서가 24시간 정보를 수집하고 분석하는 전체 흐름</div>
             
             <div class="content-card">
-                <div class="card-title">🔄 자동화 시스템 전체 흐름</div>
-                <div class="code-block">1. 문의 접수 📮 (Form Trigger)
-   "새 편지가 도착했어요!"
+                <div class="card-title">🔄 뉴스 분석 시스템 전체 흐름</div>
+                <div class="code-block">1. RSS 뉴스 수집 📡 (RSS Trigger)
+   "새로운 뉴스가 게시되었어요!"
    ↓
-2. 내용 확인 및 분류 🤖 (AI 분석)
-   "이건 기술 문의네요, 김팀장님께 보내드릴게요"
+2. AI 요약 처리 🤖 (OpenAI 분석)
+   "핵심 내용을 요약하고 키워드를 추출할게요"
    ↓  
-3. 고객 정보 확인 📋 (데이터베이스 검색)
-   "기존 고객이시네요, 구매 이력도 함께 전달할게요"
+3. 임베딩 벡터화 🧠 (Vector 변환)
+   "의미를 이해할 수 있는 벡터로 변환했어요"
    ↓
-4. 담당자에게 전달 🔔 (Slack/이메일 알림)
-   "김팀장님, 긴급 문의 1건 들어왔습니다"
+4. Qdrant DB 저장 📚 (Vector Database)
+   "검색 가능한 형태로 저장 완료했습니다"
    ↓
-5. 고객에게 접수 확인 ✉️ (자동 답변)
-   "문의 접수되었습니다. 24시간 내 답변드릴게요"</div>
+5. 분석 요청 처리 🔍 (사용자 질문)
+   "관련 뉴스들을 종합해서 분석 리포트를 작성해드릴게요"</div>
             </div>
         </section>
 
-        <!-- Slide 4: 고객 문의 폼 -->
+        <!-- Slide 4: RSS 뉴스 수집 -->
         <section class="slide" id="slide-4">
-            <h2 class="header-2">📝 1단계: 고객 문의 폼 만들기</h2>
-            <div class="message">은행 번호표 뽑는 기계처럼 고객이 쉽게 문의할 수 있는 온라인 창구</div>
+            <h2 class="header-2">📡 1단계: RSS 뉴스 수집 자동화</h2>
+            <div class="message">신문 배달부처럼 정해진 시간마다 각 뉴스 사이트를 돌며 새 기사를 자동 수집</div>
             
             <div class="content-grid content-grid-2">
                 <div class="content-card">
-                    <div class="card-title">📋 Form Trigger 설정</div>
+                    <div class="card-title">📡 RSS Trigger 설정</div>
                     <table class="content-table">
                         <tr>
                             <th>항목</th>
-                            <th>목적</th>
+                            <th>설정 내용</th>
                         </tr>
                         <tr>
-                            <td>고객 정보</td>
-                            <td>이름, 이메일, 연락처</td>
+                            <td>RSS 피드 URL</td>
+                            <td>뉴스 사이트 RSS 주소</td>
                         </tr>
                         <tr>
-                            <td>문의 분류</td>
-                            <td>기술/제품/결제/기타</td>
+                            <td>수집 주기</td>
+                            <td>15분마다 자동 확인</td>
                         </tr>
                         <tr>
-                            <td>긴급도</td>
-                            <td>높음/보통/낮음</td>
+                            <td>추출 데이터</td>
+                            <td>제목, 본문, 날짜, 출처</td>
                         </tr>
                         <tr>
-                            <td>문의 내용</td>
-                            <td>제목과 상세 설명</td>
+                            <td>필터링</td>
+                            <td>키워드 기반 관련 기사만</td>
                         </tr>
                     </table>
                 </div>
                 
                 <div class="content-card">
-                    <div class="card-title">🏦 은행 업무와 비교</div>
+                    <div class="card-title">📰 신문 배달과 비교</div>
                     <table class="content-table">
                         <tr>
-                            <th>은행 업무</th>
-                            <th>문의 폼</th>
+                            <th>신문 배달</th>
+                            <th>RSS 수집</th>
                         </tr>
                         <tr>
-                            <td>번호표에 업무 종류</td>
-                            <td>문의 유형 선택</td>
+                            <td>정해진 시간에 배달</td>
+                            <td>15분마다 자동 확인</td>
                         </tr>
                         <tr>
-                            <td>신분증 본인 확인</td>
-                            <td>이름/연락처 입력</td>
+                            <td>여러 신문사 구독</td>
+                            <td>다중 RSS 피드 설정</td>
                         </tr>
                         <tr>
-                            <td>업무 내용 메모</td>
-                            <td>문의 제목/내용</td>
+                            <td>관심 섹션만 읽기</td>
+                            <td>키워드 필터링</td>
                         </tr>
                         <tr>
-                            <td>급한 일인지 표시</td>
-                            <td>긴급도 선택</td>
+                            <td>중요 기사 표시</td>
+                            <td>우선순위 자동 분류</td>
                         </tr>
                     </table>
                 </div>
             </div>
             
             <div class="callout">
-                📋 <strong>Set 노드 활용:</strong> 접수 일시, 문의 번호 자동 생성, 고객 정보 표준화, 우선순위 점수 변환 등을 자동으로 처리합니다.
+                📡 <strong>RSS Trigger 활용:</strong> 수집 시간, 기사 ID 생성, 메타데이터 추출, 중복 기사 제거 등을 자동으로 처리합니다.
             </div>
         </section>
 
-        <!-- Slide 5: RAG 기반 지능형 분석 -->
+        <!-- Slide 5: AI 요약 및 임베딩 -->
         <section class="slide" id="slide-5">
-            <h2 class="header-2">🧠 2단계: RAG 시스템으로 문의 내용 지능 분석</h2>
-            <div class="message">회사 내부 지식 창고에서 관련 정보를 찾아 정확한 분류와 초기 답변을 자동 생성</div>
+            <h2 class="header-2">🧠 2단계: AI 기반 요약 및 임베딩 처리</h2>
+            <div class="message">사서가 책을 요약하고 분류하듯 AI가 뉴스를 요약하고 검색 가능한 형태로 변환</div>
             
             <div class="content-grid content-grid-2">
                 <div class="content-card">
-                    <div class="card-title">🗃️ Vector DB에서 관련 정보 검색</div>
-                    <div class="basic-font"><strong>저장된 회사 데이터:</strong></div>
+                    <div class="card-title">🤖 OpenAI 요약 처리</div>
+                    <div class="basic-font"><strong>요약 과정:</strong></div>
                     <ul class="checklist">
-                        <li><strong>구조화된 데이터:</strong> 고객 이력, 제품 정보, 정책 규정</li>
-                        <li><strong>비구조화된 데이터:</strong> FAQ, 매뉴얼, 해결 사례</li>
-                        <li><strong>과거 대화 데이터:</strong> 성공적인 문제 해결 패턴</li>
-                        <li><strong>실시간 업데이트:</strong> 최신 제품 정보, 정책 변경</li>
+                        <li><strong>핵심 내용 추출:</strong> 5W1H 기반 핵심 정보</li>
+                        <li><strong>키워드 분석:</strong> 주요 인물, 기업, 이슈</li>
+                        <li><strong>영향도 평가:</strong> 중요도 점수 자동 부여</li>
+                        <li><strong>카테고리 분류:</strong> 정치, 경제, 기술 등</li>
                     </ul>
                     
-                    <div class="basic-font"><strong>의미 기반 검색 과정:</strong></div>
-                    <div class="code-block">고객: "로그인이 안돼요"
-↓ Vector 변환
-↓ DB에서 유사한 문제 검색
-→ 찾은 정보: 로그인 오류 FAQ, 해결 사례 5건
-→ 관련 매뉴얼: 계정 복구 가이드</div>
+                    <div class="basic-font"><strong>요약 결과 예시:</strong></div>
+                    <div class="code-block">원본: "삼성전자가 2024년 1분기 실적 발표에서...(2000자)"
+
+📋 AI 요약:
+- 회사: 삼성전자
+- 분야: 실적 발표
+- 핵심: 매출 증가, 반도체 회복세
+- 영향도: 높음 (8/10)
+- 키워드: 삼성전자, 실적, 반도체, 매출</div>
                 </div>
                 
                 <div class="content-card">
-                    <div class="card-title">🤖 LLM + RAG 통합 분석</div>
-                    <div class="basic-font">RAG로 찾은 회사 지식을 바탕으로 정확한 분석 수행</div>
+                    <div class="card-title">🧠 임베딩 벡터 변환</div>
+                    <div class="basic-font">요약된 내용을 AI가 의미를 이해할 수 있는 벡터로 변환</div>
                     
-                    <div class="basic-font"><strong>분석 결과 예시:</strong></div>
-                    <div class="code-block">문의: "로그인이 안돼요"
+                    <div class="basic-font"><strong>벡터화 과정:</strong></div>
+                    <div class="code-block">요약문: "삼성전자 실적 개선, 반도체 회복세"
 
-🔍 RAG 검색 결과:
-- 유사 사례 3건 발견
-- 해결 성공률 95%
-- 평균 해결 시간 5분
+🔄 Embedding 변환:
+[0.245, -0.123, 0.678, 0.891, ...]
+(1536차원 벡터)
 
-📋 AI 분석:
-- 유형: 계정 관련 기술 문의
-- 긴급도: 보통 (업무 차단)
-- 담당팀: IT 지원팀
-- 예상 원인: 비밀번호 오류 or 계정 잠김</div>
+💡 의미 이해:
+- "실적"과 "수익"이 유사
+- "반도체"와 "칩"이 연관
+- "회복"과 "개선"이 비슷한 의미</div>
                     
-                    <div class="basic-font"><strong>기존 시스템 대비 장점:</strong></div>
+                    <div class="basic-font"><strong>벡터화의 장점:</strong></div>
                     <ul class="checklist">
-                        <li>회사 고유 데이터 기반 정확한 판단</li>
-                        <li>과거 해결 사례로 성공률 예측</li>
-                        <li>맞춤형 해결책 우선 제안</li>
-                        <li>지속적 학습으로 정확도 향상</li>
+                        <li>의미 기반 검색 가능</li>
+                        <li>유사한 기사 자동 연결</li>
+                        <li>키워드 없이도 관련 뉴스 찾기</li>
+                        <li>맥락과 뉘앙스 이해</li>
                     </ul>
                 </div>
             </div>
         </section>
 
-        <!-- Slide 6: Vector DB 기반 지식 축적 -->
+        <!-- Slide 6: Qdrant 벡터 DB 저장 -->
         <section class="slide" id="slide-6">
-            <h2 class="header-2">🗃️ 3단계: Vector DB로 지식과 정보 체계적 관리</h2>
-            <div class="message">모든 문의와 해결 과정을 Vector DB에 저장하여 미래 유사 상황에서 즉시 활용</div>
+            <h2 class="header-2">🗃️ 3단계: Qdrant 벡터 DB 활용한 뉴스 저장 체계</h2>
+            <div class="message">도서관의 카드 목록처럼 모든 뉴스를 의미별로 분류하여 검색 가능한 형태로 저장</div>
             
             <div class="content-grid content-grid-2">
                 <div class="content-card">
-                    <div class="card-title">📊 기업 데이터의 Vector 변환 과정</div>
+                    <div class="card-title">📊 뉴스 데이터의 Vector 저장 과정</div>
                     
                     <div class="mermaid">
 graph TB
-    A["📄 기업 원본 데이터"] --> B{"데이터 유형 분류"}
+    A["📰 RSS 뉴스 수집"] --> B{"뉴스 데이터 처리"}
     
-    B --> C["구조화된 데이터"]
-    B --> D["비구조화된 데이터"]
+    B --> C["메타데이터"]
+    B --> D["본문 내용"]
     
-    C --> C1["고객 정보 DB<br/>주문 이력<br/>제품 스펙"]
-    C --> C2["✂️ 청킹 처리<br/>레코드별 분할"]
+    C --> C1["제목, 출처<br/>게시일, 카테고리<br/>중요도 점수"]
+    C --> C2["🏷️ 태그 처리<br/>구조화"]
     
-    D --> D1["PDF 매뉴얼<br/>FAQ 문서<br/>이메일 이력"]
-    D --> D2["✂️ 청킹 처리<br/>500-1000자 단위"]
+    D --> D1["기사 원문<br/>AI 요약본<br/>키워드 추출"]
+    D --> D2["✂️ 청킹 처리<br/>500자 단위 분할"]
     
-    C2 --> E["🔤 Upstage Embedding<br/>의미 벡터 변환"]
+    C2 --> E["🔤 OpenAI Embedding<br/>벡터 변환 (1536차원)"]
     D2 --> E
     
-    E --> F["🗃️ Vector Database<br/>Qdrant/Supabase"]
+    E --> F["🗃️ Qdrant Vector DB<br/>의미 기반 저장"]
     
-    F --> G["🔍 의미 기반 검색<br/>실시간 답변 생성"]
+    F --> G["🔍 유사도 검색<br/>관련 뉴스 분석"]
     
     style C fill:#e3f2fd
     style D fill:#fff3e0
@@ -680,7 +681,7 @@ graph TB
                 </div>
                 
                 <div class="content-card">
-                    <div class="card-title">💾 통합 데이터 관리 체계</div>
+                    <div class="card-title">💾 뉴스 정보 관리 체계</div>
                     
                     <div class="basic-font"><strong>저장되는 정보 유형:</strong></div>
                     <table class="content-table">
@@ -690,114 +691,123 @@ graph TB
                             <th>활용 목적</th>
                         </tr>
                         <tr>
-                            <td>고객 문의 내역</td>
+                            <td>뉴스 기사 원문</td>
                             <td>Vector + 메타데이터</td>
-                            <td>유사 문의 패턴 분석</td>
+                            <td>전체 맥락 이해</td>
                         </tr>
                         <tr>
-                            <td>해결 과정 및 결과</td>
-                            <td>Vector + 성공/실패 태그</td>
-                            <td>최적 해결책 제안</td>
+                            <td>AI 요약 내용</td>
+                            <td>Vector + 키워드 태그</td>
+                            <td>빠른 검색 및 분석</td>
                         </tr>
                         <tr>
-                            <td>제품/서비스 정보</td>
-                            <td>Vector + 카테고리</td>
-                            <td>정확한 기술 답변</td>
+                            <td>관련 키워드</td>
+                            <td>Vector + 중요도</td>
+                            <td>주제별 분류</td>
                         </tr>
                         <tr>
-                            <td>정책 및 규정</td>
-                            <td>Vector + 버전 관리</td>
-                            <td>최신 규정 기반 안내</td>
+                            <td>시간 정보</td>
+                            <td>Vector + 타임스탬프</td>
+                            <td>시계열 분석</td>
                         </tr>
                     </table>
                     
-                    <div class="basic-font"><strong>지속적 학습 구조:</strong></div>
+                    <div class="basic-font"><strong>검색 최적화 구조:</strong></div>
                     <ul class="checklist">
-                        <li><strong>실시간 업데이트:</strong> 새로운 해결 사례 자동 추가</li>
-                        <li><strong>피드백 반영:</strong> 만족도 낮은 답변 개선</li>
-                        <li><strong>패턴 분석:</strong> 자주 묻는 질문 우선 최적화</li>
-                        <li><strong>성능 모니터링:</strong> 검색 정확도 지속 개선</li>
+                        <li><strong>의미 기반 검색:</strong> 유사한 주제 자동 연결</li>
+                        <li><strong>시간대별 필터:</strong> 최신순, 관련도순 정렬</li>
+                        <li><strong>카테고리 분류:</strong> 정치, 경제, 기술 등</li>
+                        <li><strong>중요도 가중치:</strong> 영향도 높은 뉴스 우선</li>
                     </ul>
                     
                     <div class="callout">
-                        🎯 <strong>Vector DB 핵심 장점:</strong> 단순 키워드 매칭이 아닌 의미 이해를 통해 "고장났어요"와 "작동 안 해요"를 같은 문제로 인식하여 정확한 해결책 제공
+                        🎯 <strong>Qdrant DB 핵심 장점:</strong> "주가 상승"과 "증시 호조"를 같은 의미로 인식하여 관련 뉴스들을 자동으로 연결해서 종합 분석 제공
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Slide 7: 담당자 알림 -->
+        <!-- Slide 7: 뉴스 분석 요청 처리 -->
         <section class="slide" id="slide-7">
-            <h2 class="header-2">🚨 4단계: 담당자 즉시 알림 시스템</h2>
-            <div class="message">응급실 트리아지처럼 긴급도에 따라 다른 방식으로 알림 발송</div>
+            <h2 class="header-2">🔍 4단계: 뉴스 분석 요청 처리 시스템</h2>
+            <div class="message">연구원이 자료실에서 관련 문헌을 찾듯 사용자 질문에 맞는 뉴스들을 검색하여 분석</div>
             
             <div class="content-grid content-grid-2">
                 <div class="content-card">
-                    <div class="card-title">🏥 응급실 트리아지 시스템</div>
+                    <div class="card-title">🔍 검색 및 분석 과정</div>
                     <table class="content-table">
                         <tr>
-                            <th>긴급도</th>
-                            <th>알림 방법</th>
-                            <th>대응 시간</th>
+                            <th>단계</th>
+                            <th>처리 내용</th>
+                            <th>결과</th>
                         </tr>
-                        <tr style="background: rgba(231, 112, 85, 0.1);">
-                            <td>높음 (8점 이상) 🚨</td>
-                            <td>Slack + 전화 + 이메일</td>
-                            <td>즉시 대응</td>
+                        <tr>
+                            <td>키워드 검색 🔎</td>
+                            <td>사용자 질문 키워드 추출</td>
+                            <td>1차 필터링</td>
                         </tr>
-                        <tr style="background: rgba(253, 203, 110, 0.1);">
-                            <td>보통 (4-7점) ⚠️</td>
-                            <td>Slack + 이메일</td>
-                            <td>4시간 내</td>
+                        <tr>
+                            <td>벡터 검색 🧠</td>
+                            <td>의미 기반 유사도 계산</td>
+                            <td>관련 뉴스 발견</td>
                         </tr>
-                        <tr style="background: rgba(72, 187, 120, 0.1);">
-                            <td>낮음 (3점 이하) 📋</td>
-                            <td>이메일만</td>
-                            <td>24시간 내</td>
+                        <tr>
+                            <td>관련도 정렬 📊</td>
+                            <td>중요도 + 최신성 점수</td>
+                            <td>상위 10개 선별</td>
+                        </tr>
+                        <tr>
+                            <td>종합 분석 📝</td>
+                            <td>AI 기반 패턴 분석</td>
+                            <td>인사이트 생성</td>
                         </tr>
                     </table>
                 </div>
                 
                 <div class="content-card">
-                    <div class="card-title">📱 Slack 알림 예시</div>
-                    <div class="code-block">🚨 긴급 고객 문의!
-고객: 김철수 (kim@company.com)
-문의: 서비스 완전 중단
-긴급도: 9/10점
-담당자: @김팀장 님 확인 부탁드려요!</div>
+                    <div class="card-title">💬 분석 요청 예시</div>
+                    <div class="code-block">사용자: "최근 삼성전자 실적 관련 뉴스 분석해줘"
+
+🔍 검색 과정:
+1. 키워드: "삼성전자", "실적"
+2. 벡터 검색: 유사 의미 뉴스 8건 발견
+3. 시간 필터: 최근 1개월 기사만
+4. 관련도 정렬: 상위 5건 선별</div>
                     
-                    <div class="basic-font"><strong>이중 소통:</strong></div>
+                    <div class="basic-font"><strong>스마트 검색 특징:</strong></div>
                     <ul class="checklist">
-                        <li>고객 → 자동 확인 메시지</li>
-                        <li>담당자 → 상세 알림</li>
+                        <li>동의어 자동 인식 (실적 = 수익 = 매출)</li>
+                        <li>맥락 이해 (긍정/부정 뉘앙스)</li>
+                        <li>관련 기업 자동 연결</li>
+                        <li>시계열 트렌드 분석</li>
                     </ul>
                 </div>
             </div>
         </section>
 
-        <!-- Slide 8: RAG 기반 상세 리포트 자동 생성 -->
+        <!-- Slide 8: 종합 뉴스 분석 리포트 생성 -->
         <section class="slide" id="slide-8">
-            <h2 class="header-2">📊 5단계: RAG 기반 FAQ 상세 리포트 자동 생성</h2>
-            <div class="message">단순 답변이 아닌 회사 데이터를 종합 분석한 상세한 리포트까지 자동 작성</div>
+            <h2 class="header-2">📊 5단계: 종합 뉴스 분석 리포트 생성</h2>
+            <div class="message">기자가 특집 기사를 쓰듯 관련 뉴스들을 종합하여 인사이트가 담긴 분석 리포트 자동 작성</div>
             
             <div class="content-grid content-grid-2">
                 <div class="content-card">
-                    <div class="card-title">📋 RAG 리포트 생성 과정</div>
+                    <div class="card-title">📋 종합 분석 리포트 생성 과정</div>
                     
                     <div class="mermaid">
 graph TD
-    A["❓ 고객 문의<br/>제품 A 성능 문제"] --> B["🔍 Vector 검색<br/>관련 데이터 수집"]
+    A["❓ 사용자 질문<br/>삼성전자 실적 분석"] --> B["🔍 Vector 검색<br/>관련 뉴스 수집"]
     
-    B --> C["📊 구조화된 데이터"]
-    B --> D["📄 비구조화된 데이터"]
+    B --> C["📊 최신 뉴스"]
+    B --> D["📄 과거 데이터"]
     
-    C --> C1["• 제품 A 판매 이력<br/>• 성능 테스트 결과<br/>• 고객 만족도 데이터"]
-    D --> D1["• 유사 문의 해결 사례<br/>• 기술 매뉴얼<br/>• 업데이트 로그"]
+    C --> C1["• 실적 발표 기사<br/>• 분석가 코멘트<br/>• 주가 반응 뉴스"]
+    D --> D1["• 과거 실적 비교<br/>• 업계 트렌드<br/>• 경쟁사 현황"]
     
-    C1 --> E["🤖 LLM 종합 분석<br/>상세 리포트 생성"]
+    C1 --> E["🤖 AI 종합 분석<br/>인사이트 생성"]
     D1 --> E
     
-    E --> F["📧 맞춤형 리포트<br/>고객에게 발송"]
+    E --> F["📧 맞춤형 분석 리포트<br/>사용자에게 제공"]
     
     style A fill:#e3f2fd
     style C fill:#fff3e0
@@ -807,39 +817,37 @@ graph TD
                 </div>
                 
                 <div class="content-card">
-                    <div class="card-title">📊 생성되는 리포트 예시</div>
-                    <div class="code-block">📋 제품 A 성능 문제 종합 분석 리포트
+                    <div class="card-title">📊 생성되는 분석 리포트 예시</div>
+                    <div class="code-block">📋 삼성전자 2024년 1분기 실적 종합 분석
 
-안녕하세요, 김철수님!
+📈 핵심 요약:
+• 매출: 전년 대비 13.4% 증가
+• 반도체 부문: 적자 폭 축소
+• 주가 반응: 발표 후 3.2% 상승
 
-🔍 문의 분석 결과:
-• 유사 문의 8건 분석 완료
-• 해결 성공률: 92%
-• 평균 해결 시간: 2시간
+🔍 수집된 뉴스 분석 (7건):
+• 긍정적 평가: 5건
+• 중립적 평가: 2건
+• 부정적 평가: 0건
 
-📊 제품 현황:
-• 전체 만족도: 4.2/5.0
-• 해당 이슈 발생률: 3.2%
-• 최신 펌웨어 적용률: 89%
+💡 주요 인사이트:
+1. 반도체 업황 회복 신호 (3건 언급)
+2. AI 칩 수요 증가 (4건 확인)
+3. 메모리 가격 상승세 (2건 보고)
 
-💡 권장 해결책:
-1. 펌웨어 업데이트 (성공률 85%)
-2. 캐시 초기화 (성공률 78%)
-3. 설정 재구성 (성공률 95%)
+📊 시장 전망:
+• 2분기 전망: 긍정적 (분석가 5명 중 4명)
+• 목표 주가: 평균 85,000원
+• 리스크: 중국 경기 둔화
 
-📈 추가 정보:
-• 관련 FAQ 3건 첨부
-• 동영상 가이드 링크
-• 전문가 직통 연결 (필요시)
-
-[출처: 제품 DB, 고객 이력, 기술 문서 종합]</div>
+[출처: 7개 뉴스 종합, 2024.04.30 기준]</div>
                     
-                    <div class="basic-font"><strong>리포트의 특별한 가치:</strong></div>
+                    <div class="basic-font"><strong>분석 리포트의 특별한 가치:</strong></div>
                     <ul class="checklist">
-                        <li><strong>데이터 기반 신뢰성:</strong> 추측이 아닌 실제 데이터</li>
-                        <li><strong>맞춤형 해결책:</strong> 고객 상황에 최적화</li>
-                        <li><strong>사전 예방 정보:</strong> 향후 문제 방지 팁</li>
-                        <li><strong>투명한 근거:</strong> 답변 출처 명시</li>
+                        <li><strong>다각도 분석:</strong> 여러 관점의 뉴스 종합</li>
+                        <li><strong>트렌드 파악:</strong> 시계열 변화 추이</li>
+                        <li><strong>객관적 판단:</strong> 정량적 데이터 기반</li>
+                        <li><strong>투명한 출처:</strong> 근거 뉴스 명시</li>
                     </ul>
                 </div>
             </div>
@@ -847,39 +855,39 @@ graph TD
 
         <!-- Slide 9: 시스템 모니터링 -->
         <section class="slide" id="slide-9">
-            <h2 class="header-2">📊 6단계: 전체 시스템 모니터링</h2>
-            <div class="message">택배 상황판처럼 "접수 → 분류 → 처리중 → 완료" 실시간 확인</div>
+            <h2 class="header-2">📊 6단계: 뉴스 시스템 모니터링 및 관리</h2>
+            <div class="message">뉴스룸 현황판처럼 "수집 → 분석 → 저장 → 검색" 전 과정을 실시간 모니터링</div>
             
             <div class="content-grid content-grid-2">
                 <div class="content-card">
-                    <div class="card-title">📈 대시보드 확인 내용</div>
+                    <div class="card-title">📈 뉴스 수집 대시보드</div>
                     <ul class="checklist">
-                        <li>일일 문의 접수 현황</li>
-                        <li>처리 시간 통계</li>
-                        <li>문의 유형 분포</li>
-                        <li>담당자별 업무량</li>
-                        <li>고객 만족도 점수</li>
+                        <li>일일 뉴스 수집 현황</li>
+                        <li>RSS 피드별 수집 통계</li>
+                        <li>AI 요약 처리 시간</li>
+                        <li>벡터 DB 저장 상태</li>
+                        <li>사용자 검색 패턴</li>
                     </ul>
                 </div>
                 
                 <div class="content-card">
-                    <div class="card-title">🎯 AI 답변 도우미 (고급)</div>
+                    <div class="card-title">🎯 스마트 뉴스 추천 (고급)</div>
                     <ol class="step-list">
-                        <li>고객 문의를 AI가 분석</li>
-                        <li>비슷한 과거 답변 패턴 검색</li>
-                        <li>답변 초안 작성해서 담당자 전송</li>
-                        <li>담당자 검토 후 최종 발송</li>
+                        <li>사용자 관심 분야 학습</li>
+                        <li>개인 맞춤형 뉴스 큐레이션</li>
+                        <li>중요 뉴스 자동 알림</li>
+                        <li>트렌드 변화 감지 및 보고</li>
                     </ol>
                     
-                    <div class="basic-font"><strong>장점:</strong> 답변 속도 향상, 일관된 답변, 실수 방지</div>
+                    <div class="basic-font"><strong>장점:</strong> 정보 놓침 방지, 맞춤형 서비스, 트렌드 선제 파악</div>
                 </div>
             </div>
         </section>
 
         <!-- Slide 10: 마무리 및 성과 -->
         <section class="slide" id="slide-10">
-            <h2 class="header-2">🎉 완성! 24시간 똑똑한 고객 비서</h2>
-            <div class="message">이제 고객 문의가 두렵지 않아요! 놀라운 업무 효율 개선 달성</div>
+            <h2 class="header-2">🎉 완성! 24시간 똑똑한 뉴스 분석 비서</h2>
+            <div class="message">이제 중요한 뉴스를 놓칠 걱정이 없어요! 정보 수집과 분석의 혁신적 개선 달성</div>
             
             <div class="content-grid content-grid-2">
                 <div class="content-card">
@@ -890,244 +898,49 @@ graph TD
                             <th>자동화 후</th>
                         </tr>
                         <tr>
-                            <td>수시로 이메일 확인</td>
-                            <td>Slack으로 즉시 알림</td>
+                            <td>수시로 뉴스 사이트 확인</td>
+                            <td>RSS로 자동 수집</td>
                         </tr>
                         <tr>
-                            <td>문의 내용 읽고 고민</td>
-                            <td>AI가 자동 분류 배정</td>
+                            <td>긴 기사 읽고 요약</td>
+                            <td>AI가 자동 요약</td>
                         </tr>
                         <tr>
-                            <td>"확인했어요" 답장</td>
-                            <td>자동 확인 메일 발송</td>
+                            <td>관련 뉴스 찾기 어려움</td>
+                            <td>벡터 검색으로 즉시 연결</td>
                         </tr>
                         <tr>
-                            <td>처리 현황 이메일 뒤적</td>
-                            <td>대시보드 한눈에 확인</td>
+                            <td>정보 분석에 시간 소모</td>
+                            <td>종합 리포트 자동 생성</td>
                         </tr>
                     </table>
                 </div>
                 
                 <div class="content-card">
                     <div class="card-title">🏆 숫자로 보는 성과</div>
-                    <div class="basic-font"><strong>업무 효율 개선:</strong></div>
+                    <div class="basic-font"><strong>정보 수집 효율:</strong></div>
                     <ul class="checklist">
-                        <li>스트레스 90% 감소</li>
-                        <li>분류 시간 80% 단축</li>
-                        <li>응답 속도 95% 향상</li>
-                        <li>관리 효율 85% 개선</li>
+                        <li>뉴스 놓침 95% 감소</li>
+                        <li>정보 수집 시간 80% 단축</li>
+                        <li>분석 속도 90% 향상</li>
+                        <li>관련 정보 연결 85% 개선</li>
                     </ul>
                     
-                    <div class="basic-font"><strong>고객 서비스 향상:</strong></div>
+                    <div class="basic-font"><strong>분석 품질 향상:</strong></div>
                     <ul class="checklist">
-                        <li>문의 놓침 0건</li>
-                        <li>평균 응답: 4시간 → 30분</li>
-                        <li>고객 만족도 25% 향상</li>
-                        <li>업무 효율성 200% 증대</li>
-                    </ul>
-                </div>
-            </div>
-            
-        <!-- Slide 11: 실제 구현 사례 -->
-        <section class="slide" id="slide-11">
-            <h2 class="header-2">🏢 실제 구현 사례: HR 정책 문의 시스템</h2>
-            <div class="message">인사팀의 반복적인 정책 문의를 AI가 대신 처리하는 실제 사례를 살펴봅시다</div>
-            
-            <div class="content-grid content-grid-2">
-                <div class="content-card">
-                    <div class="card-title">⚙️ 시스템 구성</div>
-                    <ol class="step-list">
-                        <li><strong>문서 수집</strong>
-                            <ul class="checklist">
-                                <li>취업규칙, 인사규정 PDF</li>
-                                <li>복리후생 가이드</li>
-                                <li>각종 신청서 양식</li>
-                            </ul>
-                        </li>
-                        <li><strong>질문 처리</strong>
-                            <ul class="checklist">
-                                <li>Slack 슬래시 커맨드</li>
-                                <li>웹 질문 폼</li>
-                                <li>이메일 자동 분석</li>
-                            </ul>
-                        </li>
-                        <li><strong>답변 생성</strong>
-                            <ul class="checklist">
-                                <li>관련 규정 인용</li>
-                                <li>신청 절차 안내</li>
-                                <li>담당자 연결</li>
-                            </ul>
-                        </li>
-                    </ol>
-                </div>
-                
-                <div class="content-card">
-                    <div class="card-title">📊 도입 효과</div>
-                    <table class="content-table">
-                        <tr>
-                            <th>지표</th>
-                            <th>도입 전</th>
-                            <th>도입 후</th>
-                        </tr>
-                        <tr>
-                            <td>일일 문의 처리</td>
-                            <td>15건/일</td>
-                            <td>45건/일</td>
-                        </tr>
-                        <tr>
-                            <td>평균 응답 시간</td>
-                            <td>4시간</td>
-                            <td>2분</td>
-                        </tr>
-                        <tr>
-                            <td>인사팀 업무 부담</td>
-                            <td>40% 시간 소모</td>
-                            <td>5% 시간 소모</td>
-                        </tr>
-                        <tr>
-                            <td>직원 만족도</td>
-                            <td>65점</td>
-                            <td>88점</td>
-                        </tr>
-                    </table>
-                </div>
-            </div>
-            
-            <div class="callout">
-                💡 <strong>성공 요인:</strong> 정확한 문서 분류, 지속적인 피드백 반영, 사용자 교육이 핵심이었습니다.
-            </div>
-        </section>
-
-        <!-- Slide 12: 고급 기능과 확장 가능성 -->
-        <section class="slide" id="slide-12">
-            <h2 class="header-2">🚀 고급 기능과 확장 가능성</h2>
-            <div class="message">기본 FAQ 시스템을 넘어 더욱 스마트하고 종합적인 업무 지원 시스템으로 발전시킬 수 있습니다</div>
-            
-            <div class="content-grid content-grid-3">
-                <div class="content-card">
-                    <div class="card-title">🤖 AI 에이전트 기능</div>
-                    <ul class="checklist">
-                        <li>복잡한 업무 프로세스 안내</li>
-                        <li>단계별 체크리스트 제공</li>
-                        <li>연관 업무 자동 제안</li>
-                        <li>개인화된 맞춤 답변</li>
-                    </ul>
-                </div>
-                
-                <div class="content-card">
-                    <div class="card-title">📈 분석 및 인사이트</div>
-                    <ul class="checklist">
-                        <li>질문 트렌드 분석</li>
-                        <li>부서별 문의 패턴</li>
-                        <li>정책 개선 제안</li>
-                        <li>교육 필요 영역 식별</li>
-                    </ul>
-                </div>
-                
-                <div class="content-card">
-                    <div class="card-title">🔗 시스템 통합</div>
-                    <ul class="checklist">
-                        <li>HR 시스템 연동</li>
-                        <li>ERP 데이터 활용</li>
-                        <li>일정 관리 자동화</li>
-                        <li>결재 프로세스 연결</li>
-                    </ul>
-                </div>
-            </div>
-            
-            <div class="content-grid content-grid-2">
-                <div class="content-card">
-                    <div class="card-title">🎯 음성 AI 연동</div>
-                    <div class="basic-font">다음 강의에서 다룰 음성 AI와 연결하면:</div>
-                    <ul class="checklist">
-                        <li>"HR봇, 연차 신청 방법 알려줘"</li>
-                        <li>"퇴사 절차 음성으로 안내해줘"</li>
-                        <li>전화 상담처럼 자연스러운 대화</li>
-                    </ul>
-                </div>
-                
-                <div class="content-card">
-                    <div class="card-title">📱 모바일 앱 확장</div>
-                    <div class="basic-font">모바일 환경에서도 활용 가능:</div>
-                    <ul class="checklist">
-                        <li>사진으로 서류 자동 인식</li>
-                        <li>위치 기반 정보 제공</li>
-                        <li>푸시 알림으로 업무 리마인더</li>
-                    </ul>
-                </div>
-            </div>
-        </section>
-
-        <!-- Slide 13: 성과 및 마무리 -->
-        <section class="slide" id="slide-13">
-            <h2 class="header-2">🎉 FAQ 리포트 봇으로 달성하는 디지털 혁신</h2>
-            <div class="message">단순한 문의 처리를 넘어 조직 전체의 지식 관리와 업무 효율성을 혁신적으로 개선했습니다</div>
-            
-            <div class="content-grid content-grid-2">
-                <div class="content-card">
-                    <div class="card-title">📊 정량적 성과</div>
-                    <table class="content-table">
-                        <tr>
-                            <th>영역</th>
-                            <th>개선 효과</th>
-                        </tr>
-                        <tr>
-                            <td>응답 속도</td>
-                            <td>4시간 → 2분 (99% 단축)</td>
-                        </tr>
-                        <tr>
-                            <td>처리 정확도</td>
-                            <td>75% → 95% (20%p 향상)</td>
-                        </tr>
-                        <tr>
-                            <td>업무 부담 감소</td>
-                            <td>주 15시간 → 2시간</td>
-                        </tr>
-                        <tr>
-                            <td>직원 만족도</td>
-                            <td>65점 → 88점 (35% 향상)</td>
-                        </tr>
-                    </table>
-                </div>
-                
-                <div class="content-card">
-                    <div class="card-title">🌟 정성적 변화</div>
-                    <ul class="checklist">
-                        <li><strong>업무 집중도 향상</strong> - 반복 업무에서 해방</li>
-                        <li><strong>지식 접근성 개선</strong> - 언제 어디서나 정확한 정보</li>
-                        <li><strong>일관된 서비스</strong> - 담당자별 편차 해소</li>
-                        <li><strong>학습 조직 구현</strong> - 지속적인 지식 축적</li>
-                        <li><strong>디지털 역량 강화</strong> - AI 활용 경험 확산</li>
-                    </ul>
-                </div>
-            </div>
-            
-            <div class="content-grid content-grid-2">
-                <div class="content-card">
-                    <div class="card-title">🔮 미래 발전 방향</div>
-                    <ul class="checklist">
-                        <li>다국어 지원으로 글로벌 확장</li>
-                        <li>업무 자동화와 연계한 통합 시스템</li>
-                        <li>예측 분석으로 사전 문제 해결</li>
-                        <li>개인 맞춤형 업무 어시스턴트</li>
-                    </ul>
-                </div>
-                
-                <div class="content-card">
-                    <div class="card-title">🎯 다음 단계</div>
-                    <ul class="checklist">
-                        <li>음성 AI와 연동한 대화형 시스템</li>
-                        <li>마케팅 자동화 고도화</li>
-                        <li>데이터 분석 자동화</li>
-                        <li>전사 통합 자동화 플랫폼</li>
+                        <li>중요 뉴스 놓침 0건</li>
+                        <li>분석 시간: 2시간 → 5분</li>
+                        <li>정보 정확도 30% 향상</li>
+                        <li>인사이트 발견 200% 증대</li>
                     </ul>
                 </div>
             </div>
             
             <div class="callout">
-                🚀 <strong>혁신 완성!</strong> 이제 여러분은 AI와 자동화를 활용해 조직의 지식과 업무 처리 능력을 획기적으로 향상시킬 수 있습니다. 다음 강의에서는 이러한 시스템들을 음성 AI와 결합하여 더욱 자연스럽고 접근성 높은 서비스로 발전시켜보겠습니다!
+                🚀 <strong>정보 혁신 완성!</strong> 이제 여러분은 AI와 자동화를 활용해 조직의 정보 수집과 분석 능력을 획기적으로 향상시킬 수 있습니다. 다음 강의에서는 이러한 뉴스 분석 시스템을 음성 AI와 결합하여 더욱 자연스럽고 접근성 높은 정보 서비스로 발전시켜보겠습니다!
             </div>
         </section>
+
     </div>
 
     <script>

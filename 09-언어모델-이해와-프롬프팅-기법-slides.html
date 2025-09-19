@@ -533,7 +533,10 @@
             
             <div class="content-grid content-grid-3">
                 <div class="content-card">
-                    <div class="card-title">📖 업무 지시서 (시스템 메시지)</div>
+                    <div style="text-align: center; margin-bottom: 20px;">
+                        <div style="font-size: 64px; margin-bottom: 12px;">📋</div>
+                        <div class="card-title">업무 매뉴얼<br/>(시스템 프롬프트)</div>
+                    </div>
                     <div class="basic-font"><strong>AI 직원의 기본 설정:</strong></div>
                     <ul class="checklist">
                         <li>역할과 업무 스타일 정의</li>
@@ -547,7 +550,10 @@
                 </div>
                 
                 <div class="content-card">
-                    <div class="card-title">💼 실제 업무 요청 (사용자 메시지)</div>
+                    <div style="text-align: center; margin-bottom: 20px;">
+                        <div style="font-size: 64px; margin-bottom: 12px;">💼</div>
+                        <div class="card-title">실제 업무 요청<br/>(유저 프롬프트)</div>
+                    </div>
                     <div class="basic-font"><strong>구체적인 업무 내용:</strong></div>
                     <ul class="checklist">
                         <li>구체적인 질문이나 업무</li>
@@ -561,16 +567,22 @@
                 </div>
                 
                 <div class="content-card">
-                    <div class="card-title">⚙️ 세부 조정 (옵션 설정)</div>
+                    <div style="text-align: center; margin-bottom: 20px;">
+                        <div style="font-size: 64px; margin-bottom: 12px;">⚙️</div>
+                        <div class="card-title">세부 조정<br/>(LLM 설정값)</div>
+                    </div>
                     <div class="basic-font"><strong>AI 성격 세밀 조정:</strong></div>
                     <ul class="checklist">
-                        <li><strong>창의성:</strong> 0(보수적) ~ 1(창의적)</li>
-                        <li><strong>답변 길이:</strong> 최대 글자 수 제한</li>
-                        <li><strong>다양성:</strong> 답변 변화 정도</li>
+                        <li><strong>Temperature:</strong> 0.0(보수적) ~ 1.0(창의적)</li>
+                        <li><strong>Max Tokens:</strong> 최대 토큰 수 제한</li>
+                        <li><strong>Top P:</strong> 0.1(집중) ~ 1.0(다양)</li>
+                        <li><strong>Frequency Penalty:</strong> 반복 억제</li>
+                        <li><strong>Presence Penalty:</strong> 새로운 주제 선호</li>
                     </ul>
                     
                     <div class="code-block">설정 예시:
-창의성 70%, 답변 500자 이내, 다양성 90%</div>
+Temperature: 0.7, Max Tokens: 500, 
+Top P: 0.9, Frequency Penalty: 0.5</div>
                 </div>
             </div>
         </section>

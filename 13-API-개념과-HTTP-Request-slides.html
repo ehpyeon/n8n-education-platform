@@ -123,6 +123,18 @@
             border-top: 2px solid #F8F9FA;
         }
 
+
+        /* Center alignment for intro slide */
+        .slide.intro {
+            text-align: center;
+            justify-content: center;
+        }
+
+        .slide.intro .header-1,
+        .slide.intro .header-2 {
+            text-align: center;
+        }
+
         /* 타이포그래피 */
         .header-1 {
             font-size: 21pt;
@@ -448,7 +460,7 @@
     <!-- 슬라이드 컨테이너 -->
     <div class="slide-container">
         <!-- 인트로 슬라이드 -->
-        <section class="slide" id="slide-1">
+        <section class="slide intro" id="slide-1">
             <h1 class="header-1">🤖 에이전트와 통신 시스템</h1>
             <h2 class="header-2" style="text-align: center;">에이전트가 외부 인터페이스와 내부 도구들과 소통하는 방법</h2>
             <div class="callout-center">

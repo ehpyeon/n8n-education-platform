@@ -422,6 +422,17 @@
                 padding: 32px 60px 48px 60px;
             }
         }
+
+        /* 인트로 슬라이드 특별 스타일 */
+        .slide.intro {
+            text-align: center;
+            justify-content: center;
+        }
+
+        .slide.intro .header-1,
+        .slide.intro .header-2 {
+            text-align: center;
+        }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.0/dist/mermaid.min.js"></script>
 </head>
@@ -444,9 +455,9 @@
     <div class="slide-container">
         
         <!-- 슬라이드 1: 인트로 -->
-        <section class="slide" id="slide-1">
+        <section class="slide intro" id="slide-1">
             <h1 class="header-1">🤖 나만의 복합 Agent 봇 제작</h1>
-            <h2 class="header-2" style="text-align: center; margin-bottom: 20px;">RAG + 문서처리 + Agent를 통합한 실무형 자동화 시스템</h2>
+            <h2 class="header-2">RAG + 문서처리 + Agent를 통합한 실무형 자동화 시스템</h2>
             
             <div class="callout-center">
                 <ol class="step-list">

@@ -479,112 +479,141 @@ graph TD
     A[🌐 러버블 프론트엔드] --> B[🔗 웹훅]
     B --> C[🤖 Master Agent]
     C --> D{📋 요청 분석}
-    
-    D -->|문서 분석| E[📄 문서 처리 도구]
-    D -->|정보 검색| F[🔍 RAG 검색 도구]
-    D -->|데이터 파싱| G[⚙️ 데이터 추출 도구]
-    D -->|정보 조회| H[🌐 정보 검색 도구]
-    
-    E --> I[📄 Upstage Doc Parse]
-    F --> J[🔍 Vector Store]
-    G --> K[📊 구조화 변환]
-    H --> L[🌐 외부 API]
-    
-    I --> M[📤 통합 응답]
-    J --> M
-    K --> M
-    L --> M
-    M --> A
+
+    D -->|문서 분석/요약| E[📄 문서 처리·요약 도구]
+    D -->|정보 추출/저장| F[📊 정보 추출·저장 도구]
+
+    E --> G[📄 Upstage Doc Parse]
+    E --> H[📝 LLM 요약]
+
+    F --> I[⚙️ 구조화 변환]
+    F --> J[💾 데이터베이스 저장]
+
+    G --> K[📤 통합 응답]
+    H --> K
+    I --> K
+    J --> K
+    K --> A
                 </div>
             </div>
 
             <div class="callout">
-                Agent가 상황에 맞는 도구를 자동 선택하여 복합적인 작업을 처리하는 구조
+                Agent가 상황에 맞는 도구를 자동 선택하여 문서 처리와 정보 관리 작업을 처리하는 구조
             </div>
         </section>
 
         <!-- 슬라이드 3: 1단계 - 시스템 기획 -->
         <section class="slide" id="slide-3">
-            <h2 class="header-2">📋 1단계: 시스템 기획 및 설계</h2>
-            <div class="message">복합 Agent 봇의 전체 기능과 구조를 구체적으로 설계합니다</div>
-            
+            <h2 class="header-2">📋 1단계: 4단계 시스템 기획 프로세스</h2>
+            <div class="message">복합 Agent 봇을 체계적으로 설계하기 위한 4단계 접근 방식</div>
+
+            <div class="mermaid-container">
+                <div class="mermaid">
+graph LR
+    A[1️⃣ 인터페이스<br/>설계] --> B[2️⃣ 요청/응답<br/>설계]
+    B --> C[3️⃣ Agent<br/>설계]
+    C --> D[4️⃣ 도구<br/>구현]
+
+    style A fill:#e8f4f8
+    style B fill:#fff4e6
+    style C fill:#f0e6ff
+    style D fill:#e8f8f0
+                </div>
+            </div>
+
             <div class="content-grid content-grid-2">
                 <div class="content-card">
-                    <div class="card-title">🎯 기능 요구사항 정의</div>
+                    <div class="card-title">1️⃣ 인터페이스 설계</div>
+                    <div class="mermaid-container">
+                        <div class="mermaid">
+graph TD
+    A[👤 사용자] -->|텍스트 입력| B[💬 채팅 UI]
+    A -->|파일 업로드| B
+    B -->|웹훅 전송| C[🔗 n8n]
+    C -->|응답 반환| B
+    B -->|결과 표시| A
+                        </div>
+                    </div>
+                    <ul class="checklist">
+                        <li><strong>입력 방식:</strong> 채팅 + 파일 업로드</li>
+                        <li><strong>출력 형식:</strong> 텍스트 + 구조화 데이터</li>
+                        <li><strong>플랫폼:</strong> 러버블 웹 인터페이스</li>
+                    </ul>
+                </div>
+
+                <div class="content-card">
+                    <div class="card-title">2️⃣ 요청/응답 설계</div>
+                    <div class="mermaid-container">
+                        <div class="mermaid">
+graph LR
+    A[📥 요청] --> B{요청 타입}
+    B -->|문서| C[📄 문서 분석·요약]
+    B -->|데이터| D[📊 정보 추출·저장]
+    C --> E[📤 응답]
+    D --> E
+                        </div>
+                    </div>
+                    <ul class="checklist">
+                        <li><strong>요청 파라미터:</strong> message, file_url, type</li>
+                        <li><strong>응답 구조:</strong> result, metadata, source</li>
+                        <li><strong>데이터 형식:</strong> JSON 표준화</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="content-grid content-grid-2">
+                <div class="content-card">
+                    <div class="card-title">3️⃣ Agent 설계</div>
+                    <div class="mermaid-container">
+                        <div class="mermaid">
+graph TD
+    A[🤖 Master Agent] --> B{의도 분석}
+    B -->|문서 관련| C[📄 도구 1 선택]
+    B -->|데이터 관련| D[📊 도구 2 선택]
+    B -->|복합 요청| E[🔄 도구 조합]
+    C --> F[결과 통합]
+    D --> F
+    E --> F
+                        </div>
+                    </div>
+                    <ul class="checklist">
+                        <li><strong>역할:</strong> 요청 분석 및 도구 자동 선택</li>
+                        <li><strong>모델:</strong> OpenAI GPT-4</li>
+                        <li><strong>핵심 로직:</strong> 의도 파악 + 도구 조합</li>
+                    </ul>
+                </div>
+
+                <div class="content-card">
+                    <div class="card-title">4️⃣ 도구 구현</div>
                     <table class="content-table">
                         <thead>
                             <tr>
+                                <th>도구</th>
                                 <th>기능</th>
-                                <th>목적</th>
-                                <th>연결 도구</th>
+                                <th>구현 방식</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
-                                <td>문서 분석</td>
-                                <td>PDF/이미지 텍스트 추출 및 정리</td>
-                                <td>Upstage Doc Parse</td>
+                                <td>📄 문서 처리·요약</td>
+                                <td>문서 분석, OCR, 요약</td>
+                                <td>서브워크플로우</td>
                             </tr>
                             <tr>
-                                <td>지식 검색</td>
-                                <td>회사 문서 기반 정보 제공</td>
-                                <td>RAG Vector Store</td>
-                            </tr>
-                            <tr>
-                                <td>데이터 파싱</td>
-                                <td>구조화된 정보로 변환</td>
-                                <td>JSON/표 형태 변환</td>
-                            </tr>
-                            <tr>
-                                <td>정보 검색</td>
-                                <td>실시간 외부 정보 조회</td>
-                                <td>웹 검색 API</td>
+                                <td>📊 정보 추출·저장</td>
+                                <td>데이터 파싱, 구조화, DB 저장</td>
+                                <td>서브워크플로우</td>
                             </tr>
                         </tbody>
                     </table>
-                </div>
-
-                <div class="content-card">
-                    <div class="card-title">🏗️ 아키텍처 설계 원칙</div>
-                    <ul class="checklist">
-                        <li><strong>모듈화:</strong> 각 기능을 독립적 서브워크플로우로 분리</li>
-                        <li><strong>확장성:</strong> 새로운 도구 추가가 쉬운 구조</li>
-                        <li><strong>재사용성:</strong> 다른 프로젝트에도 활용 가능</li>
-                        <li><strong>성능:</strong> 병렬 처리 및 캐싱 적용</li>
-                        <li><strong>안정성:</strong> 에러 처리 및 복구 로직</li>
-                    </ul>
-                    
                     <div style="background: #f8f9fa; padding: 10px; border-radius: 6px; margin-top: 10px; font-size: 11pt;">
-                        💡 <strong>핵심 아이디어:</strong> Agent가 사용자 요청을 분석해서 필요한 도구들을 자동으로 선택하고 조합
+                        💡 <strong>설계 원칙:</strong> 모듈화, 재사용성, 확장 가능성
                     </div>
                 </div>
             </div>
 
-            <div class="content-card">
-                <div class="card-title">📝 기획 체크리스트</div>
-                <ol class="step-list">
-                    <li><strong>사용 시나리오 정의</strong>
-                        <ul class="checklist">
-                            <li>주요 사용 케이스 3-5가지 도출</li>
-                            <li>사용자 흐름(User Flow) 설계</li>
-                            <li>입력/출력 형태 정의</li>
-                        </ul>
-                    </li>
-                    <li><strong>기술 스택 선택</strong>
-                        <ul class="checklist">
-                            <li>Agent: OpenAI GPT-4 기반 n8n Agent</li>
-                            <li>프론트엔드: 러버블(Lovable)</li>
-                            <li>백엔드: n8n 서브워크플로우</li>
-                        </ul>
-                    </li>
-                    <li><strong>데이터 흐름 설계</strong>
-                        <ul class="checklist">
-                            <li>각 단계별 데이터 변환 과정</li>
-                            <li>에러 처리 및 예외 상황 대응</li>
-                            <li>성능 최적화 지점 파악</li>
-                        </ul>
-                    </li>
-                </ol>
+            <div class="callout">
+                4단계 프로세스를 따르면 체계적이고 확장 가능한 Agent 시스템을 구축할 수 있습니다
             </div>
         </section>
 
@@ -622,30 +651,28 @@ graph TD
                 </div>
 
                 <div class="content-card">
-                    <div class="card-title">🔗 n8n 웹훅 연결</div>
-                    <div class="code-block">
-// 러버블에서 n8n 웹훅 호출
-const sendToAgent = async (message, file) => {
-  const webhookUrl = "https://n8n.upstage.ai/webhook/agent-bot";
-  
-  const response = await fetch(webhookUrl, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      message: message,
-      file_url: file ? await uploadFile(file) : null,
-      timestamp: new Date().toISOString()
-    })
-  });
-  
-  return await response.json();
-};
+                    <div class="card-title">🔗 n8n 웹훅 연결 구조</div>
+                    <div class="mermaid-container">
+                        <div class="mermaid">
+sequenceDiagram
+    participant U as 👤 사용자
+    participant L as 💬 러버블 UI
+    participant W as 🔗 웹훅
+    participant N as 🤖 n8n Agent
+
+    U->>L: 메시지 입력/파일 업로드
+    L->>W: POST /webhook/agent-bot
+    Note over W: message, file_url, timestamp
+    W->>N: 요청 데이터 전달
+    N->>N: Agent 처리
+    N-->>W: 응답 반환
+    W-->>L: JSON 응답
+    L-->>U: 결과 표시
+                        </div>
                     </div>
-                    
+
                     <div style="background: #f8f9fa; padding: 10px; border-radius: 6px; margin-top: 10px; font-size: 11pt;">
-                        💡 <strong>실제 흐름:</strong> 사용자 입력 → 러버블 → 웹훅 → n8n Agent → 응답
+                        💡 <strong>연결 핵심:</strong> 러버블의 fetch API로 웹훅 URL 호출 → n8n Agent 실행 → 결과 수신
                     </div>
                 </div>
             </div>
@@ -710,25 +737,26 @@ const sendToAgent = async (message, file) => {
 
                 <div class="content-card">
                     <div class="card-title">🤖 Agent에 도구 등록</div>
-                    <div class="code-block">
-# Document Parse Tool 설정
-{
-  "name": "document_parse",
-  "description": "PDF, 이미지, 텍스트 파일을 분석하고 내용을 추출합니다. 계약서, 보고서, 영수증 등 다양한 문서 형식을 처리할 수 있습니다.",
-  "parameters": {
-    "file_url": {
-      "type": "string",
-      "description": "분석할 파일의 URL 주소"
-    },
-    "output_format": {
-      "type": "string", 
-      "enum": ["text", "json", "summary"],
-      "description": "출력 형식 선택"
-    }
-  }
-}
+                    <div class="mermaid-container">
+                        <div class="mermaid">
+graph TD
+    A[🤖 Agent 노드] --> B[⚙️ Tools 설정]
+    B --> C[Call n8n Workflow]
+    C --> D[Document_Processor 선택]
+
+    D --> E[도구 설명 작성]
+    E --> F["📄 문서 분석·요약 도구"]
+
+    F --> G[입력 파라미터]
+    G --> H[file_url: 파일 URL]
+    G --> I[output_format: 출력 형식]
+
+    style F fill:#e8f4f8
+    style H fill:#fff4e6
+    style I fill:#fff4e6
+                        </div>
                     </div>
-                    
+
                     <div style="background: #f8f9fa; padding: 10px; border-radius: 6px; margin-top: 10px; font-size: 11pt;">
                         💡 <strong>사용 예시:</strong> "첨부한 계약서에서 주요 조건들을 정리해줘"
                     </div>

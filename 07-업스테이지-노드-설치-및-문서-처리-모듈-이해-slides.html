@@ -437,7 +437,7 @@
         <div class="nav-logo">업스테이지 노드 설치 이해</div>
         <div class="nav-progress">
             <span class="current-slide-title">📦 업스테이지 노드 설치 및 문서 처리 모듈 이해</span>
-            <span class="slide-counter">1 / 17</span>
+            <span class="slide-counter">1 / 16</span>
         </div>
     </nav>
 
@@ -485,11 +485,11 @@
                     <div class="basic-font"><strong>📍 회사 개요:</strong></div>
                     <ul class="checklist">
                         <li>한국 AI 스타트업 (2020년 설립)</li>
-                        <li>한국어 특화 생성형 AI모델(Generative Intelligence) 개발</li>
+                        <li>K-AI 5개 컨소시엄 중 하나로 선발</li>
+                        <li>생성형 AI모델(Generative Intelligence) 개발</li>
                         <li>문서 처리 자동화 솔루션 (Document Intelligence) 제공</li>
-                        <li>개발자 친화적 API 서비스</li>
                     </ul>
-                    
+
                     <div class="basic-font"><strong>💼 주력 서비스:</strong></div>
                     <ul class="checklist">
                         <li>Document AI: 문서 분석 전문</li>
@@ -869,16 +869,6 @@ AI Spaces가 매뉴얼에서 보증 정보 검색
                         <li><strong>정기적 키 교체 권장</strong> - 3-6개월마다 갱신</li>
                         <li><strong>사용량 모니터링 필수</strong> - 비정상 사용 패턴 감지</li>
                     </ul>
-                    
-                    <div class="callout" style="background: rgba(220, 38, 38, 0.05); border-left: 4px solid #DC2626; margin-top: 16px;">
-                        ⚠️ <strong>보안 사고 대응 절차:</strong><br>
-                        1. <strong>즉시 조치:</strong> Console에서 API 키 즉시 삭제<br>
-                        2. <strong>GitHub 노출 시:</strong> 커밋 히스토리에서 키 제거, 저장소 비공개 전환<br>
-                        3. <strong>영향 분석:</strong> 해당 키로 접근된 데이터 확인<br>
-                        4. <strong>새 키 발급:</strong> 새로운 API 키 생성 및 적용<br>
-                        5. <strong>모니터링 강화:</strong> 비정상 접근 패턴 감시<br>
-                        6. <strong>팀 공유:</strong> 보안 사고 및 대응 방법 팀원 공유
-                    </div>
                 </div>
             </div>
         </section>
@@ -951,15 +941,6 @@ AI Spaces가 매뉴얼에서 보증 정보 검색
                         <li><strong>GitHub 노출 방지</strong> - .env 파일 사용, .gitignore 설정</li>
                         <li><strong>코드 리뷰 필수</strong> - API 키 하드코딩 방지</li>
                     </ul>
-                    
-                    <div class="callout" style="background: rgba(34, 197, 94, 0.05); border-left: 4px solid #22C55E; margin-top: 16px;">
-                        🛡️ <strong>GitHub 노출 방지 체크리스트:</strong><br>
-                        ✅ <strong>.env 파일 생성:</strong> API 키를 환경변수로 관리<br>
-                        ✅ <strong>.gitignore 설정:</strong> .env 파일을 Git에서 제외<br>
-                        ✅ <strong>하드코딩 금지:</strong> 코드에 직접 API 키 작성 금지<br>
-                        ✅ <strong>커밋 전 검토:</strong> git diff로 API 키 노출 여부 확인<br>
-                        ✅ <strong>팀 교육:</strong> 보안 코딩 가이드라인 공유
-                    </div>
                 </div>
             </div>
         </section>
@@ -1356,13 +1337,12 @@ Solar LLM이 친절한 답변 생성</div>
                     <div class="basic-font"><strong>🔑 API 키 문제:</strong></div>
                     <ul class="checklist">
                         <li><strong>"Invalid API key"</strong> → 키 복사 시 공백 확인</li>
-                        <li><strong>권한 부족</strong> → Console에서 권한 설정 확인</li>
-                        <li><strong>크레딧 부족</strong> → 잔액 확인 및 충전</li>
+                        <li><strong>카드 등록 확인</strong> → Console에서 결제 카드 등록 여부 확인</li>
                     </ul>
-                    
+
                     <div class="basic-font"><strong>⚙️ 성능 문제:</strong></div>
                     <ul class="checklist">
-                        <li><strong>응답 속도 느림</strong> → Solar-mini 모델 사용 고려</li>
+                        <li><strong>응답 속도 느림</strong> → 추론 파라미터를 낮추는 방식 고려</li>
                         <li><strong>결과 품질 낮음</strong> → Solar-pro2로 변경</li>
                         <li><strong>에러 발생</strong> → 파일 크기/형식 확인</li>
                     </ul>
@@ -1409,72 +1389,6 @@ Solar LLM이 친절한 답변 생성</div>
                         <li>단계별로 노드 실행하며 점검</li>
                     </ul>
                 </div>
-            </div>
-        </section>
-
-        <!-- Slide 17: 성공 완료 -->
-        <section class="slide" id="slide-17">
-            <h2 class="header-2">🎉 업스테이지 AI 전문가 팀 구축 완료!</h2>
-            <div class="message">한국어를 정말 잘 아는 AI 전문가들이 24시간 일하는 스마트 오피스가 완성되었습니다</div>
-            
-            <div class="content-grid content-grid-2">
-                <div class="content-card">
-                    <div class="card-title">🏆 달성한 성과</div>
-                    <table class="content-table">
-                        <tr>
-                            <th>영역</th>
-                            <th>개선 효과</th>
-                            <th>구체적 변화</th>
-                        </tr>
-                        <tr>
-                            <td>문서 처리</td>
-                            <td>시간 95% 단축</td>
-                            <td>30분 → 2분</td>
-                        </tr>
-                        <tr>
-                            <td>고객 상담</td>
-                            <td>24시간 무중단</td>
-                            <td>즉시 응답 가능</td>
-                        </tr>
-                        <tr>
-                            <td>정보 검색</td>
-                            <td>정확도 향상</td>
-                            <td>의미 기반 검색</td>
-                        </tr>
-                        <tr>
-                            <td>비용 절감</td>
-                            <td>인건비 70% 절약</td>
-                            <td>월 350만원 절약</td>
-                        </tr>
-                        <tr>
-                            <td>만족도</td>
-                            <td>44% 향상</td>
-                            <td>3.2점 → 4.6점</td>
-                        </tr>
-                    </table>
-                </div>
-                
-                <div class="content-card">
-                    <div class="card-title">🚀 다음 단계 계획</div>
-                    <div class="basic-font"><strong>🎯 확장 가능한 영역:</strong></div>
-                    <ul class="checklist">
-                        <li><strong>영업팀:</strong> 제안서 자동 생성</li>
-                        <li><strong>마케팅팀:</strong> 콘텐츠 자동 제작</li>
-                        <li><strong>인사팀:</strong> 이력서 자동 분석</li>
-                        <li><strong>재무팀:</strong> 계약서 리스크 분석</li>
-                    </ul>
-                    
-                    <div class="basic-font"><strong>💡 핵심 성공 요소:</strong></div>
-                    <ul class="checklist">
-                        <li>단계적 확장으로 안정성 확보</li>
-                        <li>직원 교육으로 활용도 극대화</li>
-                        <li>지속적 모니터링과 최적화</li>
-                    </ul>
-                </div>
-            </div>
-            
-            <div class="callout">
-                🎯 <strong>축하합니다!</strong> Community Node를 활용해 복잡한 API 설정 없이도 한국어 AI 전문가 팀을 성공적으로 구축했습니다! 이제 여러분의 회사도 AI와 함께 일하는 미래형 스마트 오피스가 되었어요. 다음 강의에서는 더 고급 자동화 시스템을 만들어보겠습니다!
             </div>
         </section>
     </div>

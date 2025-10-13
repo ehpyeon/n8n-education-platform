@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git checkout:*)",
+      "Bash(git add:*)",
+      "Bash(git commit -m \"$(cat <<''EOF''\nfeat: 슬라이드 내용 개선 및 업스테이지 정보 업데이트\n\n- 7강: K-AI 컨소시엄 정보 추가, 보안 관련 상세 내용 간소화\n- 8강: Document Classify 출력 예시 형식 업데이트\n- 13강: 14강 예고 부분 간소화\n- 11강: 뉴스 수집 및 분석 자동화 슬라이드 추가\n- .claude 디렉토리 추가 (개발 환경 설정)\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n)\")"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

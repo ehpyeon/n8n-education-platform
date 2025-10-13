@@ -530,7 +530,7 @@
         <section class="slide" id="slide-4">
             <h2 class="header-2">📡 1단계: RSS 뉴스 수집 자동화</h2>
             <div class="message">신문 배달부처럼 정해진 시간마다 각 뉴스 사이트를 돌며 새 기사를 자동 수집</div>
-            
+
             <div class="content-grid content-grid-2">
                 <div class="content-card">
                     <div class="card-title">📡 RSS Trigger 설정</div>
@@ -545,7 +545,7 @@
                         </tr>
                         <tr>
                             <td>수집 주기</td>
-                            <td>15분마다 자동 확인</td>
+                            <td>1시간에 한번 자동 확인</td>
                         </tr>
                         <tr>
                             <td>추출 데이터</td>
@@ -557,7 +557,7 @@
                         </tr>
                     </table>
                 </div>
-                
+
                 <div class="content-card">
                     <div class="card-title">📰 신문 배달과 비교</div>
                     <table class="content-table">
@@ -566,8 +566,8 @@
                             <th>RSS 수집</th>
                         </tr>
                         <tr>
-                            <td>정해진 시간에 배달</td>
-                            <td>15분마다 자동 확인</td>
+                            <td>하루에 한번 정해진 배달</td>
+                            <td>1시간에 한번 자동 확인</td>
                         </tr>
                         <tr>
                             <td>여러 신문사 구독</td>
@@ -584,7 +584,7 @@
                     </table>
                 </div>
             </div>
-            
+
             <div class="callout">
                 📡 <strong>RSS Trigger 활용:</strong> 수집 시간, 기사 ID 생성, 메타데이터 추출, 중복 기사 제거 등을 자동으로 처리합니다.
             </div>
@@ -597,24 +597,36 @@
             
             <div class="content-grid content-grid-2">
                 <div class="content-card">
-                    <div class="card-title">🤖 OpenAI 요약 처리</div>
-                    <div class="basic-font"><strong>요약 과정:</strong></div>
+                    <div class="card-title">🤖 Structured Output 기반 AI 요약 처리</div>
+                    <div class="basic-font"><strong>LLM Structured Output 활용:</strong></div>
                     <ul class="checklist">
-                        <li><strong>핵심 내용 추출:</strong> 5W1H 기반 핵심 정보</li>
-                        <li><strong>키워드 분석:</strong> 주요 인물, 기업, 이슈</li>
-                        <li><strong>영향도 평가:</strong> 중요도 점수 자동 부여</li>
-                        <li><strong>카테고리 분류:</strong> 정치, 경제, 기술 등</li>
+                        <li><strong>정형화된 출력:</strong> JSON 스키마 정의로 일관된 형식</li>
+                        <li><strong>자동 추출:</strong> 핵심 정보, 인물, 기업, 키워드</li>
+                        <li><strong>영향도 평가:</strong> 0-10 점수로 중요도 수치화</li>
+                        <li><strong>이벤트 분류:</strong> Launch, Update, Funding 등 12가지 유형</li>
                     </ul>
-                    
-                    <div class="basic-font"><strong>요약 결과 예시:</strong></div>
-                    <div class="code-block">원본: "삼성전자가 2024년 1분기 실적 발표에서...(2000자)"
 
-📋 AI 요약:
-- 회사: 삼성전자
-- 분야: 실적 발표
-- 핵심: 매출 증가, 반도체 회복세
-- 영향도: 높음 (8/10)
-- 키워드: 삼성전자, 실적, 반도체, 매출</div>
+                    <div class="basic-font"><strong>Structured Output 스키마:</strong></div>
+                    <div class="code-block">{
+  "one_line": "120자 이내 요약",
+  "summary_ko": "400~900자 사실 요약",
+  "event_type": "Launch|Funding|Partnership...",
+  "companies": ["회사명"],
+  "people": [{"name": "이름", "role": "역할"}],
+  "impact_score": 8,  // 0~10 정수
+  "keywords": ["키워드1", "키워드2", ...]
+}</div>
+
+                    <div class="basic-font"><strong>실제 출력 예시:</strong></div>
+                    <div class="code-block">{
+  "one_line": "삼성전자 1분기 실적 발표, 반도체 회복세",
+  "summary_ko": "삼성전자가 2024년 1분기 실적...",
+  "event_type": "Update",
+  "companies": ["삼성전자"],
+  "people": [{"name": "김철수", "role": "CEO"}],
+  "impact_score": 8,
+  "keywords": ["삼성전자", "실적", "반도체", "매출"]
+}</div>
                 </div>
                 
                 <div class="content-card">
@@ -765,22 +777,40 @@ graph TB
                 </div>
                 
                 <div class="content-card">
-                    <div class="card-title">💬 분석 요청 예시</div>
-                    <div class="code-block">사용자: "최근 삼성전자 실적 관련 뉴스 분석해줘"
+                    <div class="card-title">🔑 키워드 인덱싱 및 검색</div>
 
-🔍 검색 과정:
-1. 키워드: "삼성전자", "실적"
-2. 벡터 검색: 유사 의미 뉴스 8건 발견
-3. 시간 필터: 최근 1개월 기사만
-4. 관련도 정렬: 상위 5건 선별</div>
-                    
-                    <div class="basic-font"><strong>스마트 검색 특징:</strong></div>
+                    <div class="basic-font"><strong>1. 키워드 필드 인덱싱 설정:</strong></div>
+                    <div class="basic-font">키워드 검색을 할 필드는 미리 인덱싱 필요</div>
+                    <div class="code-block">PUT /collections/{collection}/index
+{
+  "field_name": "metadata.eventType",
+  "field_schema": { "type": "keyword" }
+}</div>
+
+                    <div class="basic-font"><strong>2. 키워드 기반 필터링 검색:</strong></div>
+                    <div class="code-block">POST /collections/{collection}/points/scroll
+{
+  "filter": {
+    "must": [
+      {
+        "key": "metadata.eventType",
+        "match": { "value": "Launch" }
+      }
+    ]
+  }
+}</div>
+
+                    <div class="basic-font"><strong>n8n에서 활용:</strong></div>
                     <ul class="checklist">
-                        <li>동의어 자동 인식 (실적 = 수익 = 매출)</li>
-                        <li>맥락 이해 (긍정/부정 뉘앙스)</li>
-                        <li>관련 기업 자동 연결</li>
-                        <li>시계열 트렌드 분석</li>
+                        <li><strong>필터 부분만 수정:</strong> filter 객체에 조건 추가</li>
+                        <li><strong>이벤트 타입 필터링:</strong> Launch, Funding 등</li>
+                        <li><strong>복합 조건 가능:</strong> must, should, must_not</li>
+                        <li><strong>벡터 검색과 결합:</strong> 키워드 + 의미 검색</li>
                     </ul>
+
+                    <div class="callout">
+                        💡 <strong>Tip:</strong> 키워드 인덱싱으로 정확한 필터링, 벡터 검색으로 의미적 유사성을 함께 활용하면 최상의 검색 결과!
+                    </div>
                 </div>
             </div>
         </section>

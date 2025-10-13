@@ -475,85 +475,154 @@
         <!-- 슬라이드 2: 에이전트의 두 가지 통신 요구사항 -->
         <section class="slide" id="slide-2">
             <h2 class="header-2">🤖 에이전트의 두 가지 통신 요구사항</h2>
-            <div class="message">에이전트를 잘 활용하려면 인터페이스와의 소통과 도구 호출이 핵심입니다.</div>
-            
+            <div class="message">에이전트를 잘 활용하려면 외부에서 에이전트를 호출하는 방법과 에이전트가 도구를 호출하는 방법이 필요합니다.</div>
+
             <div class="content-grid content-grid-2">
                 <div class="content-card">
-                    <h3 class="card-title">🌍 외부 인터페이스 통신 (웹훅)</h3>
+                    <h3 class="card-title">📞 외부 인터페이스에서 호출 (웹훅 트리거)</h3>
+                    <div class="basic-font"><strong>웹훅 = 에이전트를 부르는 트리거</strong></div>
                     <ul class="checklist">
-                        <li>카카오톡, 웹 채팅창, 슬랙과 연결</li>
-                        <li>사용자 요청을 실시간으로 받기</li>
-                        <li>인터페이스 역할 수행</li>
-                        <li>API 엔드포인트로 작동</li>
+                        <li>외부 인터페이스가 우리 에이전트를 호출</li>
+                        <li>카카오톡, 슬랙, 웹 채팅창에서 요청 전송</li>
+                        <li>HTTP 요청으로 에이전트 워크플로우 시작</li>
+                        <li>24시간 대기하며 요청 수신 가능</li>
                     </ul>
+
+                    <div class="basic-font"><strong>다양한 트리거 방식 비교:</strong></div>
+                    <table class="content-table">
+                        <tr>
+                            <th>트리거 유형</th>
+                            <th>활용</th>
+                        </tr>
+                        <tr>
+                            <td>Schedule</td>
+                            <td>정해진 시간에 자동 실행</td>
+                        </tr>
+                        <tr>
+                            <td>Manual</td>
+                            <td>수동으로 직접 실행</td>
+                        </tr>
+                        <tr>
+                            <td>App Trigger</td>
+                            <td>특정 앱 이벤트로 실행</td>
+                        </tr>
+                        <tr style="background: rgba(178, 73, 234, 0.1);">
+                            <td><strong>Webhook</strong></td>
+                            <td><strong>외부 시스템에서 HTTP로 호출 (가장 범용적)</strong></td>
+                        </tr>
+                    </table>
+
+                    <div class="callout">
+                        💡 <strong>Webhook의 범용성:</strong> 어떤 시스템에서든 HTTP 요청만 보낼 수 있으면 에이전트를 호출할 수 있어 가장 널리 사용됩니다.
+                    </div>
                 </div>
-                
+
                 <div class="content-card">
                     <h3 class="card-title">🔧 내부 도구 호출 (서브 워크플로우/MCP)</h3>
+                    <div class="basic-font"><strong>에이전트가 도구를 호출</strong></div>
                     <ul class="checklist">
-                        <li>에이전트가 적절한 도구 선택</li>
+                        <li>에이전트가 상황에 맞는 도구 자동 선택</li>
                         <li>문제 해결을 위한 툴 호출</li>
                         <li>서브 워크플로우로 구현</li>
                         <li>MCP(Model Context Protocol) 활용</li>
                     </ul>
+
+                    <div class="code-block">호출 관계 정리:
+
+외부 인터페이스 → 웹훅 → 에이전트
+                           ↓
+                    에이전트 → 도구들
+
+• 위쪽: 외부가 에이전트를 호출 (Webhook Trigger)
+• 아래쪽: 에이전트가 도구를 호출 (Sub-workflow/MCP)</div>
                 </div>
             </div>
-            
+
             <div class="callout">
-                <strong>핵심:</strong> 에이전트가 효과적으로 작동하려면 외부 인터페이스와 소통하고, 내부 도구들을 적절히 호출할 수 있는 통신 시스템이 필요합니다.
+                <strong>핵심:</strong> 에이전트는 웹훅으로 외부에서 호출받고, 내부 도구들을 직접 호출하여 문제를 해결합니다. 웹훅은 HTTP 기반이라 가장 범용적으로 사용되는 트리거 방식입니다.
             </div>
         </section>
 
         <!-- 슬라이드 3: 웹훅과 에이전트 외부 인터페이스 연결 -->
         <section class="slide" id="slide-3">
-            <h2 class="header-2">📞 웹훅: 에이전트의 외부 인터페이스 연결</h2>
-            <div class="message">에이전트가 카카오톡, 슬랙, 웹 채팅창 등 다양한 인터페이스와 소통할 수 있는 창구입니다.</div>
-            
+            <h2 class="header-2">📞 웹훅(Webhook): 이벤트 기반 HTTP Callback</h2>
+            <div class="message">웹훅은 "이벤트가 발생했을 때 특정 URL로 HTTP 요청을 자동으로 보내는" 이벤트 기반 통신 방식입니다</div>
+
             <div class="content-grid content-grid-2">
                 <div class="content-card">
-                    <h3 class="card-title">🏢 웹훅 = 에이전트의 소통 창구</h3>
-                    <ul class="checklist">
-                        <li>외부 인터페이스에서 접근 가능한 고유 URL</li>
-                        <li>24시간 언제든 에이전트 요청을 받을 수 있음</li>
-                        <li>받은 요청을 에이전트 워크플로우로 전달</li>
-                        <li>에이전트 처리 결과를 다시 응답으로 반환</li>
-                    </ul>
-                    <div class="code-block">
-에이전트 웹훅 URL 예시:
-https://myagent.n8n.io/webhook/chat
+                    <h3 class="card-title">🎯 웹훅의 핵심 개념</h3>
+                    <div class="basic-font"><strong>정의:</strong></div>
+                    <div class="code-block">Webhook = Event 발생 시 자동으로 실행되는 HTTP Callback
 
-인터페이스 → 웹훅 → 에이전트 → 응답
-                    </div>
-                </div>
-                
-                <div class="content-card">
-                    <h3 class="card-title">🎯 에이전트 인터페이스 연결 시나리오</h3>
+"이벤트가 생기면 나를 불러줘(call back)"</div>
+
+                    <div class="basic-font"><strong>일반 API vs 웹훅 차이:</strong></div>
                     <table class="content-table">
                         <thead>
                             <tr>
-                                <th>인터페이스</th>
-                                <th>사용자 요청</th>
-                                <th>에이전트 처리</th>
+                                <th>구분</th>
+                                <th>일반 HTTP Request</th>
+                                <th>Webhook</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
-                                <td>카카오톡 챗봇</td>
-                                <td>"문서 분석해줘"</td>
-                                <td>AI 분석 도구 호출 후 응답</td>
+                                <td>요청 주체</td>
+                                <td>내가 필요할 때 요청 (Pull)</td>
+                                <td>상대가 이벤트 발생 시 호출 (Push)</td>
                             </tr>
                             <tr>
-                                <td>웹 채팅창</td>
-                                <td>고객 문의사항</td>
-                                <td>분류 도구로 자동 처리</td>
+                                <td>트리거</td>
+                                <td>사용자/클라이언트</td>
+                                <td>이벤트 (자동)</td>
                             </tr>
                             <tr>
-                                <td>슬랙 봇</td>
-                                <td>업무 요청</td>
-                                <td>적절한 워크플로우 선택 실행</td>
+                                <td>통신 방향</td>
+                                <td>내가 외부로 요청</td>
+                                <td>외부가 나를 호출</td>
+                            </tr>
+                            <tr>
+                                <td>예시</td>
+                                <td>API 호출로 결제 상태 조회</td>
+                                <td>결제 완료 시 자동 알림</td>
                             </tr>
                         </tbody>
                     </table>
+                </div>
+
+                <div class="content-card">
+                    <h3 class="card-title">🔄 웹훅 동작 원리</h3>
+                    <div class="basic-font"><strong>4단계 프로세스:</strong></div>
+                    <ol class="step-list">
+                        <li><strong>Webhook URL 등록</strong><br>
+                        "이 주소로 알려줘" - 내 엔드포인트 등록</li>
+                        <li><strong>이벤트 발생</strong><br>
+                        상대방 시스템에서 이벤트 감지 (예: 결제 완료)</li>
+                        <li><strong>자동 HTTP 요청 전송</strong><br>
+                        등록된 URL로 POST 요청과 데이터 전송</li>
+                        <li><strong>수신 서버 처리</strong><br>
+                        요청을 받아 필요한 작업 수행</li>
+                    </ol>
+
+                    <div class="basic-font"><strong>실제 예시:</strong></div>
+                    <div class="code-block">① 웹훅 등록:
+https://myapp.com/webhook/payment
+
+② 이벤트 발생: 사용자 결제 완료
+
+③ 자동 전송:
+POST /webhook/payment
+{
+  "event": "payment.completed",
+  "user_id": 12345,
+  "amount": 10000
+}
+
+④ 내 서버: DB 업데이트, 이메일 발송</div>
+
+                    <div class="callout">
+                        💡 <strong>핵심:</strong> 웹훅은 "HTTP Request를 이용한 Callback 메커니즘"입니다. 내가 요청하지 않아도 상대가 이벤트 발생 시 나를 불러주는(call back) 구조입니다.
+                    </div>
                 </div>
             </div>
         </section>
@@ -578,27 +647,72 @@ https://your-n8n.com/webhook/chat
 
 → 이 주소로 POST 요청하면 워크플로우 시작
                     </div>
+
+                    <div class="basic-font" style="margin-top: 16px;"><strong>연결 코드 예시:</strong></div>
+                    <div class="code-block" style="font-size: 9pt;">
+// 사용자가 메시지 전송 시
+fetch('https://your-n8n.com/webhook/chat', {
+  method: 'POST',
+  headers: {'Content-Type': 'application/json'},
+  body: JSON.stringify({
+    message: '문서 분석해줘',
+    userId: 'user123'
+  })
+})
+.then(res => res.json())
+.then(data => {
+  // AI 응답을 화면에 표시
+  displayMessage(data.response);
+});</div>
                 </div>
                 
                 <div class="content-card">
-                    <h3 class="card-title">🌐 간단한 HTML 프론트엔드</h3>
-                    <div class="code-block">
-<!-- 간단한 채팅 인터페이스 -->
-<form id="chatForm">
-  <input type="text" id="message" 
-         placeholder="메시지 입력...">
-  <button type="submit">전송</button>
-</form>
-<div id="response"></div>
+                    <h3 class="card-title">💬 챗봇 인터페이스 예시</h3>
 
-<script>
-// 웹훅으로 메시지 전송
-fetch('https://your-n8n.com/webhook/chat', {
-  method: 'POST',
-  body: JSON.stringify({message: text})
-})
-</script>
+                    <div class="basic-font"><strong>사용자가 보는 대화 창:</strong></div>
+                    <div style="background: #f8f9fa; border: 2px solid #e2e8f0; border-radius: 12px; padding: 16px; margin: 12px 0;">
+                        <!-- 챗봇 헤더 -->
+                        <div style="background: linear-gradient(135deg, #1B365D, rgb(135, 0, 232)); color: white; padding: 12px; border-radius: 8px 8px 0 0; margin: -16px -16px 12px -16px; font-weight: 600;">
+                            🤖 AI 어시스턴트
+                        </div>
+
+                        <!-- 메시지 영역 -->
+                        <div style="min-height: 120px; background: white; border-radius: 8px; padding: 12px; margin-bottom: 12px;">
+                            <!-- 사용자 메시지 -->
+                            <div style="text-align: right; margin-bottom: 8px;">
+                                <div style="display: inline-block; background: #1B365D; color: white; padding: 8px 12px; border-radius: 12px 12px 0 12px; max-width: 70%; font-size: 11pt;">
+                                    문서 분석해줘
+                                </div>
+                            </div>
+                            <!-- AI 응답 -->
+                            <div style="text-align: left;">
+                                <div style="display: inline-block; background: #f0f0f0; color: #2D3748; padding: 8px 12px; border-radius: 12px 12px 12px 0; max-width: 70%; font-size: 11pt;">
+                                    네, 문서를 분석하겠습니다...
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 입력창 -->
+                        <div style="display: flex; gap: 8px;">
+                            <input type="text" placeholder="메시지를 입력하세요..." style="flex: 1; padding: 10px; border: 1px solid #e2e8f0; border-radius: 20px; font-size: 11pt;">
+                            <button style="background: rgb(135, 0, 232); color: white; border: none; padding: 10px 20px; border-radius: 20px; cursor: pointer; font-weight: 600;">전송</button>
+                        </div>
                     </div>
+
+                    <div class="basic-font"><strong>챗봇 ↔ n8n 연결 구조:</strong></div>
+                    <div style="background: #f8f9fa; padding: 16px; border-radius: 8px; margin-top: 12px;">
+                        <pre class="mermaid" style="background: transparent; border: none; padding: 0;">
+graph LR
+    A["💬 챗 인터페이스<br/>(웹/앱)"] -->|"HTTP POST<br/>{message: '문서 분석해줘'}"| B["📞 Webhook Trigger<br/>n8n"]
+    B --> C["🤖 AI Agent<br/>처리"]
+    C -->|"응답 반환"| A
+
+    style A fill:#e3f2fd
+    style B fill:#fff3e0
+    style C fill:#f3e5f5
+                        </pre>
+                    </div>
+
                 </div>
             </div>
             
@@ -609,280 +723,359 @@ fetch('https://your-n8n.com/webhook/chat', {
 
         <!-- 슬라이드 5: 서브 워크플로우와 에이전트 도구 호출 -->
         <section class="slide" id="slide-5">
-            <h2 class="header-2">🔄 서브 워크플로우: 에이전트의 도구 호출 시스템</h2>
-            <div class="message">에이전트가 문제를 해결하기 위해 필요한 도구들을 선택하고 호출하는 방법입니다.</div>
-            
+            <h2 class="header-2">🔄 서브 워크플로우: 기존 워크플로우를 도구로 재활용</h2>
+            <div class="message">서브 워크플로우는 기존에 만든 워크플로우를 하나의 Tool로 활용하는 방식입니다</div>
+
             <div class="content-grid content-grid-2">
                 <div class="content-card">
-                    <h3 class="card-title">🧩 에이전트 도구 선택의 장점</h3>
-                    <ul class="checklist">
-                        <li>에이전트가 상황에 맞는 도구 자동 선택</li>
-                        <li>기존 문서 처리 워크플로우 재활용</li>
-                        <li>복잡한 작업을 단계별로 분리 처리</li>
-                        <li>각 도구의 독립적 관리 및 유지보수</li>
-                    </ul>
-                    <div class="code-block">
-에이전트 도구 호출 흐름:
-인터페이스 요청 → 에이전트 분석 → 도구 선택
+                    <h3 class="card-title">♻️ 서브 워크플로우의 핵심 가치: 재활용 & 수정 용이성</h3>
 
-도구 실행:
-문서 분석 도구 → AI 처리 → 결과 반환
+                    <div class="basic-font"><strong>복사 없이 재사용:</strong></div>
+                    <ul class="checklist">
+                        <li><strong>하나의 워크플로우를 여러 곳에서 호출</strong></li>
+                        <li>복사할 필요 없이 동일한 워크플로우 참조</li>
+                        <li>한 번 만들면 어디서든 Tool로 활용</li>
+                    </ul>
+
+                    <div class="basic-font"><strong>동시 업그레이드:</strong></div>
+                    <ul class="checklist">
+                        <li><strong>원본 워크플로우 수정 시 모든 곳에 즉시 반영</strong></li>
+                        <li>각 사용처마다 따로 수정할 필요 없음</li>
+                        <li>버전 관리가 단순하고 명확</li>
+                    </ul>
+
+                    <div class="basic-font"><strong>독립적 관리:</strong></div>
+                    <ul class="checklist">
+                        <li>각 워크플로우를 독립적으로 개발/테스트</li>
+                        <li>문제 발생 시 특정 워크플로우만 수정</li>
+                        <li>복잡한 시스템을 모듈화하여 관리</li>
+                    </ul>
+
+                    <div class="callout">
+                        💡 <strong>핵심:</strong> 복사 없이 재사용 → 수정 시 모든 곳에 동시 반영 → 유지보수 극대화!
                     </div>
                 </div>
-                
+
                 <div class="content-card">
-                    <h3 class="card-title">🎯 에이전트 도구 활용 패턴</h3>
-                    <table class="content-table">
-                        <thead>
-                            <tr>
-                                <th>에이전트 판단</th>
-                                <th>선택할 도구</th>
-                                <th>기대 결과</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>문서 업로드 요청</td>
-                                <td>PDF 분석 도구</td>
-                                <td>구조화된 텍스트 추출</td>
-                            </tr>
-                            <tr>
-                                <td>정보 요약 요청</td>
-                                <td>AI 요약 도구</td>
-                                <td>핀요 내용 정리</td>
-                            </tr>
-                            <tr>
-                                <td>알림 필요 상황</td>
-                                <td>메시지 발송 도구</td>
-                                <td>사용자에게 결과 전달</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    <h3 class="card-title">🔗 에이전트 ↔ 워크플로우 N:N 연결 구조</h3>
+
+                    <div class="basic-font"><strong>여러 에이전트가 동일한 워크플로우를 공유:</strong></div>
+                    <div style="background: #f8f9fa; padding: 16px; border-radius: 8px; margin: 12px 0;">
+                        <pre class="mermaid" style="background: transparent; border: none; padding: 0;">
+graph LR
+    subgraph Agents["🤖 에이전트들"]
+        A1["고객 상담<br/>Agent"]
+        A2["문서 분석<br/>Agent"]
+        A3["업무 자동화<br/>Agent"]
+    end
+
+    subgraph Workflows["⚙️ 서브 워크플로우들"]
+        W1["PDF 추출<br/>Workflow"]
+        W2["AI 요약<br/>Workflow"]
+        W3["이메일 발송<br/>Workflow"]
+    end
+
+    A1 -.->|호출| W1
+    A1 -.->|호출| W2
+    A1 -.->|호출| W3
+
+    A2 -.->|호출| W1
+    A2 -.->|호출| W2
+
+    A3 -.->|호출| W2
+    A3 -.->|호출| W3
+
+    style A1 fill:#e3f2fd
+    style A2 fill:#e3f2fd
+    style A3 fill:#e3f2fd
+    style W1 fill:#fff3e0
+    style W2 fill:#fff3e0
+    style W3 fill:#fff3e0
+                        </pre>
+                    </div>
+
+                    <div class="basic-font"><strong>업그레이드 시나리오:</strong></div>
+                    <div class="code-block" style="font-size: 10pt;">
+1️⃣ "AI 요약 Workflow" 성능 개선
+   → 기존: 3초 소요
+   → 개선: 1초 소요
+
+2️⃣ 자동으로 모든 에이전트에 반영
+   ✅ 고객 상담 Agent → 1초로 개선
+   ✅ 문서 분석 Agent → 1초로 개선
+   ✅ 업무 자동화 Agent → 1초로 개선
+
+3️⃣ 수정 횟수: 단 1번!
+   (복사 방식이었다면 3번 수정 필요)</div>
+
+                    <div class="basic-font"><strong>장점 요약:</strong></div>
+                    <ul class="checklist">
+                        <li>N:N 관계로 자유로운 조합</li>
+                        <li>워크플로우 1개 수정 = 모든 에이전트 업그레이드</li>
+                        <li>중복 코드 제거, 유지보수 효율 극대화</li>
+                    </ul>
                 </div>
             </div>
         </section>
 
-        <!-- 슬라이드 6: MCP와 에이전트 도구 선택 비교 -->
+        <!-- 새로운 슬라이드 6: MCP (Model Context Protocol) -->
         <section class="slide" id="slide-6">
-            <h2 class="header-2">🧠 MCP vs 서브 워크플로우: 에이전트 도구 선택 방법 비교</h2>
-            <div class="message">MCP(Model Context Protocol)는 LLM이 도구를 선택하게 하는 통신 규약입니다.</div>
-            
+            <h2 class="header-2">🔗 MCP (Model Context Protocol): 단순 Tool들의 집합체</h2>
+            <div class="message">MCP는 여러 단순 Tool들을 중앙에서 관리하며, Agent가 필요한 Tool들을 선택해 사용하는 구조입니다</div>
+
             <div class="content-grid content-grid-2">
                 <div class="content-card">
-                    <h3 class="card-title">🔗 MCP: 에이전트가 도구를 선택하게 하기</h3>
+                    <h3 class="card-title">🧩 MCP의 구조와 특징</h3>
+
+                    <div class="basic-font"><strong>MCP = 단순 Task들의 집합:</strong></div>
                     <ul class="checklist">
-                        <li>LLM이 상황에 맞는 도구를 직접 선택</li>
-                        <li>컨텍스트를 이해하고 적절한 도구 호출</li>
-                        <li>오류 발생 시 자동 대안 도구 선택</li>
-                        <li>동적이고 지능적인 도구 활용</li>
+                        <li>파일 읽기, 웹 검색, 데이터베이스 조회 등 단순 Task</li>
+                        <li>중앙 MCP 서버가 여러 Tool들을 제공</li>
+                        <li>Agent가 상황에 맞는 Tool들을 선택해 사용</li>
+                        <li>여러 MCP 및 Tool을 조합하여 업무 자동화</li>
                     </ul>
-                    <div class="code-block">
-MCP 예시:
-에이전트: "문서를 분석해야겠다"
-→ PDF 분석 도구 자동 선택
-→ 분석 결과로 요약 도구 선택
+
+                    <div class="basic-font"><strong>MCP 사용 패턴:</strong></div>
+                    <div class="code-block" style="font-size: 10pt;">
+🎯 업무: "최근 뉴스 분석 리포트 작성"
+
+1️⃣ Agent가 단계별 Tool 선택:
+   → MCP Tool: 웹 검색
+   → MCP Tool: 텍스트 추출
+   → MCP Tool: 요약 생성
+   → MCP Tool: 파일 저장
+
+2️⃣ 전체 프로세스:
+   여러 MCP Tool을 단계별로 조합하여 실행
+
+💡 각 단계마다 적합한 Tool 선택 필요</div>
+
+                    <div class="callout">
+                        🔧 <strong>n8n에서도 MCP 활용 가능:</strong> 단순 Task들을 조합한 MCP를 만들 수 있습니다. 다만 n8n에서는 Subworkflow가 더 일반적으로 자주 활용됩니다.
                     </div>
                 </div>
-                
+
                 <div class="content-card">
-                    <h3 class="card-title">🔄 서브 워크플로우: n8n에서 도구 결정하기</h3>
+                    <h3 class="card-title">🏗️ Agent ↔ MCP ↔ Tools 구조</h3>
+
+                    <div class="basic-font"><strong>중앙 MCP 서버와 Agent의 관계:</strong></div>
+                    <div style="background: #f8f9fa; padding: 16px; border-radius: 8px; margin: 12px 0;">
+                        <pre class="mermaid" style="background: transparent; border: none; padding: 0;">
+graph TB
+    A["🤖 AI Agent<br/>(사용자 요청 분석)"]
+
+    subgraph MCP["🔗 중앙 MCP 서버"]
+        M[MCP Protocol]
+    end
+
+    subgraph Tools["🛠️ 단순 Tool들"]
+        T1["📄 파일 읽기"]
+        T2["🌐 웹 검색"]
+        T3["💾 DB 조회"]
+        T4["📊 데이터 변환"]
+        T5["📧 이메일 발송"]
+        T6["📝 텍스트 요약"]
+    end
+
+    A <-->|"Tool 선택/호출"| M
+    M --> T1
+    M --> T2
+    M --> T3
+    M --> T4
+    M --> T5
+    M --> T6
+
+    style A fill:#e3f2fd
+    style M fill:#fff3e0
+    style T1 fill:#f3e5f5
+    style T2 fill:#f3e5f5
+    style T3 fill:#f3e5f5
+    style T4 fill:#f3e5f5
+    style T5 fill:#f3e5f5
+    style T6 fill:#f3e5f5
+                        </pre>
+                    </div>
+
+                    <div class="basic-font"><strong>실제 동작 흐름:</strong></div>
+                    <div class="code-block" style="font-size: 10pt;">
+사용자: "프로젝트 문서 분석해줘"
+
+1. Agent가 MCP에 요청
+2. MCP가 사용 가능한 Tool 목록 제공
+3. Agent가 필요한 Tool 선택:
+   ✓ 파일 읽기 Tool
+   ✓ 텍스트 요약 Tool
+4. 선택된 Tool들을 순차 실행
+5. 결과를 조합하여 사용자에게 응답</div>
+
+                    <div class="basic-font"><strong>MCP의 핵심:</strong></div>
+                    <ul class="checklist">
+                        <li>단순 Task 단위로 Tool 분리</li>
+                        <li>Agent가 상황에 맞게 Tool 조합</li>
+                        <li>여러 MCP Tool을 단계별로 활용</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- 슬라이드 7: MCP vs 서브 워크플로우 비교 -->
+        <section class="slide" id="slide-7">
+            <h2 class="header-2">⚖️ MCP vs 서브 워크플로우: 차이점과 선택 기준</h2>
+            <div class="message">이번 강의에서는 n8n에서 더 일반적으로 사용되는 서브 워크플로우를 중심으로 다룹니다</div>
+
+            <div class="content-grid content-grid-2">
+                <div class="content-card">
+                    <h3 class="card-title">🔗 MCP: Task 집합체를 조합</h3>
+
+                    <div class="basic-font"><strong>MCP의 사용 방식:</strong></div>
+                    <ul class="checklist">
+                        <li><strong>단순 Task 단위:</strong> 파일 읽기, 웹 검색 등</li>
+                        <li><strong>단계별 Tool 선택:</strong> Agent가 각 단계마다 Tool 선택</li>
+                        <li><strong>여러 MCP 조합:</strong> 전체 프로세스에 따라 MCP 조합</li>
+                        <li><strong>동적 실행:</strong> 상황에 맞게 Tool 선택 및 조합</li>
+                    </ul>
+
+                    <div class="code-block" style="font-size: 10pt;">
+MCP 실행 예시:
+
+사용자: "프로젝트 리포트 작성"
+
+Agent 판단 및 단계별 Tool 선택:
+1️⃣ 파일 읽기 Tool (MCP 1)
+2️⃣ 데이터 분석 Tool (MCP 1)
+3️⃣ 웹 검색 Tool (MCP 2)
+4️⃣ 텍스트 요약 Tool (MCP 2)
+5️⃣ 파일 저장 Tool (MCP 1)
+
+💡 각 단계마다 적절한 Tool 선택 필요
+💡 여러 MCP를 조합하여 전체 업무 수행</div>
+                </div>
+
+                <div class="content-card">
+                    <h3 class="card-title">🔄 서브 워크플로우: End-to-End 프로세스 실행</h3>
+
+                    <div class="basic-font"><strong>서브 워크플로우의 사용 방식:</strong></div>
+                    <ul class="checklist">
+                        <li><strong>완전한 프로세스:</strong> 특정 업무의 전체 흐름 정의</li>
+                        <li><strong>한 번에 실행:</strong> Agent가 워크플로우 선택 후 그대로 실행</li>
+                        <li><strong>독립적 재활용:</strong> 완성된 워크플로우를 여러 곳에서 재사용</li>
+                        <li><strong>예측 가능:</strong> 정해진 로직대로 안정적 실행</li>
+                    </ul>
+
+                    <div class="code-block" style="font-size: 10pt;">
+서브 워크플로우 실행 예시:
+
+사용자: "프로젝트 리포트 작성"
+
+Agent 판단:
+→ "문서 분석 리포트 생성" 워크플로우 선택
+
+워크플로우 자동 실행:
+✓ 파일 읽기
+✓ 데이터 분석
+✓ 차트 생성
+✓ 리포트 작성
+✓ 이메일 발송
+
+💡 워크플로우 1개 선택으로 전체 프로세스 완료
+💡 중간 판단 없이 End-to-End 실행</div>
+                </div>
+            </div>
+
+            <div class="content-grid content-grid-2" style="margin-top: 16px;">
+                <div class="content-card">
+                    <h3 class="card-title">📊 핵심 차이점 비교</h3>
                     <table class="content-table">
                         <thead>
                             <tr>
                                 <th>구분</th>
-                                <th>서브 워크플로우</th>
                                 <th>MCP</th>
+                                <th>서브 워크플로우</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
-                                <td>도구 선택</td>
-                                <td>n8n이 미리 결정</td>
-                                <td>LLM이 동적 선택</td>
+                                <td>단위</td>
+                                <td>단순 Task 집합</td>
+                                <td>End-to-End 프로세스</td>
                             </tr>
                             <tr>
-                                <td>유연성</td>
-                                <td>고정된 로직</td>
-                                <td>상황에 따른 적응</td>
+                                <td>실행 방식</td>
+                                <td>단계별 Tool 조합</td>
+                                <td>워크플로우 선택 후 일괄 실행</td>
                             </tr>
                             <tr>
-                                <td>설정 복잡도</td>
-                                <td>비교적 간단</td>
-                                <td>고급 설정 필요</td>
+                                <td>Agent 역할</td>
+                                <td>각 단계마다 Tool 선택</td>
+                                <td>워크플로우 선택만</td>
                             </tr>
                             <tr>
-                                <td>예측 가능성</td>
-                                <td>높음 (고정 플로우)</td>
-                                <td>낮음 (동적 선택)</td>
+                                <td>복잡도</td>
+                                <td>동적이고 유연</td>
+                                <td>명확하고 예측 가능</td>
                             </tr>
                         </tbody>
                     </table>
-                    <div class="code-block">
-서브 워크플로우 예시:
-요청 → 문서 파싱 워크플로우 호출
-→ AI 요약 워크플로우 호출 (고정순서)
-                    </div>
                 </div>
-            </div>
-            
-            <div class="callout">
-                <strong>선택 기준:</strong> 간단한 에이전트는 서브 워크플로우로 시작하고, 복잡한 동적 에이전트는 MCP를 활용하는 것을 추천합니다.
-            </div>
-        </section>
 
-        <!-- 슬라이드 7: 에이전트 통합 시스템 구조 -->
-        <section class="slide" id="slide-7">
-            <h2 class="header-2">🏗️ 완전한 에이전트 통합 시스템 구조</h2>
-            <div class="message">웹훅과 도구 호출 시스템을 조합하여 완전한 에이전트 자동화 시스템을 구축할 수 있습니다.</div>
-            
-            <div class="content-grid content-grid-2">
                 <div class="content-card">
-                    <h3 class="card-title">🌊 에이전트 전체 데이터 흐름</h3>
-                    <div class="code-block">
-외부 인터페이스 요청 (카카오톡/슬랙/웹 채팅)
-        ↓
-웹훅 → 에이전트 워크플로우 시작
-        ↓
-에이전트가 요청 내용 분석
-        ↓
-에이전트가 적절한 도구 선택
-        ↓
-- 문서 분석 도구 호출
-- AI 요약 도구 호출  
-- 메시지 발송 도구 호출
-        ↓
-에이전트가 결과 통합 및 응답 생성
-        ↓
-인터페이스로 결과 반환
-                    </div>
-                </div>
-                
-                <div class="content-card">
-                    <h3 class="card-title">⚡ 에이전트 시스템의 장점</h3>
+                    <h3 class="card-title">🎯 n8n에서의 선택</h3>
+
+                    <div class="basic-font"><strong>n8n 환경에서:</strong></div>
                     <ul class="checklist">
-                        <li><strong>지능적 판단:</strong> 에이전트가 상황에 맞는 도구 자동 선택</li>
-                        <li><strong>확장성:</strong> 새로운 도구를 쉽게 추가하여 에이전트 능력 확장</li>
-                        <li><strong>다중 인터페이스:</strong> 카카오톡, 슬랙, 웹 등 다양한 채널 지원</li>
-                        <li><strong>실시간 상호작용:</strong> 사용자와 즉시 소통하며 문제 해결</li>
+                        <li><strong>서브 워크플로우 권장:</strong> 기존 워크플로우 재활용에 최적화</li>
+                        <li><strong>MCP도 가능:</strong> 단순 Task 조합용 MCP 제작 가능</li>
+                        <li><strong>실무 활용:</strong> 서브 워크플로우가 더 일반적으로 사용됨</li>
                     </ul>
-                    <div class="code-block">
-예시: 문서 분석 에이전트
-카카오톡 → 에이전트가 문서 유형 판단 → 
-적절한 분석 도구 선택 → AI 요약 → 사용자에게 답변
+
+                    <div class="callout">
+                        📌 <strong>이번 강의 초점:</strong> n8n에서 기존 워크플로우를 재활용하는 서브 워크플로우 방식을 중심으로 학습합니다.
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- 슬라이드 8: 실제 구현 예시 -->
+        <!-- 슬라이드 8: 14강 예고 - AI Agent 시스템 통합 -->
         <section class="slide" id="slide-8">
-            <h2 class="header-2">💼 실제 구현 예시: 문서 분석 에이전트 시스템</h2>
-            <div class="message">웹훅과 에이전트 도구 호출을 연결한 실제 문서 분석 에이전트 구현 사례를 살펴보겠습니다.</div>
-            
-            <div class="content-grid content-grid-2">
-                <div class="content-card">
-                    <h3 class="card-title">🎯 에이전트 워크플로우 구성</h3>
-                    <ol class="step-list">
-                        <li><strong>웹훅 노드</strong>
-                            <ul class="checklist">
-                                <li>경로: /agent-document-analysis</li>
-                                <li>메소드: POST</li>
-                                <li>사용자 메시지와 파일 받기</li>
-                            </ul>
-                        </li>
-                        <li><strong>에이전트 분석 (OpenAI/Claude)</strong>
-                            <ul class="checklist">
-                                <li>사용자 요청 의도 파악</li>
-                                <li>파일 유형 자동 판단</li>
-                                <li>필요한 도구 결정</li>
-                            </ul>
-                        </li>
-                        <li><strong>도구 호출 (서브 워크플로우/MCP)</strong>
-                            <ul class="checklist">
-                                <li>에이전트가 선택한 도구 실행</li>
-                                <li>결과를 에이전트가 해석</li>
-                                <li>사용자 친화적 응답 생성</li>
-                            </ul>
-                        </li>
-                    </ol>
-                </div>
-                
-                <div class="content-card">
-                    <h3 class="card-title">🔄 에이전트가 활용하는 도구들</h3>
-                    <table class="content-table">
-                        <thead>
-                            <tr>
-                                <th>에이전트 판단</th>
-                                <th>선택하는 도구</th>
-                                <th>수행 작업</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>PDF 문서 업로드</td>
-                                <td>문서-파싱 워크플로우</td>
-                                <td>업스테이지로 텍스트 추출</td>
-                            </tr>
-                            <tr>
-                                <td>요약 요청</td>
-                                <td>AI-요약 워크플로우</td>
-                                <td>OpenAI로 핵심 요약 생성</td>
-                            </tr>
-                            <tr>
-                                <td>키워드 분석 요청</td>
-                                <td>정보-추출 워크플로우</td>
-                                <td>엔티티 및 키워드 추출</td>
-                            </tr>
-                            <tr>
-                                <td>결과 공유 필요</td>
-                                <td>알림-발송 워크플로우</td>
-                                <td>Slack/이메일로 결과 전송</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </section>
+            <h2 class="header-2">📋 14강 예고: 통합 AI Agent 시스템 구축</h2>
+            <div class="message">다음 시간에는 지금까지 배운 모든 내용을 종합하여 완전한 에이전트 시스템을 만들어보겠습니다</div>
 
-        <!-- 슬라이드 9: 다음 단계 및 14강 연계 -->
-        <section class="slide" id="slide-9">
-            <h2 class="header-2">🚀 에이전트 시스템으로 가능한 무한한 확장</h2>
-            <div class="message">웹훅과 도구 호출 시스템 조합으로 어떤 복잡한 에이전트도 구현할 수 있습니다.</div>
-            
-            <div class="content-grid content-grid-3">
-                <div class="content-card">
-                    <h3 class="card-title">🌐 에이전트 인터페이스 확장</h3>
-                    <ul class="checklist">
-                        <li>카카오톡, 라인, 텔레그램 연동</li>
-                        <li>웹사이트 채팅창 실시간 대화</li>
-                        <li>디스코드, 슬랙 및 팀 커뮤니케이션 도구</li>
-                        <li>음성 인터페이스 (Vapi, 전화 상담원)</li>
-                    </ul>
-                </div>
-                
-                <div class="content-card">
-                    <h3 class="card-title">🔧 에이전트 도구 조합</h3>
-                    <ul class="checklist">
-                        <li>문서 분석 도구 (업스테이지, PDF 파싱)</li>
-                        <li>AI 분석 도구 (OpenAI, Claude, 로컬 LLM)</li>
-                        <li>데이터베이스 도구 (Vector DB, RAG 시스템)</li>
-                        <li>알림 도구 (Slack, 이메일, 카카오톡)</li>
-                    </ul>
-                </div>
-                
-                <div class="content-card">
-                    <h3 class="card-title">🎯 14강에서 구현할 예시</h3>
-                    <ul class="checklist">
-                        <li>카카오톡 챗봇과 에이전트 연결</li>
-                        <li>에이전트가 대화 내용 이해</li>
-                        <li>적절한 도구 자동 선택 및 실행</li>
-                        <li>사용자 친화적 응답 생성</li>
-                    </ul>
+            <div class="content-card">
+                <h3 class="card-title">🔄 전체 시스템 통합 아키텍처</h3>
+
+                <div style="background: #f8f9fa; padding: 16px; border-radius: 8px;">
+                    <pre class="mermaid" style="background: transparent; border: none; padding: 0;">
+graph TB
+    A["💬 사용자<br/>(카카오톡)"] -->|"메시지/파일"| B["📞 Webhook<br/>Request"]
+
+    B --> C["🤖 AI Agent<br/>(업스테이지 LLM)"]
+
+    C -->|"메모리 조회"| M["💭 Memory<br/>(대화 기록)"]
+    M --> C
+
+    C -->|"판단: 문서 요약"| D1["📄 Tool 1<br/>파싱 및 요약"]
+    C -->|"판단: 정보 저장"| D2["💾 Tool 2<br/>추출 및 저장"]
+
+    D1 --> E["결과 통합"]
+    D2 --> E
+
+    E --> F["📤 Response<br/>답변 반환"]
+    F --> A
+
+    style A fill:#e3f2fd
+    style B fill:#fff3e0
+    style C fill:#f3e5f5
+    style M fill:#fce4ec
+    style D1 fill:#e8f5e9
+    style D2 fill:#e8f5e9
+    style E fill:#f3e5f5
+    style F fill:#fff3e0
+                    </pre>
                 </div>
             </div>
-            
+
             <div class="callout">
-                <strong>다음 14강 예고:</strong> 이번에 배운 에이전트 통신 시스템을 활용하여 실제 문서 분석 에이전트를 구축해보겠습니다. 카카오톡에서 에이전트와 대화하면 상황에 맞는 도구를 자동 선택하여 지능적으로 응답하는 완전한 에이전트 시스템을 만들어보겠습니다.
+                🚀 <strong>14강 예고:</strong> 외부 인터페이스(웹훅), AI 에이전트, 내부 도구(서브 워크플로우)를 모두 연결한 종합적인 AI Agent 문서 관리 시스템을 직접 구현해봅니다!
             </div>
         </section>
 

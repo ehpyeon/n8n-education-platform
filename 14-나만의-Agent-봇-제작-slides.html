@@ -468,494 +468,718 @@
             </div>
         </section>
 
-        <!-- 슬라이드 2: 시스템 전체 구조 -->
+        <!-- 슬라이드 2: 시스템 개요 -->
         <section class="slide" id="slide-2">
-            <h2 class="header-2">🏗️ 복합 Agent 시스템 전체 구조</h2>
-            <div class="message">이전 강의들에서 배운 모든 기술을 Agent 중심으로 통합한 아키텍처입니다</div>
-            
-            <div class="mermaid-container">
-                <div class="mermaid">
+            <h2 class="header-2">🤖 복합 Agent 시스템 개요</h2>
+            <div class="message">웹훅으로 요청을 받아 Agent가 4가지 작업을 수행하는 자동화 시스템</div>
+
+            <div class="content-grid content-grid-2">
+                <div class="content-card">
+                    <div class="card-title">🎯 Agent가 수행하는 4가지 작업</div>
+                    <table class="content-table">
+                        <thead>
+                            <tr>
+                                <th>번호</th>
+                                <th>작업명</th>
+                                <th>설명</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1️⃣</td>
+                                <td>문서 파싱</td>
+                                <td>PDF URL을 받아 다운로드 후 파싱</td>
+                            </tr>
+                            <tr>
+                                <td>2️⃣</td>
+                                <td>스키마 생성 및 정보 추출</td>
+                                <td>문서를 이해하고 구조화된 정보 추출</td>
+                            </tr>
+                            <tr>
+                                <td>3️⃣</td>
+                                <td>벡터 DB 저장</td>
+                                <td>청킹·임베딩하여 벡터 DB에 저장</td>
+                            </tr>
+                            <tr>
+                                <td>4️⃣</td>
+                                <td>벡터 DB 검색</td>
+                                <td>질문 벡터화 후 관련 문서 검색</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="content-card">
+                    <div class="card-title">🔄 전체 동작 흐름</div>
+                    <div class="mermaid-container">
+                        <div class="mermaid">
 graph TD
-    A[🌐 러버블 프론트엔드] --> B[🔗 웹훅]
-    B --> C[🤖 Master Agent]
-    C --> D{📋 요청 분석}
+    A[🌐 웹훅 요청] --> B[🤖 Agent]
 
-    D -->|문서 분석/요약| E[📄 문서 처리·요약 도구]
-    D -->|정보 추출/저장| F[📊 정보 추출·저장 도구]
+    B --> C{작업 판단}
 
-    E --> G[📄 Upstage Doc Parse]
-    E --> H[📝 LLM 요약]
+    C -->|1| D[📄 파싱·요약 Tool]
+    C -->|2| E[⚙️ 스키마 추출 Tool]
+    C -->|3| F[💾 RAG 추가 Tool]
+    C -->|4| G[🔍 RAG 검색 Tool]
 
-    F --> I[⚙️ 구조화 변환]
-    F --> J[💾 데이터베이스 저장]
+    D --> H[📤 응답 반환]
+    E --> H
+    F --> H
+    G --> H
 
-    G --> K[📤 통합 응답]
-    H --> K
-    I --> K
-    J --> K
-    K --> A
+    style A fill:#e3f2fd
+    style B fill:#f3e5f5
+    style H fill:#e8f5e9
+                        </div>
+                    </div>
+
+                    <ul class="checklist">
+                        <li><strong>입력:</strong> 웹훅으로 사용자 요청 수신</li>
+                        <li><strong>처리:</strong> Agent가 작업 판단 후 Tool 실행</li>
+                        <li><strong>출력:</strong> 작업 결과를 JSON으로 반환</li>
+                    </ul>
                 </div>
             </div>
 
             <div class="callout">
-                Agent가 상황에 맞는 도구를 자동 선택하여 문서 처리와 정보 관리 작업을 처리하는 구조
+                💡 <strong>핵심:</strong> Agent가 사용자 요청을 이해하고 적절한 Tool을 자동으로 선택하여 실행
             </div>
         </section>
 
-        <!-- 슬라이드 3: 1단계 - 시스템 기획 -->
+        <!-- 슬라이드 3: 구축 단계 개괄 -->
         <section class="slide" id="slide-3">
-            <h2 class="header-2">📋 1단계: 4단계 시스템 기획 프로세스</h2>
-            <div class="message">복합 Agent 봇을 체계적으로 설계하기 위한 4단계 접근 방식</div>
+            <h2 class="header-2">📋 Agent 시스템 구축 3단계</h2>
+            <div class="message">체계적인 접근으로 복합 Agent 봇을 단계적으로 완성합니다</div>
 
             <div class="mermaid-container">
                 <div class="mermaid">
 graph LR
-    A[1️⃣ 인터페이스<br/>설계] --> B[2️⃣ 요청/응답<br/>설계]
-    B --> C[3️⃣ Agent<br/>설계]
-    C --> D[4️⃣ 도구<br/>구현]
+    A[1️⃣ 에이전트<br/>뼈대 만들기] --> B[2️⃣ 툴 만들어<br/>붙이기]
+    B --> C[3️⃣ 인터페이스<br/>연결 및 테스트]
 
-    style A fill:#e8f4f8
-    style B fill:#fff4e6
-    style C fill:#f0e6ff
-    style D fill:#e8f8f0
+    style A fill:#e3f2fd
+    style B fill:#fff3e0
+    style C fill:#e8f5e9
                 </div>
             </div>
 
-            <div class="content-grid content-grid-2">
+            <div class="content-grid content-grid-3">
                 <div class="content-card">
-                    <div class="card-title">1️⃣ 인터페이스 설계</div>
+                    <div class="card-title">1️⃣ 에이전트 뼈대 만들기</div>
                     <div class="mermaid-container">
                         <div class="mermaid">
 graph TD
-    A[👤 사용자] -->|텍스트 입력| B[💬 채팅 UI]
-    A -->|파일 업로드| B
-    B -->|웹훅 전송| C[🔗 n8n]
-    C -->|응답 반환| B
-    B -->|결과 표시| A
+    A[🔗 Webhook] --> B[🤖 Agent 노드]
+    B --> C[🧠 LLM]
+    B --> D[💭 Memory]
+    B --> E[🔧 Sub-Workflow<br/>호출부]
+
+    style A fill:#e3f2fd
+    style B fill:#f3e5f5
                         </div>
                     </div>
                     <ul class="checklist">
-                        <li><strong>입력 방식:</strong> 채팅 + 파일 업로드</li>
-                        <li><strong>출력 형식:</strong> 텍스트 + 구조화 데이터</li>
-                        <li><strong>플랫폼:</strong> 러버블 웹 인터페이스</li>
+                        <li>Webhook으로 요청 수신</li>
+                        <li>Agent 노드 설정</li>
+                        <li>LLM, Memory 연결</li>
+                        <li>Sub-Workflow 호출 준비</li>
                     </ul>
                 </div>
 
                 <div class="content-card">
-                    <div class="card-title">2️⃣ 요청/응답 설계</div>
-                    <div class="mermaid-container">
-                        <div class="mermaid">
-graph LR
-    A[📥 요청] --> B{요청 타입}
-    B -->|문서| C[📄 문서 분석·요약]
-    B -->|데이터| D[📊 정보 추출·저장]
-    C --> E[📤 응답]
-    D --> E
-                        </div>
-                    </div>
-                    <ul class="checklist">
-                        <li><strong>요청 파라미터:</strong> message, file_url, type</li>
-                        <li><strong>응답 구조:</strong> result, metadata, source</li>
-                        <li><strong>데이터 형식:</strong> JSON 표준화</li>
-                    </ul>
-                </div>
-            </div>
-
-            <div class="content-grid content-grid-2">
-                <div class="content-card">
-                    <div class="card-title">3️⃣ Agent 설계</div>
-                    <div class="mermaid-container">
-                        <div class="mermaid">
-graph TD
-    A[🤖 Master Agent] --> B{의도 분석}
-    B -->|문서 관련| C[📄 도구 1 선택]
-    B -->|데이터 관련| D[📊 도구 2 선택]
-    B -->|복합 요청| E[🔄 도구 조합]
-    C --> F[결과 통합]
-    D --> F
-    E --> F
-                        </div>
-                    </div>
-                    <ul class="checklist">
-                        <li><strong>역할:</strong> 요청 분석 및 도구 자동 선택</li>
-                        <li><strong>모델:</strong> OpenAI GPT-4</li>
-                        <li><strong>핵심 로직:</strong> 의도 파악 + 도구 조합</li>
-                    </ul>
-                </div>
-
-                <div class="content-card">
-                    <div class="card-title">4️⃣ 도구 구현</div>
+                    <div class="card-title">2️⃣ 툴 만들어 붙이기</div>
                     <table class="content-table">
                         <thead>
                             <tr>
-                                <th>도구</th>
+                                <th>툴</th>
                                 <th>기능</th>
-                                <th>구현 방식</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
-                                <td>📄 문서 처리·요약</td>
-                                <td>문서 분석, OCR, 요약</td>
-                                <td>서브워크플로우</td>
+                                <td>📄 문서 파싱</td>
+                                <td>PDF 다운로드 및 파싱</td>
                             </tr>
                             <tr>
-                                <td>📊 정보 추출·저장</td>
-                                <td>데이터 파싱, 구조화, DB 저장</td>
-                                <td>서브워크플로우</td>
+                                <td>⚙️ 정보 추출</td>
+                                <td>스키마 생성 및 추출</td>
+                            </tr>
+                            <tr>
+                                <td>💾 벡터 저장</td>
+                                <td>청킹 및 벡터 DB 저장</td>
+                            </tr>
+                            <tr>
+                                <td>🔍 벡터 검색</td>
+                                <td>유사 문서 검색</td>
                             </tr>
                         </tbody>
                     </table>
-                    <div style="background: #f8f9fa; padding: 10px; border-radius: 6px; margin-top: 10px; font-size: 11pt;">
-                        💡 <strong>설계 원칙:</strong> 모듈화, 재사용성, 확장 가능성
+                </div>
+
+                <div class="content-card">
+                    <div class="card-title">3️⃣ 인터페이스 연결 및 테스트</div>
+                    <div class="mermaid-container">
+                        <div class="mermaid">
+graph TD
+    A[🎨 Lovable<br/>인터페이스] --> B[🔗 Webhook]
+    B --> C[🤖 Agent]
+    C --> D[✅ 테스트]
+
+    style A fill:#f3e5f5
+    style D fill:#e8f5e9
+                        </div>
+                    </div>
+                    <ul class="checklist">
+                        <li>Lovable로 UI 제작</li>
+                        <li>Webhook 연결</li>
+                        <li>통합 테스트 수행</li>
+                        <li>오류 수정 및 최적화</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="callout">
+                💡 <strong>핵심 전략:</strong> 뼈대 → 툴 → 인터페이스 순서로 단계적 구축하여 안정성 확보
+            </div>
+        </section>
+
+        <!-- 슬라이드 4: 에이전트 뼈대 만들기 -->
+        <section class="slide" id="slide-4">
+            <h2 class="header-2">🏗️ 1단계: 에이전트 뼈대 만들기</h2>
+            <div class="message">Webhook, Agent 노드, LLM, Memory, Sub-Workflow 호출부를 연결하여 기본 구조 완성</div>
+
+            <div class="content-grid content-grid-2">
+                <div class="content-card">
+                    <div class="card-title">🔧 에이전트 뼈대 구성 요소</div>
+                    <div class="mermaid-container">
+                        <div class="mermaid">
+graph TD
+    A[🔗 Webhook Trigger] --> B[🤖 Agent 노드]
+
+    B --> C[🧠 LLM<br/>Upstage Solar Pro2]
+    B --> D[💭 Window Buffer<br/>Memory]
+    B --> E[🔧 Tools<br/>Sub-Workflow 호출]
+
+    E --> F[📄 문서 파싱 Tool]
+    E --> G[⚙️ 정보 추출 Tool]
+    E --> H[💾 벡터 저장 Tool]
+    E --> I[🔍 벡터 검색 Tool]
+
+    style A fill:#e3f2fd
+    style B fill:#f3e5f5
+    style C fill:#fff3e0
+    style D fill:#e8f5e9
+                        </div>
+                    </div>
+                </div>
+
+                <div class="content-card">
+                    <div class="card-title">📝 각 구성 요소 역할</div>
+                    <table class="content-table">
+                        <thead>
+                            <tr>
+                                <th>구성 요소</th>
+                                <th>역할</th>
+                                <th>설정</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>🔗 Webhook</td>
+                                <td>외부 요청 수신</td>
+                                <td>POST 메서드</td>
+                            </tr>
+                            <tr>
+                                <td>🤖 Agent</td>
+                                <td>작업 판단 및 Tool 선택</td>
+                                <td>AI Agent 노드</td>
+                            </tr>
+                            <tr>
+                                <td>🧠 LLM</td>
+                                <td>자연어 이해 및 생성</td>
+                                <td>Solar Pro2</td>
+                            </tr>
+                            <tr>
+                                <td>💭 Memory</td>
+                                <td>대화 맥락 유지</td>
+                                <td>Window Buffer</td>
+                            </tr>
+                            <tr>
+                                <td>🔧 Sub-Workflow</td>
+                                <td>Tool 실행</td>
+                                <td>4개 Tool 연결</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <div class="card-title">🚀 뼈대 구축 단계</div>
+                <div class="content-grid content-grid-2">
+                    <div>
+                        <h3 class="header-3">Step 1: Webhook 설정</h3>
+                        <ol class="step-list">
+                            <li>Webhook Trigger 노드 추가</li>
+                            <li>HTTP Method: POST 선택</li>
+                            <li>Path: /agent-bot 설정</li>
+                            <li>Webhook URL 복사 (나중에 사용)</li>
+                        </ol>
+                    </div>
+                    <div>
+                        <h3 class="header-3">Step 2: Agent 노드 연결</h3>
+                        <ol class="step-list">
+                            <li>AI Agent 노드 추가</li>
+                            <li>Webhook에서 Agent로 연결</li>
+                            <li>System Prompt 작성</li>
+                            <li>Tools 섹션 준비 (아직 비어있음)</li>
+                        </ol>
+                    </div>
+                </div>
+
+                <div class="content-grid content-grid-2" style="margin-top: 12px;">
+                    <div>
+                        <h3 class="header-3">Step 3: LLM & Memory 설정</h3>
+                        <ul class="checklist">
+                            <li><strong>LLM:</strong> Upstage Chat Model 선택</li>
+                            <li><strong>Model:</strong> solar-pro2 선택</li>
+                            <li><strong>Memory:</strong> Window Buffer Memory 추가</li>
+                            <li><strong>Window Size:</strong> 5 설정 (최근 5개 대화)</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3 class="header-3">Step 4: Sub-Workflow 호출 준비</h3>
+                        <ul class="checklist">
+                            <li>Tools 섹션에서 "Call n8n Workflow" 선택</li>
+                            <li>4개 Tool 슬롯 준비 (다음 단계에서 연결)</li>
+                            <li>각 Tool 이름과 설명 플레이스홀더 작성</li>
+                            <li>입력/출력 스키마 정의</li>
+                        </ul>
                     </div>
                 </div>
             </div>
 
             <div class="callout">
-                4단계 프로세스를 따르면 체계적이고 확장 가능한 Agent 시스템을 구축할 수 있습니다
+                💡 <strong>다음 단계:</strong> 이제 4개의 Tool(Sub-Workflow)을 만들어서 Agent에 연결합니다
             </div>
         </section>
 
-        <!-- 슬라이드 4: 2단계 - 러버블 프론트엔드 -->
-        <section class="slide" id="slide-4">
-            <h2 class="header-2">🌐 2단계: 러버블로 프론트엔드 구축</h2>
-            <div class="message">간단한 웹 인터페이스를 만들어 사용자와 Agent를 연결합니다</div>
+        <!-- 슬라이드 5: 4가지 툴 개요 -->
+        <section class="slide" id="slide-5">
+            <h2 class="header-2">🔧 2단계: 4가지 Tool 만들기 개요</h2>
+            <div class="message">4개의 Tool을 Sub-Workflow로 만들어 Agent에 연결합니다</div>
             
+            <div class="message" style="margin-bottom: 16px;">각 Tool의 입력/출력과 내부 동작을 간단한 도식으로 이해합니다</div>
+
             <div class="content-grid content-grid-2">
                 <div class="content-card">
-                    <div class="card-title">🎨 러버블 기본 설정</div>
-                    <ol class="step-list">
-                        <li><strong>프로젝트 생성</strong>
-                            <ul class="checklist">
-                                <li>러버블 계정 생성 및 로그인</li>
-                                <li>새 프로젝트 "Agent Bot Interface" 생성</li>
-                                <li>기본 템플릿 선택</li>
-                            </ul>
-                        </li>
-                        <li><strong>UI 컴포넌트 구성</strong>
-                            <ul class="checklist">
-                                <li>채팅 인터페이스 생성</li>
-                                <li>파일 업로드 영역 추가</li>
-                                <li>응답 표시 영역 설정</li>
-                            </ul>
-                        </li>
-                        <li><strong>스타일링 적용</strong>
-                            <ul class="checklist">
-                                <li>간단하고 직관적인 디자인</li>
-                                <li>모바일 반응형 적용</li>
-                                <li>로딩 상태 표시</li>
-                            </ul>
-                        </li>
-                    </ol>
-                </div>
-
-                <div class="content-card">
-                    <div class="card-title">🔗 n8n 웹훅 연결 구조</div>
+                    <div class="card-title">📄 Tool 1: 문서 파싱</div>
                     <div class="mermaid-container">
                         <div class="mermaid">
-sequenceDiagram
-    participant U as 👤 사용자
-    participant L as 💬 러버블 UI
-    participant W as 🔗 웹훅
-    participant N as 🤖 n8n Agent
+graph LR
+    A[📥 입력<br/>URL] --> B[🌐 HTTP Request<br/>PDF 다운로드]
+    B --> C[📄 Document Parse<br/>문서 파싱]
+    C --> D[📤 출력<br/>파싱된 텍스트]
 
-    U->>L: 메시지 입력/파일 업로드
-    L->>W: POST /webhook/agent-bot
-    Note over W: message, file_url, timestamp
-    W->>N: 요청 데이터 전달
-    N->>N: Agent 처리
-    N-->>W: 응답 반환
-    W-->>L: JSON 응답
-    L-->>U: 결과 표시
+    style A fill:#e3f2fd
+    style D fill:#e8f5e9
                         </div>
                     </div>
+                    <ul class="checklist">
+                        <li><strong>입력:</strong> PDF 문서 URL</li>
+                        <li><strong>처리:</strong> HTTP Request로 다운로드 후 Document Parse로 파싱</li>
+                        <li><strong>출력:</strong> 파싱된 텍스트</li>
+                    </ul>
+                </div>
 
-                    <div style="background: #f8f9fa; padding: 10px; border-radius: 6px; margin-top: 10px; font-size: 11pt;">
-                        💡 <strong>연결 핵심:</strong> 러버블의 fetch API로 웹훅 URL 호출 → n8n Agent 실행 → 결과 수신
+                <div class="content-card">
+                    <div class="card-title">⚙️ Tool 2: 스키마 생성 및 정보 추출</div>
+                    <div class="mermaid-container">
+                        <div class="mermaid">
+graph LR
+    A[📥 입력<br/>문서 텍스트] --> B[📋 Schema Generation<br/>스키마 생성]
+    B --> C[🔍 Information Extract<br/>정보 추출]
+    C --> D[📤 출력<br/>JSON 데이터]
+
+    style A fill:#e3f2fd
+    style D fill:#e8f5e9
+                        </div>
                     </div>
+                    <ul class="checklist">
+                        <li><strong>입력:</strong> 문서 텍스트</li>
+                        <li><strong>처리:</strong> 문서 이해 후 스키마 생성 → 정보 추출</li>
+                        <li><strong>출력:</strong> 구조화된 JSON</li>
+                    </ul>
                 </div>
             </div>
 
-            <div class="content-card">
-                <div class="card-title">🚀 러버블 구현 실습</div>
-                <div class="content-grid content-grid-2">
-                    <div>
-                        <h3 class="header-3">📱 인터페이스 구성</h3>
-                        <ul class="checklist">
-                            <li><strong>입력 영역:</strong> 텍스트 + 파일 업로드</li>
-                            <li><strong>채팅 영역:</strong> 대화 히스토리 표시</li>
-                            <li><strong>상태 표시:</strong> 처리 중/완료 알림</li>
-                            <li><strong>결과 영역:</strong> 구조화된 응답 표시</li>
-                        </ul>
+            <div class="content-grid content-grid-2">
+                <div class="content-card">
+                    <div class="card-title">💾 Tool 3: 벡터 데이터베이스 저장</div>
+                    <div class="mermaid-container">
+                        <div class="mermaid">
+graph LR
+    A[📥 입력<br/>정보+메타데이터] --> B[✂️ Chunking<br/>텍스트 분할]
+    B --> C[🔤 Embedding<br/>벡터화]
+    C --> D[💾 Qdrant<br/>Vector Store]
+    D --> E[📤 출력<br/>저장 완료]
+
+    style A fill:#e3f2fd
+    style E fill:#e8f5e9
+                        </div>
                     </div>
-                    <div>
-                        <h3 class="header-3">⚙️ 기능 구현</h3>
-                        <ul class="checklist">
-                            <li><strong>실시간 통신:</strong> WebSocket 또는 Polling</li>
-                            <li><strong>파일 처리:</strong> 이미지/PDF 업로드 지원</li>
-                            <li><strong>응답 파싱:</strong> JSON 데이터 시각화</li>
-                            <li><strong>에러 처리:</strong> 네트워크 오류 대응</li>
-                        </ul>
-                    </div>
+                    <ul class="checklist">
+                        <li><strong>입력:</strong> 정보 + 메타데이터</li>
+                        <li><strong>처리:</strong> Chunking → Embedding → 벡터 DB 저장</li>
+                        <li><strong>출력:</strong> 저장 완료 메시지</li>
+                    </ul>
                 </div>
+
+                <div class="content-card">
+                    <div class="card-title">🔍 Tool 4: 벡터 데이터베이스 검색</div>
+                    <div class="mermaid-container">
+                        <div class="mermaid">
+graph LR
+    A[📥 입력<br/>검색 질의] --> B[🔤 Query Embedding<br/>질의 벡터화]
+    B --> C[💾 Qdrant<br/>Vector Store]
+    C --> D[📤 출력<br/>관련 문서]
+
+    style A fill:#e3f2fd
+    style D fill:#e8f5e9
+                        </div>
+                    </div>
+                    <ul class="checklist">
+                        <li><strong>입력:</strong> 검색 질의</li>
+                        <li><strong>처리:</strong> Query Embedding → Qdrant 검색</li>
+                        <li><strong>출력:</strong> 관련 문서 목록</li>
+                        <li><strong>특징:</strong> Agent 하단에 직접 연결</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="callout">
+                💡 <strong>다음 단계:</strong> 6~9페이지에서 각 Tool을 상세하게 구현합니다
             </div>
         </section>
 
-        <!-- 슬라이드 5: 3단계 - 문서 처리 도구 통합 -->
-        <section class="slide" id="slide-5">
-            <h2 class="header-2">📄 3단계: 문서 처리 도구 통합</h2>
-            <div class="message">Upstage Doc Parse를 Agent 도구로 연결하여 문서 분석 기능을 구현합니다</div>
-            
+        <!-- 슬라이드 6: Tool 1 - 문서 파싱 -->
+        <section class="slide" id="slide-6">
+            <h2 class="header-2">📄 Tool 1: 문서 파싱 만들기</h2>
+            <div class="message">PDF URL을 받아 문서를 다운로드하고 파싱하는 Sub-Workflow 제작</div>
+
             <div class="content-grid content-grid-2">
                 <div class="content-card">
-                    <div class="card-title">🔧 문서 처리 서브워크플로우 생성</div>
-                    <ol class="step-list">
-                        <li><strong>새 워크플로우 생성</strong>
-                            <ul class="checklist">
-                                <li>이름: "Document_Processor"</li>
-                                <li>시작: Execute Workflow Trigger 노드</li>
-                                <li>입력: file_url, output_format</li>
-                            </ul>
-                        </li>
-                        <li><strong>Upstage 노드 설정</strong>
-                            <ul class="checklist">
-                                <li>Document Parse 노드 추가</li>
-                                <li>API 키 및 엔드포인트 설정</li>
-                                <li>파일 형식 자동 감지</li>
-                            </ul>
-                        </li>
-                        <li><strong>결과 후처리</strong>
-                            <ul class="checklist">
-                                <li>텍스트 정제 및 구조화</li>
-                                <li>출력 형식 변환 (JSON/표/요약)</li>
-                                <li>응답 데이터 표준화</li>
-                            </ul>
-                        </li>
-                    </ol>
-                </div>
-
-                <div class="content-card">
-                    <div class="card-title">🤖 Agent에 도구 등록</div>
+                    <div class="card-title">🔧 워크플로우 구성</div>
                     <div class="mermaid-container">
                         <div class="mermaid">
 graph TD
-    A[🤖 Agent 노드] --> B[⚙️ Tools 설정]
-    B --> C[Call n8n Workflow]
-    C --> D[Document_Processor 선택]
+    A[⚡ Execute Workflow<br/>Trigger] --> B[🌐 HTTP Request<br/>PDF 다운로드]
+    B --> C[📄 Document Parse<br/>Upstage]
+    C --> D[📤 응답 반환<br/>파싱된 텍스트]
 
-    D --> E[도구 설명 작성]
-    E --> F["📄 문서 분석·요약 도구"]
-
-    F --> G[입력 파라미터]
-    G --> H[file_url: 파일 URL]
-    G --> I[output_format: 출력 형식]
-
-    style F fill:#e8f4f8
-    style H fill:#fff4e6
-    style I fill:#fff4e6
+    style A fill:#e3f2fd
+    style B fill:#fff3e0
+    style C fill:#f3e5f5
+    style D fill:#e8f5e9
                         </div>
                     </div>
-
-                    <div style="background: #f8f9fa; padding: 10px; border-radius: 6px; margin-top: 10px; font-size: 11pt;">
-                        💡 <strong>사용 예시:</strong> "첨부한 계약서에서 주요 조건들을 정리해줘"
-                    </div>
-                </div>
-            </div>
-
-            <div class="content-card">
-                <div class="card-title">🚀 실습: Agent에 문서 도구 연결하기</div>
-                <div class="content-grid content-grid-2">
-                    <div>
-                        <h3 class="header-3">📋 메인 Agent 워크플로우</h3>
-                        <ol class="step-list">
-                            <li><strong>Agent 노드 설정</strong>
-                                <ul class="checklist">
-                                    <li>OpenAI GPT-4 모델 선택</li>
-                                    <li>시스템 프롬프트 작성</li>
-                                </ul>
-                            </li>
-                            <li><strong>도구 추가</strong>
-                                <ul class="checklist">
-                                    <li>Call n8n Workflow 노드</li>
-                                    <li>Document_Processor 워크플로우 연결</li>
-                                </ul>
-                            </li>
-                        </ol>
-                    </div>
-                    <div>
-                        <h3 class="header-3">🧪 테스트 및 확인</h3>
-                        <ol class="step-list">
-                            <li><strong>수동 테스트</strong>
-                                <ul class="checklist">
-                                    <li>PDF 파일로 기능 확인</li>
-                                    <li>이미지 파일 처리 테스트</li>
-                                </ul>
-                            </li>
-                            <li><strong>Agent 연동 테스트</strong>
-                                <ul class="checklist">
-                                    <li>"문서 분석해줘" 요청</li>
-                                    <li>자동 도구 선택 확인</li>
-                                </ul>
-                            </li>
-                        </ol>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- 슬라이드 6: RAG 시스템 통합 -->
-        <section class="slide" id="slide-6">
-            <h2 class="header-2">🔍 RAG 지식 검색 도구 통합</h2>
-            <div class="message">기존 Vector Store를 Agent 도구로 연결하여 지능형 지식 검색 기능을 구현합니다</div>
-            
-            <div class="content-grid content-grid-2">
-                <div class="content-card">
-                    <div class="card-title">🗄️ RAG 검색 서브워크플로우 생성</div>
-                    <ol class="step-list">
-                        <li><strong>새 워크플로우 생성</strong>
-                            <ul class="checklist">
-                                <li>이름: "Knowledge_Search"</li>
-                                <li>입력: query, top_k, filter</li>
-                                <li>기존 Vector Store 활용</li>
-                            </ul>
-                        </li>
-                        <li><strong>검색 로직 구성</strong>
-                            <ul class="checklist">
-                                <li>Pinecone/Qdrant Vector Store 연결</li>
-                                <li>임베딩 생성 및 유사도 검색</li>
-                                <li>검색 결과 랭킹 및 필터링</li>
-                            </ul>
-                        </li>
-                        <li><strong>결과 후처리</strong>
-                            <ul class="checklist">
-                                <li>관련도 점수 기반 정렬</li>
-                                <li>출처 정보 추가</li>
-                                <li>컨텍스트 길이 최적화</li>
-                            </ul>
-                        </li>
-                    </ol>
+                    <ul class="checklist">
+                        <li>PDF URL을 입력받음</li>
+                        <li>HTTP Request로 PDF 다운로드</li>
+                        <li>Document Parse로 텍스트 추출</li>
+                    </ul>
                 </div>
 
                 <div class="content-card">
-                    <div class="card-title">🤖 Agent에 RAG 도구 등록</div>
-                    <div class="code-block">
-# Knowledge Search Tool 설정
-{
-  "name": "knowledge_search",
-  "description": "회사 내부 문서와 지식베이스에서 관련 정보를 검색합니다. 정책, 가이드라인, FAQ 등에서 정확한 답변을 찾을 수 있습니다.",
-  "parameters": {
-    "query": {
-      "type": "string",
-      "description": "검색할 질문이나 키워드"
-    },
-    "top_k": {
-      "type": "number",
-      "default": 3,
-      "description": "가져올 결과 개수"
-    },
-    "category": {
-      "type": "string",
-      "description": "문서 카테고리 필터 (선택사항)"
-    }
-  }
-}
-                    </div>
-                    
-                    <div style="background: #f8f9fa; padding: 10px; border-radius: 6px; margin-top: 10px; font-size: 11pt;">
-                        💡 <strong>사용 예시:</strong> "회사 휴가 정책이 어떻게 되나요?"
-                    </div>
-                </div>
-            </div>
-
-            <div class="content-card">
-                <div class="card-title">🚀 실습: RAG 도구를 Agent에 연결하기</div>
-                <div class="content-grid content-grid-2">
-                    <div>
-                        <h3 class="header-3">🔍 검색 품질 최적화</h3>
-                        <ul class="checklist">
-                            <li><strong>임베딩 모델:</strong> 한국어 특화 모델 선택</li>
-                            <li><strong>청크 크기:</strong> 500-1000자로 조정</li>
-                            <li><strong>유사도 임계값:</strong> 0.7 이상 결과만 반환</li>
-                            <li><strong>메타데이터:</strong> 문서 제목, 날짜, 카테고리 포함</li>
-                        </ul>
-                    </div>
-                    <div>
-                        <h3 class="header-3">🧪 통합 테스트</h3>
-                        <ul class="checklist">
-                            <li><strong>검색 정확도:</strong> 관련 문서 찾기 테스트</li>
-                            <li><strong>응답 품질:</strong> 출처와 함께 답변 확인</li>
-                            <li><strong>Agent 연동:</strong> 자동 도구 선택 검증</li>
-                            <li><strong>복합 쿼리:</strong> 문서+검색 동시 요청</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- 슬라이드 7: 데이터 파싱 도구 통합 -->
-        <section class="slide" id="slide-7">
-            <h2 class="header-2">📊 데이터 파싱 및 변환 도구 통합</h2>
-            <div class="message">비구조화된 데이터를 구조화된 형태로 변환하는 파싱 도구를 Agent에 추가합니다</div>
-            
-            <div class="content-grid content-grid-2">
-                <div class="content-card">
-                    <div class="card-title">⚙️ 데이터 파싱 서브워크플로우</div>
-                    <ol class="step-list">
-                        <li><strong>새 워크플로우 생성</strong>
-                            <ul class="checklist">
-                                <li>이름: "Data_Parser"</li>
-                                <li>입력: data, output_format, schema</li>
-                                <li>다양한 형식 지원</li>
-                            </ul>
-                        </li>
-                        <li><strong>파싱 로직 구성</strong>
-                            <ul class="checklist">
-                                <li>정규표현식 패턴 매칭</li>
-                                <li>JSON/CSV/XML 파싱</li>
-                                <li>구조화 스키마 적용</li>
-                            </ul>
-                        </li>
-                        <li><strong>결과 변환</strong>
-                            <ul class="checklist">
-                                <li>테이블 형태로 정리</li>
-                                <li>차트 데이터 생성</li>
-                                <li>요약 통계 추가</li>
-                            </ul>
-                        </li>
-                    </ol>
-                </div>
-
-                <div class="content-card">
-                    <div class="card-title">🎯 파싱 활용 사례</div>
+                    <div class="card-title">⚙️ 설정 방법</div>
                     <table class="content-table">
                         <thead>
                             <tr>
-                                <th>입력 데이터</th>
-                                <th>파싱 결과</th>
-                                <th>활용 목적</th>
+                                <th>노드</th>
+                                <th>설정</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
-                                <td>영수증 이미지</td>
-                                <td>항목별 금액 표</td>
-                                <td>경비 관리</td>
+                                <td>Trigger</td>
+                                <td>Execute Workflow<br/>입력: url (PDF URL)</td>
                             </tr>
                             <tr>
-                                <td>계약서 텍스트</td>
-                                <td>조건별 정리</td>
-                                <td>법무 검토</td>
+                                <td>HTTP Request</td>
+                                <td>Method: GET<br/>Response Format: File</td>
                             </tr>
                             <tr>
-                                <td>고객 피드백</td>
-                                <td>감정 분석 결과</td>
-                                <td>만족도 분석</td>
+                                <td>Document Parse</td>
+                                <td>Upstage<br/>Input: Binary File</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div style="margin-top: 12px;">
+                        <strong>Tool 설명 (Agent에 등록):</strong>
+                        <div style="background: #F8F9FA; padding: 10px; border-radius: 6px; margin-top: 8px; font-size: 11pt;">
+                            <strong>Name:</strong> parse_document<br>
+                            <strong>Description:</strong> PDF URL을 받아 문서를 다운로드하고 파싱하여 텍스트로 반환합니다.<br>
+                            <strong>Parameters:</strong><br>
+                            - url: PDF 문서 URL
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <div class="card-title">💡 활용 예시</div>
+                <div class="content-grid content-grid-2">
+                    <div>
+                        <strong>입력:</strong>
+                        <div style="background: #e3f2fd; padding: 10px; border-radius: 6px; margin-top: 8px;">
+                            url: "https://example.com/report.pdf"
+                        </div>
+                    </div>
+                    <div>
+                        <strong>출력:</strong>
+                        <div style="background: #e8f5e9; padding: 10px; border-radius: 6px; margin-top: 8px;">
+                            "파싱된 문서 텍스트 내용..."
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 슬라이드 7: Tool 2 - 스키마 생성 및 정보 추출 -->
+        <section class="slide" id="slide-7">
+            <h2 class="header-2">⚙️ Tool 2: 스키마 생성 및 정보 추출 만들기</h2>
+            <div class="message">문서를 이해하여 스키마를 자동 생성하고 구조화된 정보를 추출하는 Sub-Workflow 제작</div>
+
+            <div class="content-grid content-grid-2">
+                <div class="content-card">
+                    <div class="card-title">🔧 워크플로우 구성</div>
+                    <div class="mermaid-container">
+                        <div class="mermaid">
+graph TD
+    A[⚡ Execute Workflow<br/>Trigger] --> B[📋 Schema Generation<br/>Upstage]
+    B --> C[🔍 Information Extract<br/>Upstage]
+    C --> D[📤 응답 반환<br/>JSON 데이터]
+
+    style A fill:#e3f2fd
+    style B fill:#f3e5f5
+    style C fill:#fff3e0
+    style D fill:#e8f5e9
+                        </div>
+                    </div>
+                    <ul class="checklist">
+                        <li>문서 텍스트를 입력받음</li>
+                        <li>Schema Generation으로 스키마 생성</li>
+                        <li>Information Extract로 정보 추출</li>
+                    </ul>
+                </div>
+
+                <div class="content-card">
+                    <div class="card-title">⚙️ 설정 방법</div>
+                    <table class="content-table">
+                        <thead>
+                            <tr>
+                                <th>노드</th>
+                                <th>설정</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Trigger</td>
+                                <td>Execute Workflow<br/>입력: document_text</td>
                             </tr>
                             <tr>
-                                <td>로그 파일</td>
-                                <td>에러 통계</td>
-                                <td>시스템 모니터링</td>
+                                <td>Schema Generation</td>
+                                <td>Upstage<br/>문서 기반 스키마 생성</td>
+                            </tr>
+                            <tr>
+                                <td>Information Extract</td>
+                                <td>Upstage<br/>스키마 기반 데이터 추출</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div style="margin-top: 12px;">
+                        <strong>Tool 설명 (Agent에 등록):</strong>
+                        <div style="background: #F8F9FA; padding: 10px; border-radius: 6px; margin-top: 8px; font-size: 11pt;">
+                            <strong>Name:</strong> extract_information<br>
+                            <strong>Description:</strong> 문서를 이해하여 스키마를 생성하고 구조화된 정보를 JSON으로 추출합니다.<br>
+                            <strong>Parameters:</strong><br>
+                            - document_text: 분석할 문서 텍스트
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <div class="card-title">💡 동작 흐름</div>
+                <div class="mermaid-container">
+                    <div class="mermaid">
+sequenceDiagram
+    participant T as Trigger
+    participant S as Schema Generation
+    participant I as Information Extract
+
+    T->>S: 문서 텍스트 전달
+    S->>S: 문서 이해 및<br/>스키마 생성
+    S->>I: 생성된 스키마 전달
+    I->>I: 스키마 기반<br/>정보 추출
+    I->>T: JSON 데이터 반환
+                    </div>
+                </div>
+
+                <div style="margin-top: 12px; background: #f0e6ff; padding: 12px; border-radius: 8px;">
+                    <strong>💡 핵심:</strong> Schema Generation이 문서를 자동으로 분석하여 적절한 스키마를 생성하므로, 별도의 스키마 정의 없이도 구조화된 데이터를 추출할 수 있습니다.
+                </div>
+            </div>
+        </section>
+
+        <!-- 슬라이드 8: Tool 3 - 벡터 데이터베이스 저장 -->
+        <section class="slide" id="slide-8">
+            <h2 class="header-2">💾 Tool 3: 벡터 데이터베이스 저장 만들기</h2>
+            <div class="message">정보를 청킹하고 임베딩하여 Qdrant 벡터 DB에 저장하는 Sub-Workflow 제작</div>
+
+            <div class="content-grid content-grid-2">
+                <div class="content-card">
+                    <div class="card-title">🔧 워크플로우 구성</div>
+                    <div class="mermaid-container">
+                        <div class="mermaid">
+graph TD
+    A[⚡ Execute Workflow<br/>Trigger] --> B[💾 Qdrant Vector Store<br/>Insert Document]
+    B --> C[📤 응답 반환<br/>저장 완료]
+
+    style A fill:#e3f2fd
+    style B fill:#f3e5f5
+    style C fill:#e8f5e9
+                        </div>
+                    </div>
+                    <ul class="checklist">
+                        <li>정보와 메타데이터를 입력받음</li>
+                        <li>Qdrant Vector Store 노드가 자동으로 처리:
+                            <ul style="margin-left: 20px; margin-top: 4px;">
+                                <li>텍스트 청킹 (Chunking)</li>
+                                <li>Solar Embedding으로 벡터화</li>
+                                <li>Qdrant에 저장</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="content-card">
+                    <div class="card-title">⚙️ 설정 방법</div>
+                    <table class="content-table">
+                        <thead>
+                            <tr>
+                                <th>노드</th>
+                                <th>설정</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Trigger</td>
+                                <td>Execute Workflow<br/>입력: text, metadata</td>
+                            </tr>
+                            <tr>
+                                <td>Qdrant Vector Store</td>
+                                <td>Operation: Insert Document<br/>Embedding: Solar Embedding<br/>Data Loader 설정</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div style="margin-top: 12px;">
+                        <strong>Tool 설명 (Agent에 등록):</strong>
+                        <div style="background: #F8F9FA; padding: 10px; border-radius: 6px; margin-top: 8px; font-size: 11pt;">
+                            <strong>Name:</strong> save_to_vectordb<br>
+                            <strong>Description:</strong> 정보를 청킹하고 임베딩하여 벡터 데이터베이스에 저장합니다.<br>
+                            <strong>Parameters:</strong><br>
+                            - text: 저장할 텍스트<br>
+                            - metadata: 메타데이터 (JSON)
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <div class="card-title">💡 Qdrant Vector Store 내부 동작</div>
+                <div class="mermaid-container">
+                    <div class="mermaid">
+graph LR
+    A[입력 텍스트] --> B[✂️ Data Loader<br/>Chunking]
+    B --> C[🔤 Solar Embedding<br/>벡터화]
+    C --> D[💾 Qdrant DB<br/>저장]
+
+    style A fill:#e3f2fd
+    style B fill:#fff3e0
+    style C fill:#f3e5f5
+    style D fill:#e8f5e9
+                    </div>
+                </div>
+
+                <div style="margin-top: 12px; background: #f0e6ff; padding: 12px; border-radius: 8px;">
+                    <strong>💡 핵심:</strong> Qdrant Vector Store 노드 하나로 청킹, 임베딩, 저장까지 모든 과정을 자동으로 처리하므로 간단하게 구현할 수 있습니다.
+                </div>
+            </div>
+        </section>
+
+        <!-- 슬라이드 9: Tool 4 - 벡터 데이터베이스 검색 -->
+        <section class="slide" id="slide-9">
+            <h2 class="header-2">🔍 Tool 4: 벡터 데이터베이스 검색 (Agent 직접 연결)</h2>
+            <div class="message">Agent 하단에 직접 연결하여 질문을 벡터 검색하고 관련 문서를 가져옴</div>
+
+            <div class="content-grid content-grid-2">
+                <div class="content-card">
+                    <div class="card-title">🔧 구성 방식</div>
+                    <div class="mermaid-container">
+                        <div class="mermaid">
+graph TD
+    A[🤖 Agent 노드] --> B[💾 Qdrant Vector Store<br/>Retrieve Documents]
+    B --> C[🔤 Query Embedding<br/>Solar Embedding]
+    C --> D[🔍 Vector Search<br/>관련 문서 반환]
+    D --> A
+
+    style A fill:#f3e5f5
+    style B fill:#e3f2fd
+    style D fill:#e8f5e9
+                        </div>
+                    </div>
+                    <ul class="checklist">
+                        <li><strong>Sub-Workflow 아님!</strong> Agent에 직접 연결</li>
+                        <li>질문을 자동으로 임베딩</li>
+                        <li>Qdrant에서 유사 문서 검색</li>
+                        <li>Agent가 검색 결과를 활용해 답변 생성</li>
+                    </ul>
+                </div>
+
+                <div class="content-card">
+                    <div class="card-title">⚙️ 설정 방법</div>
+                    <table class="content-table">
+                        <thead>
+                            <tr>
+                                <th>항목</th>
+                                <th>설정</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>연결 위치</td>
+                                <td>Agent 노드 하단</td>
+                            </tr>
+                            <tr>
+                                <td>노드 타입</td>
+                                <td>Qdrant Vector Store</td>
+                            </tr>
+                            <tr>
+                                <td>Operation</td>
+                                <td>Retrieve Documents (Get Many)</td>
+                            </tr>
+                            <tr>
+                                <td>Embedding</td>
+                                <td>Solar Embedding</td>
+                            </tr>
+                            <tr>
+                                <td>Limit</td>
+                                <td>5 (Top 5 결과)</td>
                             </tr>
                         </tbody>
                     </table>
@@ -963,305 +1187,266 @@ graph TD
             </div>
 
             <div class="content-card">
-                <div class="card-title">🤖 Agent에 파싱 도구 등록</div>
-                <div class="content-grid content-grid-2">
-                    <div>
-                        <div class="code-block">
-# Data Parser Tool 설정
-{
-  "name": "data_parser",
-  "description": "텍스트나 문서에서 구조화된 데이터를 추출합니다. 표, 목록, 키-값 쌍 등으로 정리할 수 있습니다.",
-  "parameters": {
-    "content": {
-      "type": "string",
-      "description": "파싱할 텍스트 내용"
-    },
-    "format": {
-      "type": "string",
-      "enum": ["table", "json", "list"],
-      "description": "출력 형식"
-    },
-    "fields": {
-      "type": "array",
-      "description": "추출할 필드 목록"
-    }
-  }
-}
-                        </div>
-                    </div>
-                    <div>
-                        <h3 class="header-3">🚀 실습 단계</h3>
-                        <ol class="step-list">
-                            <li><strong>워크플로우 연결</strong>
-                                <ul class="checklist">
-                                    <li>Call n8n Workflow 노드 추가</li>
-                                    <li>Data_Parser 워크플로우 연결</li>
-                                </ul>
-                            </li>
-                            <li><strong>테스트 실행</strong>
-                                <ul class="checklist">
-                                    <li>"이 텍스트를 표로 정리해줘"</li>
-                                    <li>자동 도구 선택 확인</li>
-                                </ul>
-                            </li>
-                        </ol>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- 슬라이드 8: 정보 검색 도구 통합 -->
-        <section class="slide" id="slide-8">
-            <h2 class="header-2">🌐 정보 검색 도구 통합</h2>
-            <div class="message">실시간 웹 검색과 외부 API 연동으로 최신 정보를 제공하는 도구를 추가합니다</div>
-            
-            <div class="content-grid content-grid-2">
-                <div class="content-card">
-                    <div class="card-title">🔍 웹 검색 서브워크플로우</div>
-                    <ol class="step-list">
-                        <li><strong>새 워크플로우 생성</strong>
-                            <ul class="checklist">
-                                <li>이름: "Web_Search"</li>
-                                <li>입력: query, search_type, limit</li>
-                                <li>Google Search API 연동</li>
-                            </ul>
-                        </li>
-                        <li><strong>검색 로직 구성</strong>
-                            <ul class="checklist">
-                                <li>검색 쿼리 최적화</li>
-                                <li>결과 필터링 및 순위</li>
-                                <li>요약 텍스트 생성</li>
-                            </ul>
-                        </li>
-                        <li><strong>결과 후처리</strong>
-                            <ul class="checklist">
-                                <li>신뢰도 점수 추가</li>
-                                <li>출처 URL 포함</li>
-                                <li>중복 제거</li>
-                            </ul>
-                        </li>
-                    </ol>
-                </div>
-
-                <div class="content-card">
-                    <div class="card-title">🤖 Agent에 검색 도구 등록</div>
-                    <div class="code-block">
-# Web Search Tool 설정
-{
-  "name": "web_search",
-  "description": "인터넷에서 최신 정보를 검색합니다. 뉴스, 가격 정보, 트렌드 등 실시간 데이터를 찾을 수 있습니다.",
-  "parameters": {
-    "query": {
-      "type": "string",
-      "description": "검색할 키워드나 질문"
-    },
-    "type": {
-      "type": "string",
-      "enum": ["general", "news", "images"],
-      "default": "general",
-      "description": "검색 타입"
-    },
-    "limit": {
-      "type": "number",
-      "default": 5,
-      "description": "결과 개수"
-    }
-  }
-}
-                    </div>
-                    
-                    <div style="background: #f8f9fa; padding: 10px; border-radius: 6px; margin-top: 10px; font-size: 11pt;">
-                        💡 <strong>사용 예시:</strong> "오늘 주식 시장 동향을 알려주세요"
-                    </div>
-                </div>
-            </div>
-
-            <div class="content-card">
-                <div class="card-title">🚀 실습: 검색 도구를 Agent에 연결하기</div>
-                <div class="content-grid content-grid-2">
-                    <div>
-                        <h3 class="header-3">🌐 외부 API 연동</h3>
-                        <ul class="checklist">
-                            <li><strong>Google Search API:</strong> 일반 웹 검색</li>
-                            <li><strong>News API:</strong> 최신 뉴스 검색</li>
-                            <li><strong>Weather API:</strong> 날씨 정보</li>
-                            <li><strong>Currency API:</strong> 환율 정보</li>
-                        </ul>
-                    </div>
-                    <div>
-                        <h3 class="header-3">🧪 통합 테스트</h3>
-                        <ul class="checklist">
-                            <li><strong>검색 품질:</strong> 관련성 높은 결과 확인</li>
-                            <li><strong>응답 속도:</strong> 3-5초 내 응답</li>
-                            <li><strong>Agent 연동:</strong> 자동 도구 선택</li>
-                            <li><strong>복합 활용:</strong> 문서+검색+RAG 조합</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- 슬라이드 9: 실제 사례 시연 -->
-        <section class="slide" id="slide-9">
-            <h2 class="header-2">🎬 복합 Agent 실제 동작 사례</h2>
-            <div class="message">완성된 복합 Agent가 실제로 어떻게 여러 도구를 조합해서 작업하는지 확인합니다</div>
-            
-            <div class="content-card">
-                <div class="card-title">📝 종합 시나리오: 사업 제안서 분석 및 시장 조사</div>
+                <div class="card-title">💡 Agent와의 통합 동작</div>
                 <div class="mermaid-container">
                     <div class="mermaid">
 sequenceDiagram
     participant U as 사용자
-    participant L as 러버블 UI
-    participant A as Master Agent
-    participant D as 문서 처리
-    participant R as RAG 검색
-    participant W as 웹 검색
-    participant P as 데이터 파싱
+    participant A as Agent
+    participant Q as Qdrant Vector Store
 
-    U->>L: 사업제안서 PDF + "시장 경쟁력 분석해줘"
-    L->>A: 웹훅으로 요청 전송
-    A->>D: 제안서 문서 분석 도구 호출
-    D-->>A: 구조화된 사업 정보
-    A->>R: 유사 사업 사례 검색
-    R-->>A: 내부 데이터베이스 관련 정보
-    A->>W: 현재 시장 동향 검색
-    W-->>A: 최신 시장 정보
-    A->>P: 모든 정보를 비교표로 정리
-    P-->>A: 구조화된 분석 결과
-    A-->>L: 종합 분석 보고서
-    L-->>U: 시각화된 경쟁력 분석 표시
+    U->>A: "문서에서 X에 대해 알려줘"
+    A->>Q: 질문 전달
+    Q->>Q: Query Embedding
+    Q->>Q: Vector Search
+    Q->>A: 관련 문서 5개 반환
+    A->>A: 문서 기반 답변 생성<br/>(Solar Pro2)
+    A->>U: 답변 반환
                     </div>
                 </div>
+
+                <div style="margin-top: 12px; background: #f0e6ff; padding: 12px; border-radius: 8px;">
+                    <strong>💡 핵심:</strong> Tool 4는 별도의 Sub-Workflow가 아니라 Agent에 직접 연결되어 실시간으로 벡터 검색을 수행합니다. Agent가 필요시 자동으로 호출하여 관련 문서를 가져옵니다.
+                </div>
             </div>
+        </section>
+
+        <!-- 슬라이드 10: 인터페이스 제작 및 연결 -->
+        <section class="slide" id="slide-10">
+            <h2 class="header-2">🎨 3단계: Lovable로 인터페이스 제작 및 연결</h2>
+            <div class="message">사용자 친화적인 웹 인터페이스를 만들어 Agent와 연결</div>
 
             <div class="content-grid content-grid-2">
                 <div class="content-card">
-                    <div class="card-title">📊 실제 처리 과정</div>
+                    <div class="card-title">🎨 Lovable 인터페이스 구성</div>
+                    <div class="mermaid-container">
+                        <div class="mermaid">
+graph TD
+    A[💬 채팅 UI] --> B[📤 메시지 입력]
+    B --> C[🔗 Webhook 호출]
+    C --> D[🤖 n8n Agent]
+    D --> E[📥 응답 수신]
+    E --> F[💬 화면 표시]
+
+    style A fill:#f3e5f5
+    style D fill:#e3f2fd
+    style F fill:#e8f5e9
+                        </div>
+                    </div>
+                </div>
+
+                <div class="content-card">
+                    <div class="card-title">🔧 구현 요소</div>
                     <table class="content-table">
                         <thead>
                             <tr>
-                                <th>도구</th>
-                                <th>처리 내용</th>
-                                <th>결과</th>
+                                <th>요소</th>
+                                <th>설명</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
-                                <td>문서 처리</td>
-                                <td>제안서 분석</td>
-                                <td>사업 모델, 타겟, 예산 추출</td>
+                                <td>입력창</td>
+                                <td>텍스트 입력 + 전송 버튼</td>
                             </tr>
                             <tr>
-                                <td>RAG 검색</td>
-                                <td>유사 사례 찾기</td>
-                                <td>과거 성공/실패 사례 3건</td>
+                                <td>대화 영역</td>
+                                <td>사용자/Agent 메시지 표시</td>
                             </tr>
                             <tr>
-                                <td>웹 검색</td>
-                                <td>시장 동향 조사</td>
-                                <td>최신 경쟁업체 정보</td>
+                                <td>로딩 상태</td>
+                                <td>처리 중 스피너 표시</td>
                             </tr>
                             <tr>
-                                <td>데이터 파싱</td>
-                                <td>정보 구조화</td>
-                                <td>SWOT 분석표 생성</td>
+                                <td>API 연결</td>
+                                <td>fetch()로 Webhook 호출</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <div class="card-title">💻 Webhook 호출 코드 예시</div>
+                <div class="code-block">// Lovable에서 n8n Webhook 호출
+async function sendMessage(userMessage) {
+  const response = await fetch('https://your-n8n-url/webhook/agent-bot', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      message: userMessage,
+      timestamp: new Date().toISOString()
+    })
+  });
+
+  const data = await response.json();
+  return data.output; // Agent 응답
+}</div>
+
+                <div style="margin-top: 12px;">
+                    <strong>테스트 방법:</strong>
+                    <ul class="checklist">
+                        <li>Webhook URL을 Lovable 프로젝트에 설정</li>
+                        <li>메시지 전송 테스트</li>
+                        <li>Agent 응답이 UI에 표시되는지 확인</li>
+                        <li>4가지 Tool이 모두 정상 작동하는지 테스트</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- 슬라이드 11: 복합 Agent 동작 사례 -->
+        <section class="slide" id="slide-11">
+            <h2 class="header-2">🎬 복합 Agent 동작 사례 (Sequence Diagram)</h2>
+            <div class="message">실제 사용자 요청이 어떻게 처리되는지 시퀀스 다이어그램으로 이해</div>
+
+            <div class="content-card">
+                <div class="card-title">📝 사례: "PDF 파싱하고 저장한 다음, 저장된 정보에서 핵심 내용 알려줘"</div>
+                <div class="mermaid-container">
+                    <div class="mermaid">
+sequenceDiagram
+    participant U as 👤 사용자
+    participant L as 💬 Lovable UI
+    participant W as 🔗 Webhook
+    participant A as 🤖 Agent
+    participant T1 as 📄 Tool1: 문서 파싱
+    participant T2 as ⚙️ Tool2: 정보 추출
+    participant T3 as 💾 Tool3: 벡터 저장
+    participant Q as 🔍 Qdrant Vector Store
+
+    U->>L: 메시지 입력
+    L->>W: POST 요청
+    W->>A: 사용자 요청 전달
+
+    A->>A: 요청 분석<br/>(4단계 작업 판단)
+
+    Note over A: Step 1: 문서 파싱
+    A->>T1: Tool1 호출<br/>(PDF URL 전달)
+    T1->>T1: PDF 다운로드<br/>Document Parse
+    T1-->>A: 파싱된 텍스트 반환
+
+    Note over A: Step 2: 정보 추출
+    A->>T2: Tool2 호출<br/>(문서 텍스트 전달)
+    T2->>T2: Schema Generation<br/>Information Extract
+    T2-->>A: JSON 데이터 반환
+
+    Note over A: Step 3: 벡터 DB 저장
+    A->>T3: Tool3 호출<br/>(JSON + 메타데이터)
+    T3->>T3: Chunking + Embedding<br/>Qdrant 저장
+    T3-->>A: 저장 완료
+
+    Note over A: Step 4: 벡터 DB 검색
+    A->>Q: "핵심 내용" 질의
+    Q->>Q: Query Embedding<br/>Vector Search
+    Q-->>A: 관련 문서 5개 반환
+    A->>A: 문서 기반 답변 생성<br/>(Solar Pro2)
+
+    A-->>W: 통합 결과
+    W-->>L: JSON 응답
+    L-->>U: 화면에 표시
+                    </div>
+                </div>
+            </div>
+
+            <div class="callout">
+                💡 <strong>핵심:</strong> Agent가 복잡한 요청을 자동으로 4단계로 분해하고, 각 Tool을 순차적으로 실행한 후 벡터 DB에서 검색하여 최종 답변을 생성
+            </div>
+        </section>
+
+        <!-- 슬라이드 12: 마무리 -->
+        <section class="slide" id="slide-12">
+            <h2 class="header-2">🎉 복합 Agent 시스템 완성!</h2>
+            <div class="message">축하합니다! 4가지 Tool을 갖춘 지능형 Agent 봇을 완성했습니다</div>
+
+            <div class="content-grid content-grid-2">
+                <div class="content-card">
+                    <div class="card-title">✅ 구축한 시스템</div>
+                    <table class="content-table">
+                        <thead>
+                            <tr>
+                                <th>구성 요소</th>
+                                <th>완성된 기능</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Agent 뼈대</td>
+                                <td>Webhook + LLM + Memory</td>
+                            </tr>
+                            <tr>
+                                <td>Tool 1</td>
+                                <td>문서 파싱 (Document Parse)</td>
+                            </tr>
+                            <tr>
+                                <td>Tool 2</td>
+                                <td>정보 추출 (Schema Gen + Extract)</td>
+                            </tr>
+                            <tr>
+                                <td>Tool 3</td>
+                                <td>벡터 DB 저장 (Qdrant Insert)</td>
+                            </tr>
+                            <tr>
+                                <td>Tool 4</td>
+                                <td>벡터 DB 검색 (Qdrant Retrieve)</td>
+                            </tr>
+                            <tr>
+                                <td>UI</td>
+                                <td>Lovable 웹 인터페이스</td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
 
                 <div class="content-card">
-                    <div class="card-title">💼 다른 활용 사례들</div>
+                    <div class="card-title">🚀 활용 시나리오</div>
                     <ul class="checklist">
-                        <li><strong>계약서 검토:</strong> 문서분석 + 법률검색 + 리스크분석</li>
-                        <li><strong>고객 문의:</strong> 요청분석 + 지식검색 + 맞춤응답</li>
-                        <li><strong>연구 보고서:</strong> 자료수집 + 웹검색 + 데이터정리</li>
-                        <li><strong>경쟁 분석:</strong> 기업정보 + 시장동향 + 비교표</li>
-                        <li><strong>투자 검토:</strong> 재무분석 + 업계동향 + 리스크평가</li>
+                        <li><strong>리서치 자동화:</strong> 웹 정보 수집 + 요약 + 저장</li>
+                        <li><strong>문서 관리:</strong> 구조화 추출 + RAG 시스템 구축</li>
+                        <li><strong>지식 검색:</strong> 저장된 정보 기반 Q&A</li>
+                        <li><strong>업무 자동화:</strong> 복합 작업을 자연어로 요청</li>
                     </ul>
-                    
-                    <div style="background: #f8f9fa; padding: 10px; border-radius: 6px; margin-top: 10px;">
-                        <strong>🎯 핵심 가치:</strong><br>
-                        Agent가 상황을 판단해서 필요한 도구들을 자동으로 선택하고 조합
+
+                    <div style="background: #f0e6ff; padding: 12px; border-radius: 8px; margin-top: 12px;">
+                        <strong>💡 확장 아이디어:</strong>
+                        <ul class="checklist" style="margin-top: 8px;">
+                            <li>이메일 통합 Tool 추가</li>
+                            <li>슬랙/디스코드 연동</li>
+                            <li>이미지 분석 Tool 추가</li>
+                            <li>데이터베이스 쿼리 Tool</li>
+                        </ul>
                     </div>
-                </div>
-            </div>
-
-            <div class="callout">
-                복합 Agent는 단순한 질문 답변을 넘어서 복잡한 분석 업무를 자동화하는 진정한 업무 파트너
-            </div>
-        </section>
-
-        <!-- 슬라이드 10: 마무리 -->
-        <section class="slide" id="slide-10">
-            <h2 class="header-2">🎉 복합 Agent 시스템 완성!</h2>
-            <div class="message">이제 여러분은 RAG + 문서처리 + Agent를 통합한 진정한 복합 자동화 시스템을 구축할 수 있습니다</div>
-            
-            <div class="content-grid content-grid-2">
-                <div class="content-card">
-                    <div class="card-title">✅ 실습으로 달성한 역량</div>
-                    <ul class="checklist">
-                        <li><strong>시스템 기획:</strong> 복합 기능을 가진 Agent 설계</li>
-                        <li><strong>프론트엔드 연결:</strong> 러버블로 사용자 인터페이스 구축</li>
-                        <li><strong>도구 통합:</strong> 문서처리, RAG, 파싱, 검색 도구 연결</li>
-                        <li><strong>서브워크플로우:</strong> 모듈화된 재사용 가능 컴포넌트</li>
-                        <li><strong>실무 적용:</strong> 실제 업무에 바로 활용 가능한 시스템</li>
-                    </ul>
-                </div>
-
-                <div class="content-card">
-                    <div class="card-title">🚀 다음 발전 방향</div>
-                    <ol class="step-list">
-                        <li><strong>개인 맞춤화</strong>
-                            <ul class="checklist">
-                                <li>본인 업무에 특화된 도구 추가</li>
-                                <li>회사 데이터베이스 연결</li>
-                            </ul>
-                        </li>
-                        <li><strong>성능 최적화</strong>
-                            <ul class="checklist">
-                                <li>응답 속도 개선</li>
-                                <li>동시 사용자 지원</li>
-                            </ul>
-                        </li>
-                        <li><strong>기능 확장</strong>
-                            <ul class="checklist">
-                                <li>새로운 도구 추가</li>
-                                <li>멀티모달 지원 (이미지, 음성)</li>
-                            </ul>
-                        </li>
-                    </ol>
                 </div>
             </div>
 
             <div class="content-card">
-                <div class="card-title">💡 핵심 아이디어 요약</div>
+                <div class="card-title">🎯 핵심 성취</div>
                 <div class="content-grid content-grid-2">
                     <div>
-                        <h3 class="header-3">🎯 Agent 중심 통합</h3>
+                        <h3 class="header-3">🧠 기술적 이해</h3>
                         <ul class="checklist">
-                            <li>Agent가 상황 판단하여 도구 자동 선택</li>
-                            <li>복합적 요청도 단계별로 자동 처리</li>
-                            <li>사용자는 자연어로 복잡한 업무 요청</li>
+                            <li>Agent 아키텍처 설계</li>
+                            <li>Sub-Workflow 모듈화</li>
+                            <li>Tool 통합 방법론</li>
+                            <li>RAG 시스템 구축</li>
                         </ul>
                     </div>
                     <div>
-                        <h3 class="header-3">🔧 실무 활용 포인트</h3>
+                        <h3 class="header-3">💼 실무 역량</h3>
                         <ul class="checklist">
-                            <li>작은 기능부터 시작해서 점진적 확장</li>
-                            <li>기존 업무 프로세스에 자연스럽게 통합</li>
-                            <li>ROI 측정하여 확산 근거 마련</li>
+                            <li>복잡한 워크플로우 설계</li>
+                            <li>외부 인터페이스 연결</li>
+                            <li>End-to-End 시스템 구축</li>
+                            <li>실전 배포 가능 수준</li>
                         </ul>
                     </div>
                 </div>
             </div>
 
             <div class="callout-center">
-                <div class="header-3">🎯 최종 성취</div>
+                <div class="header-3">🎊 축하합니다!</div>
                 <p style="font-size: 14pt; line-height: 1.6; margin: 12px 0;">
-                    단순한 챗봇이 아닌 <strong>업무를 이해하고 자동 처리하는 지능형 Agent</strong>를 완성했습니다.<br>
-                    이제 여러분은 <strong>AI 기반 업무 자동화의 새로운 차원</strong>을 경험할 수 있습니다.
+                    단순한 챗봇이 아닌 <strong>4가지 Tool을 자유자재로 사용하는 지능형 Agent</strong>를 완성했습니다.<br>
+                    이제 여러분은 <strong>복합 AI 자동화 시스템</strong>을 직접 구축하고 확장할 수 있습니다.
                 </p>
                 <div style="font-size: 16pt; font-weight: 600; color: rgb(135, 0, 232); margin-top: 16px;">
                     복합 Agent로 업무 혁신을 시작하세요! 🚀
@@ -1306,7 +1491,7 @@ sequenceDiagram
         function updateSlideCounter() {
             const slides = document.querySelectorAll('.slide');
             const scrollTop = window.pageYOffset + 150; // 네비게이션 바 높이 고려
-            
+
             let currentSlide = 1;
             let currentSlideElement = slides[0];
             slides.forEach((slide, index) => {
@@ -1315,10 +1500,10 @@ sequenceDiagram
                     currentSlideElement = slide;
                 }
             });
-            
+
             // Update slide counter
             document.getElementById('slide-counter').textContent = `${currentSlide} / ${slides.length}`;
-            
+
             // Update current slide title
             const slideTitle = currentSlideElement.querySelector('.header-2');
             if (slideTitle) {

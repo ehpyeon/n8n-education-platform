@@ -438,7 +438,7 @@
         <div class="nav-logo">RAG 시스템 제작</div>
         <div class="nav-progress">
             <span class="current-slide-title">🔍 RAG 시스템 이해와 실습</span>
-            <span class="slide-counter">1 / 10</span>
+            <span class="slide-counter">1 / 9</span>
         </div>
     </nav>
 
@@ -855,134 +855,64 @@ graph LR
 
         <!-- Slide 8: 실전 프로젝트 -->
         <section class="slide" id="slide-8">
-            <h2 class="header-2">🏢 실전 프로젝트: 회사 내부 지식 베이스</h2>
-            <div class="message">IT 회사에서 직원들의 자주 묻는 질문에 자동으로 답변하는 시스템을 구축해보겠습니다</div>
-            
+            <h2 class="header-2">📚 실전 프로젝트: 역사 선생님 AI 시스템</h2>
+            <div class="message">역사 교과서 내용을 학습하여 학생들에게 문제를 출제하고 답변하는 똑똑한 선생님을 만들어보겠습니다</div>
+
             <div class="content-grid content-grid-2">
                 <div class="content-card">
                     <div class="card-title">📋 프로젝트 구성</div>
-                    <div class="basic-font"><strong>데이터 소스:</strong></div>
+                    <div class="basic-font"><strong>데이터 소스 (역사 교과서 내용):</strong></div>
                     <ul class="checklist">
-                        <li>회사 정책 문서 (휴가, 복리후생, 업무 규정)</li>
-                        <li>제품 매뉴얼 및 기술 문서</li>
-                        <li>자주 묻는 질문(FAQ) 목록</li>
-                        <li>회의록 및 공지사항</li>
+                        <li>구석기 시대: 돌을 깨서 도구 제작, 사냥과 채집 생활</li>
+                        <li>신석기 시대: 돌을 갈아 도구 제작, 농경과 목축 시작</li>
+                        <li>청동기 시대: 청동 도구 사용, 계급 사회 출현</li>
+                        <li>철기 시대: 철제 농기구 보급, 생산력 향상</li>
                     </ul>
-                    
-                    <div class="basic-font"><strong>시스템 구성:</strong></div>
-                    <div class="code-block">1단계: 문서 색인화 워크플로우
-HTTP Request → Code (청킹) → Upstage Embedding → Qdrant
 
-2단계: 질문 답변 워크플로우  
-Chat Trigger → Upstage Embedding → Qdrant Search → 
-Set → Upstage Chat</div>
+                    <div class="basic-font"><strong>시스템 구성:</strong></div>
+                    <div class="code-block">1단계: 교과서 내용 색인화
+역사 교과서 → Code (청킹) → Upstage Embedding → Qdrant
+
+2단계: 문제 출제 & 답변 시스템
+학생 질문 → Upstage Embedding → Qdrant Search →
+관련 내용 추출 → Upstage Chat (답변 생성)</div>
                 </div>
-                
+
                 <div class="content-card">
                     <div class="card-title">💬 실제 사용 예시</div>
-                    <div class="basic-font"><strong>질문:</strong> "재택근무 신청은 어떻게 하나요?"</div>
-                    
+                    <div class="basic-font"><strong>학생 질문:</strong> "구석기 시대와 신석기 시대의 차이점은 무엇인가요?"</div>
+
                     <div class="code-block">시스템 처리 과정:
 1. 질문을 벡터로 변환
-2. 재택근무 관련 문서 조각들 검색
+2. 구석기, 신석기 관련 교과서 내용 검색
 3. 관련 정보를 바탕으로 답변 생성</div>
-                    
+
                     <div class="basic-font"><strong>생성된 답변:</strong></div>
-                    <div class="code-block">"재택근무 신청은 다음과 같이 진행하시면 됩니다:
+                    <div class="code-block">"구석기 시대와 신석기 시대의 주요 차이점은 다음과 같습니다:
 
-1. 사내 시스템에서 재택근무 신청서 작성
-2. 직속 상관의 승인 요청  
-3. 승인 후 HR팀에 최종 제출
+[도구 제작 방식]
+- 구석기: 돌을 깨서 도구 제작
+- 신석기: 돌을 갈아 도구 제작 (더 정교함)
 
-[참고: 인사 정책 문서 Section 3.2]"</div>
-                    
+[생활 방식]
+- 구석기: 사냥과 채집 생활 (이동 생활)
+- 신석기: 농경과 목축 시작 (정착 생활)
+
+[참고: 한국사 교과서 1단원]"</div>
+
                     <div class="basic-font"><strong>시스템 장점:</strong></div>
                     <ul class="checklist">
-                        <li>24시간 즉시 답변 가능</li>
-                        <li>항상 최신 정보 기반</li>
-                        <li>정확한 출처 정보 제공</li>
-                        <li>HR팀 업무 부담 대폭 감소</li>
+                        <li>24시간 학생들의 질문에 즉시 답변</li>
+                        <li>교과서 기반의 정확한 답변 제공</li>
+                        <li>시대별 비교 학습 지원</li>
+                        <li>선생님의 반복 질문 답변 부담 감소</li>
                     </ul>
                 </div>
             </div>
         </section>
 
-        <!-- Slide 9: 시스템 개선 방법 -->
+        <!-- Slide 9: 성공한 지식 관리사 완성 -->
         <section class="slide" id="slide-9">
-            <h2 class="header-2">🔧 RAG 시스템 개선 및 최적화</h2>
-            <div class="message">더 정확하고 유용한 답변을 위한 시스템 품질 향상 방법들을 알아보겠습니다</div>
-            
-            <div class="content-grid content-grid-2">
-                <div class="content-card">
-                    <div class="card-title">🔍 하이브리드 검색 시스템</div>
-                    
-                    <div style="background: #f8f9fa; padding: 16px; border-radius: 8px; margin: 12px 0;">
-                        <pre class="mermaid" style="background: transparent; border: none; padding: 0;">
-graph LR
-    A[사용자 질문: 고객 서비스] --> B{검색 방식 선택}
-    
-    B --> C[키워드 검색]
-    B --> D[의미 검색]
-    
-    C --> C1["정확한 단어 매칭<br/>🔍 '고객 서비스'만 찾기"]
-    C --> C2["결과: 3개 문서<br/>📄 고객 서비스 매뉴얼<br/>📄 고객 서비스 정책<br/>📄 고객 서비스 교육"]
-    
-    D --> D1["의미 기반 벡터 검색<br/>🧠 비슷한 뜻 모두 찾기"]
-    D --> D2["결과: 10개 문서<br/>📄 고객 서비스 매뉴얼<br/>📄 고객 지원 가이드<br/>📄 사용자 도움말<br/>📄 구매자 상담 절차<br/>📄 클라이언트 케어<br/>+ 5개 추가"]
-    
-    C2 --> E[하이브리드 검색]
-    D2 --> E
-    E --> F["최적 결과: 12개 문서<br/>정확성 + 포괄성"]
-    
-    style C fill:#ffebee
-    style D fill:#e8f5e8
-    style E fill:#fff3e0
-    style F fill:#f3e5f5
-</pre>
-                    </div>
-                    
-                    <div class="basic-font"><strong>벡터 + 키워드 결합의 장점:</strong></div>
-                    <ul class="checklist">
-                        <li>정확한 제품명, 날짜는 키워드로</li>
-                        <li>의미적 관련성은 벡터로</li>
-                        <li>두 방식의 장점을 모두 활용</li>
-                    </ul>
-                </div>
-                
-                <div class="content-card">
-                    <div class="card-title">📊 품질 개선 및 피드백</div>
-                    
-                    <div class="basic-font"><strong>청킹 최적화 예시:</strong></div>
-                    <div style="background: #fff; border: 1px solid #e0e0e0; border-radius: 6px; padding: 10px; margin: 8px 0;">
-                        <div style="font-size: 11pt; color: #666;">❌ 잘못된 청킹:</div>
-                        <div style="font-size: 10pt; background: #ffebee; padding: 6px; border-radius: 4px;">"재택근무는 주 2회까지 가능하며 사전 승인이 필요합니다. 단, 코로나19 상황에서는..."</div>
-                        <div style="font-size: 11pt; color: #666; margin-top: 6px;">✅ 올바른 청킹:</div>
-                        <div style="font-size: 10pt; background: #e8f5e8; padding: 6px; border-radius: 4px;">"재택근무 정책: 주 2회까지 가능하며 사전 승인이 필요합니다. 코로나19 특별 규정: 상황에 따라 전면 재택 가능합니다."</div>
-                        <div style="font-size: 9pt; color: #888; margin-top: 4px; font-style: italic;">→ 완전한 문맥 유지를 위해 주제별로 명확히 분리하고 핵심 키워드 추가</div>
-                    </div>
-                    
-                    <div class="basic-font"><strong>프롬프트 개선 예시:</strong></div>
-                    <div class="code-block">❌ 약한 프롬프트:
-"질문에 답변해주세요"
-
-✅ 강한 프롬프트:
-"다음 회사 문서 정보를 바탕으로만 정확히 답변하세요. 
-정보가 부족하면 '관련 정보를 찾을 수 없습니다'라고 답변하세요.
-답변 마지막에 반드시 [출처: 문서명 섹션]을 표시하세요."</div>
-                    
-                    <div class="basic-font"><strong>사용자 피드백 시스템:</strong></div>
-                    <ul class="checklist">
-                        <li>👍 👎 버튼으로 만족도 수집</li>
-                        <li>"더 자세한 정보 필요" 요청 기능</li>
-                        <li>자주 묻는 질문 but 답변 부족 알림</li>
-                        <li>월간 답변 품질 리포트 자동 생성</li>
-                    </ul>
-                </div>
-            </div>
-        </section>
-
-        <!-- Slide 10: 성공한 지식 관리사 완성 -->
-        <section class="slide" id="slide-10">
             <h2 class="header-2">🎉 똑똑한 지식 관리사 완성!</h2>
             <div class="message">이제 회사의 모든 지식을 완벽하게 기억하고 언제든 정확한 답변을 제공하는 AI 비서를 만들었습니다</div>
             

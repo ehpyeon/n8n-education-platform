@@ -981,8 +981,131 @@ Set 노드 (외부 트리거 변수 형식과 동일하게 세팅)
             </div>
         </section>
 
-        <!-- 슬라이드 14: 디버깅 마스터 체크리스트 -->
+        <!-- 슬라이드 14: 올바른 데이터 접근 -->
         <section class="slide" id="slide-14">
+            <h2 class="header-2">🎯 3-3. 올바르게 데이터 접근하는 방법</h2>
+            <div class="message">n8n 데이터 구조를 이해하고 올바르게 참조하면 대부분의 에러를 예방할 수 있습니다</div>
+
+            <div class="content-card">
+                <div class="card-title">📊 n8n 데이터 접근 Hierarchy</div>
+                <div class="mermaid">
+                    graph TD
+                    A[워크플로우] --> B[노드 Node]
+                    B --> C[Items 배열]
+                    C --> D[Item 0]
+                    C --> E[Item 1]
+                    C --> F[Item 2...]
+
+                    D --> G[json]
+                    D --> H[binary]
+
+                    G --> I[필드 Fields]
+                    I --> J[name]
+                    I --> K[email]
+                    I --> L[age...]
+
+                    style B fill:#E5F5FF,stroke:#1B365D,stroke-width:2px
+                    style C fill:#FFFAF0,stroke:#DD6B20,stroke-width:2px
+                    style G fill:#F0FFF4,stroke:#38A169,stroke-width:2px
+                    style I fill:#FFF5F5,stroke:#E53E3E,stroke-width:2px
+                </div>
+                <div class="basic-font" style="text-align: center; margin-top: 12px;">
+                    <strong>접근 순서:</strong> Node → Items → json/binary → Fields
+                </div>
+            </div>
+
+            <div class="content-grid content-grid-2">
+                <div class="content-card">
+                    <div class="card-title">1️⃣ 바로 앞의 노드를 받는 경우</div>
+                    <div class="code-block">
+// 바로 앞 노드의 데이터 접근
+{{ $json.xx }}
+
+// 예시
+{{ $json.name }}
+{{ $json.user.email }}
+{{ $json.items[0] }}
+                    </div>
+                    <div class="basic-font">
+                        <strong>사용 상황:</strong><br>
+                        직전 노드의 출력을 받아서 사용할 때<br><br>
+                        <strong>특징:</strong><br>
+                        • 가장 간단하고 자주 사용하는 방법<br>
+                        • <code>$json</code>으로 시작<br>
+                        • 노드 이름 지정 불필요
+                    </div>
+                </div>
+
+                <div class="content-card">
+                    <div class="card-title">2️⃣ 특정 위치의 노드를 받는 경우</div>
+                    <div class="code-block">
+// 노드 명칭부터 기록하기
+{{ $("노드명").item.json.xx }}
+{{ $("노드명").items[0].json.xx }}
+
+// 예시
+{{ $("HTTP Request").item.json.userId }}
+{{ $("Set").items[0].json.name }}
+{{ $("When chat message received").item.json.chatInput }}
+                    </div>
+                    <div class="basic-font">
+                        <strong>사용 상황:</strong><br>
+                        여러 단계 이전의 노드나 특정 노드의 데이터를 참조할 때<br><br>
+                        <strong>특징:</strong><br>
+                        • 노드 명칭을 정확히 지정<br>
+                        • <code>.item.json</code> 또는 <code>.items[0].json</code> 사용<br>
+                        • 워크플로우 구조가 복잡할 때 유용
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <div class="card-title">💡 실전 팁: 올바른 예시 vs 자주 하는 실수</div>
+                <div class="content-grid content-grid-2">
+                    <div class="basic-font">
+                        <strong>✅ 올바른 예시:</strong><br><br>
+                        • <code>{{ $json.email }}</code><br>
+                        <span style="color: #38A169;">→ 바로 앞 노드의 email 필드</span><br><br>
+
+                        • <code>{{ $json.user.name }}</code><br>
+                        <span style="color: #38A169;">→ 중첩된 객체 접근</span><br><br>
+
+                        • <code>{{ $("HTTP Request").item.json.data }}</code><br>
+                        <span style="color: #38A169;">→ 특정 노드의 data 필드</span><br><br>
+
+                        • <code>{{ $("Set").items[0].json.result }}</code><br>
+                        <span style="color: #38A169;">→ 배열의 첫 번째 아이템</span>
+                    </div>
+                    <div class="basic-font">
+                        <strong>❌ 자주 하는 실수:</strong><br><br>
+                        • <code>{{ json.email }}</code><br>
+                        <span style="color: #E53E3E;">→ $ 가 빠짐</span><br><br>
+
+                        • <code>{{ $json }}</code><br>
+                        <span style="color: #E53E3E;">→ 필드명이 빠짐</span><br><br>
+
+                        • <code>{{ email }}</code><br>
+                        <span style="color: #E53E3E;">→ $json이 빠짐</span><br><br>
+
+                        • <code>{{ $("노드명").json.xx }}</code><br>
+                        <span style="color: #E53E3E;">→ .item 또는 .items[0]이 빠짐</span><br><br>
+
+                        • <code>{{ $node["노드명"].json }}</code><br>
+                        <span style="color: #E53E3E;">→ 구 문법 (새 문법: $("노드명") 사용)</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="callout">
+                <strong>🎯 핵심 원칙:</strong><br>
+                <strong>1️⃣ 바로 앞 노드:</strong> <code>{{ $json.필드명 }}</code><br>
+                <strong>2️⃣ 특정 노드:</strong> <code>{{ $("노드명").item.json.필드명 }}</code><br>
+                <strong>3️⃣ 항상 확인:</strong> 노드 실행 후 출력 데이터 구조를 먼저 확인하고 참조하기!
+            </div>
+        </section>
+
+        <!-- 슬라이드 15: 디버깅 마스터 체크리스트 -->
+        <section class="slide" id="slide-15">
             <h2 class="header-2">✅ 디버깅 마스터 종합 가이드</h2>
             <div class="message">실전에서 바로 활용할 수 있는 완벽한 디버깅 체크리스트</div>
 

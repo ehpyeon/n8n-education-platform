@@ -573,23 +573,33 @@
                     <h3 class="card-title">📋 설치 전 준비사항</h3>
                     <ol class="step-list">
                         <li>
+                            <strong>Terminal 검색 및 실행</strong>
+                            <ul class="checklist">
+                                <li><strong>Windows:</strong> 시작 메뉴에서 "cmd" 또는 "PowerShell" 검색</li>
+                                <li><strong>macOS:</strong> Spotlight(⌘+Space)에서 "터미널" 검색</li>
+                            </ul>
+                        </li>
+                        <li>
                             <strong>Node.js 설치 확인</strong>
                             <div class="code-block">node --version
 npm --version</div>
+                            <p class="basic-font" style="font-size: 10pt; color: #636E72; margin-top: 8px;">
+                                위 코드를 터미널에 입력하세요. 버전이 나오면 설치된 것이며, "찾을 수 없습니다"라고 뜨면 미설치 상태로 다음 단계에 따라 설치해야 합니다.
+                            </p>
                         </li>
                         <li>
-                            <strong>Node.js 미설치 시 다운로드</strong>
+                            <strong>Windows/macOS: Node.js 다운 및 설치</strong>
                             <ul class="checklist">
-                                <li><strong>Windows/macOS:</strong> nodejs.org에서 LTS 버전 다운로드</li>
-                                <li><strong>Ubuntu/Debian:</strong> <span class="inline-code">sudo apt install nodejs npm</span></li>
+                                <li><a href="https://nodejs.org/ko/download" target="_blank" style="color: #1B365D; text-decoration: underline;">nodejs.org/ko/download</a>에서 LTS 버전 다운로드 및 설치</li>
+                                <li>(Ubuntu/Debian: <span class="inline-code">sudo apt install nodejs npm</span>)</li>
                                 <li><strong>최소 요구사항:</strong> Node.js 18.x 이상</li>
                             </ul>
                         </li>
                     </ol>
                 </div>
-                
+
                 <div class="content-card">
-                    <h3 class="card-title">🚀 n8n 실행 과정</h3>
+                    <h3 class="card-title">🚀 n8n 설치 및 실행 과정</h3>
                     <ol class="step-list">
                         <li>
                             <strong>n8n 실행</strong>
